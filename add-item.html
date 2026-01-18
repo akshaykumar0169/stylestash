@@ -1,0 +1,621 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add New Piece - StyleStash</title>
+    <style>
+        :root {
+            --primary-accent: #6366f1;
+            /* Indigo */
+            --primary-hover: #4f46e5;
+            --bg-overlay: rgba(0, 0, 0, 0.5);
+            --bg-modal: #ffffff;
+            --text-main: #1f2937;
+            --text-sub: #6b7280;
+            --border-color: #e5e7eb;
+            --drag-bg: #f9fafb;
+            --danger: #ef4444;
+        }
+
+        * {
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #f3f4f6;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+        }
+
+        /* --- Modal Container --- */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--bg-overlay);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            z-index: 1000;
+        }
+
+        .modal-card {
+            background: var(--bg-modal);
+            width: 100%;
+            max-width: 900px;
+            border-radius: 12px;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+            display: flex;
+            overflow: hidden;
+            max-height: 90vh;
+            /* Prevent overflow on small screens */
+            position: relative;
+        }
+
+        /* --- Left Column: Visual Studio --- */
+        .left-col {
+            width: 40%;
+            background: var(--drag-bg);
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            border-right: 1px solid var(--border-color);
+            position: relative;
+        }
+
+        .upload-area {
+            width: 100%;
+            height: 100%;
+            min-height: 300px;
+            border: 2px dashed #9ca3af;
+            border-radius: 8px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            position: relative;
+            background: white;
+        }
+
+        .upload-area:hover,
+        .upload-area.drag-over {
+            border-color: var(--primary-accent);
+            background: #eef2ff;
+        }
+
+        .upload-icon {
+            font-size: 48px;
+            color: #9ca3af;
+            margin-bottom: 12px;
+        }
+
+        .upload-text {
+            color: var(--text-sub);
+            text-align: center;
+            font-size: 14px;
+        }
+
+        .browse-btn {
+            color: var(--primary-accent);
+            font-weight: 600;
+            text-decoration: underline;
+        }
+
+        /* Preview State */
+        .image-preview-container {
+            display: none;
+            /* Hidden by default */
+            width: 100%;
+            height: 100%;
+            position: relative;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .image-preview {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .remove-img-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: white;
+            color: var(--danger);
+            border: none;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            cursor: pointer;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* AI Loader */
+        .ai-loader {
+            display: none;
+            position: absolute;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: rgba(255, 255, 255, 0.9);
+            width: 100%;
+            height: 100%;
+            z-index: 10;
+        }
+
+        .pulse-circle {
+            width: 40px;
+            height: 40px;
+            background: var(--primary-accent);
+            border-radius: 50%;
+            animation: pulse 1.5s infinite;
+            margin-bottom: 10px;
+        }
+
+        @keyframes pulse {
+            0% {
+                transform: scale(0.95);
+                box-shadow: 0 0 0 0 rgba(99, 102, 241, 0.7);
+            }
+
+            70% {
+                transform: scale(1);
+                box-shadow: 0 0 0 10px rgba(99, 102, 241, 0);
+            }
+
+            100% {
+                transform: scale(0.95);
+                box-shadow: 0 0 0 0 rgba(99, 102, 241, 0);
+            }
+        }
+
+        /* --- Right Column: Details Form --- */
+        .right-col {
+            width: 60%;
+            padding: 24px 32px;
+            overflow-y: auto;
+            /* Scrollable form */
+            display: flex;
+            flex-direction: column;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .modal-title {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--text-main);
+            margin: 0;
+        }
+
+        .close-modal-btn {
+            background: none;
+            border: none;
+            font-size: 24px;
+            color: var(--text-sub);
+            cursor: pointer;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-main);
+            margin-bottom: 8px;
+        }
+
+        input[type="text"],
+        select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            font-size: 14px;
+            outline: none;
+        }
+
+        input:focus,
+        select:focus {
+            border-color: var(--primary-accent);
+        }
+
+        /* Category Pills */
+        .pills-container {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .pill-radio {
+            display: none;
+        }
+
+        .pill-label {
+            padding: 8px 16px;
+            background: #f3f4f6;
+            border-radius: 20px;
+            font-size: 13px;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: 1px solid transparent;
+            color: var(--text-sub);
+        }
+
+        .pill-radio:checked+.pill-label {
+            background: var(--primary-accent);
+            color: white;
+            box-shadow: 0 4px 6px rgba(99, 102, 241, 0.3);
+        }
+
+        /* Color Circles */
+        .color-row {
+            display: flex;
+            gap: 12px;
+        }
+
+        .color-radio {
+            display: none;
+        }
+
+        .color-circle {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            cursor: pointer;
+            border: 2px solid transparent;
+            transition: transform 0.2s;
+        }
+
+        .color-radio:checked+.color-circle {
+            transform: scale(1.2);
+            border-color: var(--text-main);
+        }
+
+        /* Warmth Slider */
+        .range-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .range-label {
+            font-size: 12px;
+            color: var(--text-sub);
+        }
+
+        input[type="range"] {
+            flex-grow: 1;
+            accent-color: var(--primary-accent);
+            height: 6px;
+            background: #e5e7eb;
+            border-radius: 5px;
+            outline: none;
+        }
+
+        /* Footer Actions */
+        .modal-footer {
+            margin-top: auto;
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+            padding-top: 20px;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            border: none;
+        }
+
+        .btn-ghost {
+            background: transparent;
+            color: var(--text-sub);
+        }
+
+        .btn-ghost:hover {
+            background: #f3f4f6;
+        }
+
+        .btn-primary {
+            background: var(--primary-accent);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-hover);
+        }
+
+        /* --- Mobile Responsive --- */
+        @media (max-width: 768px) {
+            .modal-card {
+                flex-direction: column;
+                height: 100vh;
+                max-height: 100vh;
+                border-radius: 0;
+            }
+
+            .left-col {
+                width: 100%;
+                height: 250px;
+                /* Fixed height for image area on mobile */
+                padding: 16px;
+                border-right: none;
+                border-bottom: 1px solid var(--border-color);
+                flex-shrink: 0;
+            }
+
+            .right-col {
+                width: 100%;
+                flex-grow: 1;
+                padding: 20px;
+            }
+
+            .upload-area {
+                min-height: auto;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="modal-overlay">
+        <div class="modal-card">
+            <div class="left-col">
+                <input type="file" id="fileInput" hidden accept="image/*">
+
+                <div class="upload-area" id="dropZone">
+                    <div class="upload-icon">📷</div>
+                    <p class="upload-text">Drag photo here or <span class="browse-btn">Browse</span></p>
+                </div>
+
+                <div class="ai-loader" id="aiLoader">
+                    <div class="pulse-circle"></div>
+                    <p style="font-size: 14px; color: var(--text-main);">Analyzing image...</p>
+                </div>
+
+                <div class="image-preview-container" id="previewContainer">
+                    <button class="remove-img-btn" id="removeImgBtn" title="Remove Image">✕</button>
+                    <img src="" alt="Preview" class="image-preview" id="imagePreview">
+                </div>
+            </div>
+
+            <div class="right-col">
+                <div class="modal-header">
+                    <h2 class="modal-title">Add New Piece</h2>
+                    <button class="close-modal-btn">✕</button>
+                </div>
+
+                <form id="detailsForm">
+                    <div class="form-group">
+                        <label for="itemName">Name</label>
+                        <input type="text" id="itemName" placeholder="e.g. Vintage Levis">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Category <span style="color:red">*</span></label>
+                        <div class="pills-container">
+                            <label>
+                                <input type="radio" name="category" value="top" class="pill-radio" checked>
+                                <span class="pill-label">Top</span>
+                            </label>
+                            <label>
+                                <input type="radio" name="category" value="bottom" class="pill-radio">
+                                <span class="pill-label">Bottom</span>
+                            </label>
+                            <label>
+                                <input type="radio" name="category" value="shoes" class="pill-radio">
+                                <span class="pill-label">Shoes</span>
+                            </label>
+                            <label>
+                                <input type="radio" name="category" value="outerwear" class="pill-radio">
+                                <span class="pill-label">Outerwear</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="subCategory">Sub-Category</label>
+                        <select id="subCategory">
+                            <option value="tshirt">T-Shirt</option>
+                            <option value="shirt">Button Shirt</option>
+                            <option value="sweater">Sweater</option>
+                            <option value="hoodie">Hoodie</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Season (Select all that apply)</label>
+                        <div class="pills-container">
+                            <label><input type="checkbox" class="pill-radio"><span
+                                    class="pill-label">Summer</span></label>
+                            <label><input type="checkbox" class="pill-radio"><span
+                                    class="pill-label">Winter</span></label>
+                            <label><input type="checkbox" class="pill-radio"><span
+                                    class="pill-label">Rain</span></label>
+                            <label><input type="checkbox" class="pill-radio"><span class="pill-label">All
+                                    Year</span></label>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Dominant Color</label>
+                        <div class="color-row">
+                            <label><input type="radio" name="color" class="color-radio">
+                                <div class="color-circle" style="background:#000;"></div>
+                            </label>
+                            <label><input type="radio" name="color" class="color-radio">
+                                <div class="color-circle" style="background:#fff; border: 1px solid #ddd;"></div>
+                            </label>
+                            <label><input type="radio" name="color" class="color-radio">
+                                <div class="color-circle" style="background:#1d4ed8;"></div>
+                            </label>
+                            <label><input type="radio" name="color" class="color-radio">
+                                <div class="color-circle" style="background:#b91c1c;"></div>
+                            </label>
+                            <label><input type="radio" name="color" class="color-radio">
+                                <div class="color-circle" style="background:#15803d;"></div>
+                            </label>
+                            <label><input type="radio" name="color" class="color-radio">
+                                <div class="color-circle" style="background:#d97706;"></div>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Warmth Level: <span id="warmthValue">5</span>/10</label>
+                        <div class="range-container">
+                            <span class="range-label">Cool (1)</span>
+                            <input type="range" min="1" max="10" value="5" id="warmthRange">
+                            <span class="range-label">Warm (10)</span>
+                        </div>
+                    </div>
+                </form>
+
+                <div class="modal-footer">
+                    <button class="btn btn-ghost" id="cancelBtn">Cancel</button>
+                    <button class="btn btn-primary">Save Item</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const dropZone = document.getElementById('dropZone');
+        const fileInput = document.getElementById('fileInput');
+        const previewContainer = document.getElementById('previewContainer');
+        const imagePreview = document.getElementById('imagePreview');
+        const removeImgBtn = document.getElementById('removeImgBtn');
+        const aiLoader = document.getElementById('aiLoader');
+        const warmthRange = document.getElementById('warmthRange');
+        const warmthValue = document.getElementById('warmthValue');
+
+        // Update Slider Value Display
+        warmthRange.addEventListener('input', (e) => {
+            warmthValue.textContent = e.target.value;
+        });
+
+        // Click to Browse
+        dropZone.addEventListener('click', () => fileInput.click());
+
+        // Drag & Drop Events
+        dropZone.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            dropZone.classList.add('drag-over');
+        });
+
+        dropZone.addEventListener('dragleave', () => {
+            dropZone.classList.remove('drag-over');
+        });
+
+        dropZone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            dropZone.classList.remove('drag-over');
+            const file = e.dataTransfer.files[0];
+            handleFile(file);
+        });
+
+        // File Input Change
+        fileInput.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            handleFile(file);
+        });
+
+        // Handle File Logic
+        function handleFile(file) {
+            if (file && file.type.startsWith('image/')) {
+                // Show AI Loader
+                dropZone.style.display = 'none';
+                aiLoader.style.display = 'flex';
+
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    // Simulate AI Analysis Delay (1.5 seconds)
+                    setTimeout(() => {
+                        aiLoader.style.display = 'none';
+                        imagePreview.src = e.target.result;
+                        previewContainer.style.display = 'block';
+
+                        // Optional: Here you would inject logic to auto-fill tags
+                        console.log("AI Tagging simulated...");
+                    }, 1500);
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        // Remove Image
+        removeImgBtn.addEventListener('click', () => {
+            fileInput.value = ''; // Reset input
+            imagePreview.src = '';
+            previewContainer.style.display = 'none';
+            dropZone.style.display = 'flex';
+        });
+
+        // Dynamic Sub-Category (Simple Example)
+        const categoryRadios = document.querySelectorAll('input[name="category"]');
+        const subCategorySelect = document.getElementById('subCategory');
+
+        const subCatOptions = {
+            top: ['T-Shirt', 'Button Shirt', 'Sweater', 'Hoodie'],
+            bottom: ['Jeans', 'Chinos', 'Shorts', 'Skirt'],
+            shoes: ['Sneakers', 'Boots', 'Sandals', 'Formal'],
+            outerwear: ['Jacket', 'Coat', 'Vest', 'Blazer']
+        };
+
+        categoryRadios.forEach(radio => {
+            radio.addEventListener('change', (e) => {
+                const selected = e.target.value;
+                const options = subCatOptions[selected];
+
+                subCategorySelect.innerHTML = ''; // Clear existing
+                options.forEach(opt => {
+                    const el = document.createElement('option');
+                    el.value = opt.toLowerCase();
+                    el.textContent = opt;
+                    subCategorySelect.appendChild(el);
+                });
+            });
+        });
+
+        // Cancel button → redirect to dashboard
+        document.getElementById('cancelBtn').addEventListener('click', () => {
+            window.location.href = "dashboard.html"; // change path if needed
+        });
+
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,890 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Plan Outfits - StyleStash</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Poppins:wght@300;400;500;600&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+    <style>
+        :root {
+            /* Colors */
+            --primary: #2563eb;
+            --bg-body: #f1f5f9;
+            --bg-card: #ffffff;
+            --text-main: #1e293b;
+            --text-sub: #64748b;
+            --border: #e2e8f0;
+
+            /* Sidebar Variables */
+            --sidebar-bg: #0f172a;
+            --sidebar-text: #94a3b8;
+            --sidebar-active: #ffffff;
+            --accent-blue: #3b82f6;
+            --accent-red: #ef4444;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-body);
+            display: flex;
+            height: 100vh;
+            overflow: hidden;
+            /* Prevent body scroll, handle inside panes */
+        }
+
+        /* ================= SIDEBAR ================= */
+        .sidebar {
+            width: 260px;
+            background-color: var(--sidebar-bg);
+            color: var(--sidebar-text);
+            display: flex;
+            flex-direction: column;
+            padding: 2rem;
+            flex-shrink: 0;
+            z-index: 100;
+            transition: transform 0.3s ease;
+        }
+
+        .brand {
+            font-family: 'Poppins';
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #fff;
+            margin-bottom: 2.5rem;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .nav-links {
+            list-style: none;
+            flex-grow: 1;
+            /* Pushes footer to bottom */
+        }
+
+        .nav-item {
+            margin-bottom: 0.5rem;
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            padding: 12px 16px;
+            color: var(--sidebar-text);
+            text-decoration: none;
+            border-radius: 8px;
+            transition: all 0.2s;
+            font-family: 'Poppins';
+            font-size: 0.95rem;
+            cursor: pointer;
+        }
+
+        .nav-link i {
+            margin-right: 12px;
+            width: 20px;
+            text-align: center;
+        }
+
+        .nav-link:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+            color: #fff;
+        }
+
+        /* Active Blue Strip */
+        .nav-link.active {
+            background-color: var(--accent-blue) !important;
+            color: #ffffff !important;
+            font-weight: 500;
+            box-shadow: 0 4px 6px -1px rgba(59, 130, 246, 0.5);
+        }
+
+        /* Sidebar Footer */
+        .sidebar-footer {
+            margin-top: auto;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            padding-top: 1rem;
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .logout-btn {
+            color: var(--accent-red);
+        }
+
+        .logout-btn:hover {
+            background-color: rgba(239, 68, 68, 0.1);
+            color: var(--accent-red);
+        }
+
+        /* ================= LAYOUT WRAPPER ================= */
+        .main-content {
+            flex-grow: 1;
+            display: flex;
+            /* Creates the Center + Right pane layout */
+            height: 100vh;
+            position: relative;
+        }
+
+        /* ================= PANE 2: CALENDAR (Center) ================= */
+        .calendar-pane {
+            flex: 55;
+            /* Takes 55% */
+            display: flex;
+            flex-direction: column;
+            padding: 1.5rem;
+            border-right: 1px solid var(--border);
+            overflow-y: auto;
+        }
+
+        /* Calendar Header */
+        .cal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .month-selector {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .month-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text-main);
+            min-width: 200px;
+            text-align: center;
+        }
+
+        .nav-btn {
+            background: none;
+            border: 1px solid var(--border);
+            border-radius: 50%;
+            width: 32px;
+            height: 32px;
+            cursor: pointer;
+            color: var(--text-sub);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: 0.2s;
+        }
+
+        .nav-btn:hover {
+            background: #fff;
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+
+        .view-toggles {
+            background: #fff;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 4px;
+            display: flex;
+        }
+
+        .toggle-btn {
+            padding: 6px 12px;
+            border: none;
+            background: none;
+            cursor: pointer;
+            font-size: 0.85rem;
+            color: var(--text-sub);
+            border-radius: 4px;
+            transition: 0.2s;
+        }
+
+        .toggle-btn.active {
+            background: var(--bg-body);
+            color: var(--text-main);
+            font-weight: 600;
+        }
+
+        .today-btn {
+            margin-left: 10px;
+            padding: 6px 16px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.9rem;
+        }
+
+        /* The Grid */
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            grid-auto-rows: minmax(120px, 1fr);
+            gap: 1px;
+            background: var(--border);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            overflow: hidden;
+            flex-grow: 1;
+            /* Fill remaining space */
+        }
+
+        /* Week View Override */
+        .calendar-grid.week-view {
+            grid-template-rows: 1fr;
+            /* Make the single row fill the height */
+            grid-auto-rows: auto;
+        }
+
+        .day-header {
+            background: var(--bg-card);
+            padding: 10px;
+            text-align: center;
+            font-weight: 600;
+            color: var(--text-sub);
+            font-size: 0.85rem;
+            height: 40px;
+            /* Fixed height for header */
+        }
+
+        .cal-day {
+            background: var(--bg-card);
+            padding: 8px;
+            position: relative;
+            cursor: pointer;
+            transition: background 0.2s;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        /* TODAY HIGHLIGHT STYLE */
+        .cal-day.is-today {
+            background: #f0f9ff;
+            box-shadow: inset 0 0 0 2px var(--primary);
+        }
+
+        .cal-day.is-today .date-num {
+            color: var(--primary);
+            font-weight: 800;
+            font-size: 1.1em;
+        }
+
+        .cal-day:hover {
+            background: #f8fafc;
+        }
+
+        .cal-day.drag-over {
+            background: #eff6ff;
+            box-shadow: inset 0 0 0 2px var(--primary);
+        }
+
+        .cal-day.empty-slot {
+            background: #f8fafc;
+            cursor: default;
+        }
+
+        .cal-day.empty-slot:hover {
+            background: #f8fafc;
+        }
+
+        .day-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: 5px;
+        }
+
+        .date-num {
+            font-weight: 600;
+            color: var(--text-main);
+        }
+
+        .weather-icon {
+            font-size: 0.9rem;
+            color: #f59e0b;
+        }
+
+        .day-content {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .add-icon {
+            color: #cbd5e1;
+            font-size: 1.2rem;
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
+
+        .cal-day:hover .add-icon {
+            opacity: 1;
+        }
+
+        .outfit-thumb-stack {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+        }
+
+        .grid-img {
+            width: 40px;
+            height: 40px;
+            object-fit: cover;
+            border-radius: 4px;
+            border: 1px solid #eee;
+            margin-bottom: -10px;
+            z-index: 2;
+            background: white;
+        }
+
+        .grid-img:last-child {
+            margin-bottom: 0;
+            z-index: 1;
+        }
+
+        .occasion-tag {
+            font-size: 0.7rem;
+            background: #e0e7ff;
+            color: var(--primary);
+            padding: 2px 6px;
+            border-radius: 4px;
+            margin-top: 5px;
+            text-align: center;
+        }
+
+        /* ================= PANE 3: PICKER DRAWER (Right) ================= */
+        .picker-pane {
+            flex: 25;
+            /* Takes 25% */
+            background: white;
+            padding: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            border-left: 1px solid var(--border);
+            min-width: 250px;
+        }
+
+        .picker-header h3 {
+            font-size: 1.1rem;
+            margin-bottom: 1rem;
+            color: var(--text-main);
+        }
+
+        .tabs {
+            display: flex;
+            gap: 10px;
+            border-bottom: 1px solid var(--border);
+            margin-bottom: 1rem;
+        }
+
+        .tab {
+            padding: 8px 0;
+            cursor: pointer;
+            color: var(--text-sub);
+            font-size: 0.9rem;
+            position: relative;
+        }
+
+        .tab.active {
+            color: var(--primary);
+            font-weight: 600;
+        }
+
+        .tab.active::after {
+            content: '';
+            position: absolute;
+            bottom: -1px;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: var(--primary);
+        }
+
+        .search-bar {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            font-size: 0.9rem;
+        }
+
+        .picker-list {
+            flex-grow: 1;
+            overflow-y: auto;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            align-content: start;
+        }
+
+        .draggable-item {
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            overflow: hidden;
+            cursor: grab;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .draggable-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .draggable-item:active {
+            cursor: grabbing;
+        }
+
+        .draggable-item img {
+            width: 100%;
+            height: 100px;
+            object-fit: cover;
+            display: block;
+        }
+
+        .item-name {
+            padding: 6px;
+            font-size: 0.8rem;
+            color: var(--text-main);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        /* Mobile Toggle */
+        .mobile-toggle {
+            display: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            margin-right: 15px;
+            color: var(--text-main);
+        }
+
+        /* ================= MODAL ================= */
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 2rem;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 400px;
+            text-align: center;
+        }
+
+        /* ================= RESPONSIVE ================= */
+        @media (max-width: 900px) {
+            .sidebar {
+                position: fixed;
+                height: 100%;
+                transform: translateX(-100%);
+            }
+
+            .sidebar.active {
+                transform: translateX(0);
+            }
+
+            .mobile-toggle {
+                display: block;
+            }
+
+            .main-content {
+                flex-direction: column;
+            }
+
+            .picker-pane {
+                display: none;
+            }
+
+            .calendar-pane {
+                width: 100%;
+                padding: 10px;
+                flex: 1;
+            }
+
+            .calendar-grid {
+                display: flex;
+                flex-direction: column;
+                gap: 10px;
+                background: transparent;
+                border: none;
+            }
+
+            .calendar-grid.week-view {
+                display: flex;
+                flex-direction: column;
+            }
+
+            .day-header {
+                display: none;
+            }
+
+            .cal-day {
+                flex-direction: row;
+                align-items: center;
+                border: 1px solid var(--border);
+                border-radius: 12px;
+                height: 80px;
+                padding: 15px;
+            }
+
+            .day-top {
+                margin-bottom: 0;
+                margin-right: 20px;
+                flex-direction: column;
+                align-items: center;
+                min-width: 50px;
+            }
+
+            .day-content {
+                align-items: flex-start;
+            }
+
+            .outfit-thumb-stack {
+                flex-direction: row;
+                width: auto;
+            }
+
+            .grid-img {
+                margin-bottom: 0;
+                margin-right: -10px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <aside class="sidebar" id="sidebar">
+        <div class="brand">
+            <i class="fa-solid fa-layer-group"></i> StyleStash
+        </div>
+
+        <ul class="nav-links">
+            <li class="nav-item">
+                <a href="dashboard.html" class="nav-link" onclick="setActive(this)">
+                    <i class="fa-solid fa-table-columns"></i> Dashboard
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="my-wardrobe.html" class="nav-link" onclick="setActive(this)">
+                    <i class="fa-solid fa-shirt"></i> My Wardrobe
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="/mix-match.html" class="nav-link" onclick="setActive(this)">
+                    <i class="fa-solid fa-shuffle"></i> Mix & Match
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="/laundary-room.html" class="nav-link" onclick="setActive(this)">
+                    <i class="fa-solid fa-jug-detergent"></i> Laundry Room
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="calendar.html" class="nav-link active" onclick="setActive(this)">
+                    <i class="fa-regular fa-calendar"></i> Calendar
+                </a>
+            </li>
+        </ul>
+
+        <div class="sidebar-footer">
+            <a href="#" class="nav-link" onclick="setActive(this)">
+                <i class="fa-solid fa-gear"></i> Settings
+            </a>
+            <a href="#" class="nav-link logout-btn">
+                <i class="fa-solid fa-arrow-right-from-bracket"></i> Logout
+            </a>
+        </div>
+    </aside>
+
+    <main class="main-content">
+
+        <section class="calendar-pane">
+            <div class="cal-header">
+                <div style="display:flex; align-items:center;">
+                    <div class="mobile-toggle" onclick="toggleSidebar()"><i class="fa-solid fa-bars"></i></div>
+                    <div class="month-selector">
+                        <button class="nav-btn" onclick="changeMonth(-1)"><i
+                                class="fa-solid fa-chevron-left"></i></button>
+                        <span class="month-title" id="monthDisplay">January 2026</span>
+                        <button class="nav-btn" onclick="changeMonth(1)"><i
+                                class="fa-solid fa-chevron-right"></i></button>
+                    </div>
+                </div>
+
+                <div style="display:flex; align-items:center;">
+                    <div class="view-toggles">
+                        <button class="toggle-btn active" id="btnMonth" onclick="setView('month')">Month</button>
+                        <button class="toggle-btn" id="btnWeek" onclick="setView('week')">Week</button>
+                    </div>
+                    <button class="today-btn" onclick="goToToday()">Today</button>
+                </div>
+            </div>
+
+            <div class="calendar-grid" id="calendarGrid">
+            </div>
+        </section>
+
+        <aside class="picker-pane">
+            <div class="picker-header">
+                <h3>Quick Picker</h3>
+            </div>
+            <div class="tabs">
+                <div class="tab active">Outfits</div>
+                <div class="tab">Items</div>
+            </div>
+            <input type="text" class="search-bar" placeholder="Search clothes...">
+
+            <div class="picker-list">
+                <div class="draggable-item" draggable="true"
+                    data-img="https://images.unsplash.com/photo-1596755094514-f87e34085b2c?auto=format&fit=crop&w=200&q=80">
+                    <img
+                        src="https://images.unsplash.com/photo-1596755094514-f87e34085b2c?auto=format&fit=crop&w=200&q=80">
+                    <div class="item-name">Blue Denim Shirt</div>
+                </div>
+
+                <div class="draggable-item" draggable="true"
+                    data-img="https://images.unsplash.com/photo-1542272617-08f086303b96?auto=format&fit=crop&w=200&q=80">
+                    <img
+                        src="https://images.unsplash.com/photo-1542272617-08f086303b96?auto=format&fit=crop&w=200&q=80">
+                    <div class="item-name">Casual Jeans</div>
+                </div>
+
+                <div class="draggable-item" draggable="true"
+                    data-img="https://images.unsplash.com/photo-1591561954557-26941169b49e?auto=format&fit=crop&w=200&q=80">
+                    <img
+                        src="https://images.unsplash.com/photo-1591561954557-26941169b49e?auto=format&fit=crop&w=200&q=80">
+                    <div class="item-name">Beige Coat</div>
+                </div>
+
+                <div class="draggable-item" draggable="true"
+                    data-img="https://images.unsplash.com/photo-1549298916-b41d501d3772?auto=format&fit=crop&w=200&q=80">
+                    <img
+                        src="https://images.unsplash.com/photo-1549298916-b41d501d3772?auto=format&fit=crop&w=200&q=80">
+                    <div class="item-name">Running Shoes</div>
+                </div>
+            </div>
+        </aside>
+
+    </main>
+
+    <div class="modal" id="dayModal">
+        <div class="modal-content">
+            <h2 id="modalDate">Date</h2>
+            <p style="color:var(--text-sub); margin-bottom:20px;">No outfit planned yet.</p>
+            <button class="today-btn" onclick="closeModal()">Close</button>
+        </div>
+    </div>
+
+    <script>
+        // --- 1. Sidebar Logic ---
+        function setActive(clickedLink) {
+            const allLinks = document.querySelectorAll('.nav-link');
+            allLinks.forEach(link => link.classList.remove('active'));
+            clickedLink.classList.add('active');
+        }
+
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('active');
+        }
+
+        // Close sidebar when clicking outside on mobile
+        document.addEventListener('click', function (event) {
+            const sidebar = document.getElementById('sidebar');
+            const toggle = document.querySelector('.mobile-toggle');
+            if (sidebar.classList.contains('active') && !sidebar.contains(event.target) && !toggle.contains(event.target)) {
+                sidebar.classList.remove('active');
+            }
+        });
+
+        // --- 2. Calendar Logic ---
+        let currentDate = new Date();
+        let viewMode = 'month';
+        const today = new Date();
+
+        document.addEventListener('DOMContentLoaded', () => {
+            renderCalendar();
+        });
+
+        function renderCalendar() {
+            const grid = document.getElementById('calendarGrid');
+            const monthDisplay = document.getElementById('monthDisplay');
+            grid.innerHTML = '';
+
+            const options = { month: 'long', year: 'numeric' };
+            monthDisplay.innerText = currentDate.toLocaleDateString('en-US', options);
+
+            // Desktop Headers
+            const days = ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'];
+            if (window.innerWidth > 900) {
+                days.forEach(day => {
+                    const d = document.createElement('div');
+                    d.className = 'day-header';
+                    d.innerText = day;
+                    grid.appendChild(d);
+                });
+            }
+
+            if (viewMode === 'month') {
+                grid.classList.remove('week-view');
+                renderMonthView(grid);
+            } else {
+                grid.classList.add('week-view');
+                renderWeekView(grid);
+            }
+        }
+
+        function renderMonthView(grid) {
+            const year = currentDate.getFullYear();
+            const month = currentDate.getMonth();
+            const firstDayIndex = new Date(year, month, 1).getDay();
+            const lastDay = new Date(year, month + 1, 0).getDate();
+
+            for (let i = 0; i < firstDayIndex; i++) {
+                const empty = document.createElement('div');
+                empty.className = 'cal-day empty-slot';
+                grid.appendChild(empty);
+            }
+
+            for (let i = 1; i <= lastDay; i++) {
+                createDayElement(grid, i, year, month);
+            }
+        }
+
+        function renderWeekView(grid) {
+            const currentDay = currentDate.getDay();
+            const diff = currentDate.getDate() - currentDay;
+
+            for (let i = 0; i < 7; i++) {
+                const weekDate = new Date(currentDate);
+                weekDate.setDate(diff + i);
+                createDayElement(grid, weekDate.getDate(), weekDate.getFullYear(), weekDate.getMonth());
+            }
+        }
+
+        function createDayElement(grid, dayNum, year, month) {
+            const dayDiv = document.createElement('div');
+            dayDiv.className = 'cal-day';
+
+            if (dayNum === today.getDate() && month === today.getMonth() && year === today.getFullYear()) {
+                dayDiv.classList.add('is-today');
+            }
+
+            // Fake Weather
+            const weatherIcons = [
+                '<i class="fa-solid fa-sun" style="color:#f59e0b"></i>',
+                '<i class="fa-solid fa-cloud" style="color:#94a3b8"></i>',
+                '<i class="fa-solid fa-cloud-rain" style="color:#3b82f6"></i>'
+            ];
+            const randWeather = weatherIcons[dayNum % 3];
+            const temp = 18 + (dayNum % 5);
+
+            dayDiv.innerHTML = `
+                <div class="day-top">
+                    <div class="weather-icon" title="${temp}°C">${randWeather}</div>
+                    <div class="date-num">${dayNum}</div>
+                </div>
+                <div class="day-content">
+                    <div class="add-icon"><i class="fa-solid fa-plus"></i></div>
+                </div>
+            `;
+
+            attachDayEvents(dayDiv, dayNum, year, month);
+            grid.appendChild(dayDiv);
+        }
+
+        function attachDayEvents(dayDiv, date, year, month) {
+            dayDiv.addEventListener('click', (e) => {
+                if (!dayDiv.classList.contains('drag-over')) {
+                    const fullDate = new Date(year, month, date);
+                    document.getElementById('modalDate').innerText = fullDate.toDateString();
+                    document.getElementById('dayModal').style.display = 'flex';
+                }
+            });
+
+            dayDiv.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                dayDiv.classList.add('drag-over');
+            });
+            dayDiv.addEventListener('dragleave', () => {
+                dayDiv.classList.remove('drag-over');
+            });
+            dayDiv.addEventListener('drop', (e) => {
+                e.preventDefault();
+                dayDiv.classList.remove('drag-over');
+                const imgSrc = e.dataTransfer.getData('text/plain');
+                if (imgSrc) {
+                    dayDiv.querySelector('.day-content').innerHTML = `
+                        <div class="outfit-thumb-stack">
+                            <img src="${imgSrc}" class="grid-img">
+                        </div>
+                        <div class="occasion-tag">Planned</div>
+                    `;
+                }
+            });
+        }
+
+        function changeMonth(step) {
+            if (viewMode === 'month') {
+                currentDate.setMonth(currentDate.getMonth() + step);
+            } else {
+                currentDate.setDate(currentDate.getDate() + (step * 7));
+            }
+            renderCalendar();
+        }
+
+        function goToToday() {
+            currentDate = new Date();
+            renderCalendar();
+        }
+
+        function setView(mode) {
+            viewMode = mode;
+            document.getElementById('btnMonth').classList.toggle('active', mode === 'month');
+            document.getElementById('btnWeek').classList.toggle('active', mode === 'week');
+            renderCalendar();
+        }
+
+        // --- 3. Drag Logic ---
+        document.querySelectorAll('.draggable-item').forEach(item => {
+            item.addEventListener('dragstart', (e) => {
+                e.dataTransfer.setData('text/plain', item.getAttribute('data-img'));
+            });
+        });
+
+        // --- 4. Modal ---
+        function closeModal() { document.getElementById('dayModal').style.display = 'none'; }
+        window.onclick = function (e) { if (e.target == document.getElementById('dayModal')) closeModal(); }
+    </script>
+</body>
+
+</html>
