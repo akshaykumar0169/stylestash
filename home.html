@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>StyleStash - Your Digital Closet</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Playfair+Display:wght@700&display=swap"
+        rel="stylesheet">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="styles.css">
+
+    <style>
+        /* --- CSS VARIABLES & RESET --- */
+        :root {
+            --primary-color: #2563EB;
+            /* Solid Blue */
+            --primary-dark: #1e40af;
+            --secondary-gradient: linear-gradient(135deg, #2563EB 0%, #7C3AED 100%);
+            /* Blue to Purple */
+            --text-dark: #1f2937;
+            --text-light: #6b7280;
+            --bg-light: #f9fafb;
+            --bg-grey: #f3f4f6;
+            --white: #ffffff;
+            --font-serif: 'Playfair Display', serif;
+            --font-sans: 'Inter', sans-serif;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: var(--font-sans);
+            color: var(--text-dark);
+            line-height: 1.6;
+        }
+
+        a {
+            text-decoration: none;
+            color: inherit;
+            transition: 0.3s;
+        }
+
+        ul {
+            list-style: none;
+        }
+
+        /* --- 1. NAVIGATION BAR --- */
+        .navbar {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: var(--white);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 5%;
+            z-index: 1000;
+        }
+
+        .logo {
+            font-family: var(--font-serif);
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--text-dark);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+        }
+
+        .nav-links a {
+            font-weight: 500;
+            color: var(--text-dark);
+        }
+
+        .nav-links a:hover {
+            color: var(--primary-color);
+        }
+
+        .nav-actions {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+        }
+
+        .btn-login {
+            font-weight: 600;
+        }
+
+        .btn-primary {
+            background-color: var(--primary-color);
+            color: var(--white);
+            padding: 0.6rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 600;
+            display: inline-block;
+        }
+
+        .btn-primary:hover {
+            background-color: var(--primary-dark);
+        }
+
+        /* --- 2. HERO SECTION --- */
+        .hero {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            min-height: 100vh;
+            padding: 6rem 5% 2rem;
+            /* Top padding accounts for fixed nav */
+            background-color: var(--bg-light);
+        }
+
+        .hero-text {
+            flex: 1;
+            padding-right: 2rem;
+        }
+
+        .hero-text h1 {
+            font-size: 3.5rem;
+            line-height: 1.2;
+            margin-bottom: 1.5rem;
+            color: var(--text-dark);
+        }
+
+        .hero-text p {
+            font-size: 1.2rem;
+            color: var(--text-light);
+            margin-bottom: 2rem;
+            max-width: 500px;
+        }
+
+        .social-proof {
+            margin-top: 1rem;
+            font-size: 0.9rem;
+            color: var(--text-light);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .hero-visual {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+        }
+
+        .hero-visual img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        }
+
+        /* --- 3. PAIN POINTS --- */
+        .pain-points {
+            background-color: var(--bg-grey);
+            padding: 2rem 5%;
+            display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap;
+            gap: 1rem;
+            text-align: center;
+        }
+
+        .pain-point-item {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--text-light);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .pain-point-item i {
+            color: var(--primary-color);
+        }
+
+        /* --- 4. HOW IT WORKS (ZIG ZAG) --- */
+        .how-it-works {
+            padding: 5rem 5%;
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 4rem;
+        }
+
+        .step-row {
+            display: flex;
+            align-items: center;
+            gap: 4rem;
+            margin-bottom: 4rem;
+        }
+
+        /* Every even row reverses direction */
+        .step-row:nth-child(even) {
+            flex-direction: row-reverse;
+        }
+
+        .step-text {
+            flex: 1;
+        }
+
+        .step-text h3 {
+            font-size: 1.8rem;
+            margin-bottom: 1rem;
+            color: var(--text-dark);
+        }
+
+        .step-text p {
+            font-size: 1.1rem;
+            color: var(--text-light);
+        }
+
+        .step-visual {
+            flex: 1;
+        }
+
+        .step-visual img {
+            width: 100%;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+        }
+
+        /* --- 5. SMART FEATURES --- */
+        .features {
+            background-color: var(--bg-light);
+            padding: 5rem 5%;
+            text-align: center;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .feature-card {
+            background: var(--white);
+            padding: 2.5rem;
+            border-radius: 12px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s ease;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .feature-icon {
+            font-size: 2.5rem;
+            color: var(--primary-color);
+            margin-bottom: 1.5rem;
+        }
+
+        .feature-card h3 {
+            margin-bottom: 1rem;
+        }
+
+        /* --- 6. PRE-FOOTER CTA --- */
+        .cta-section {
+            background: var(--secondary-gradient);
+            padding: 5rem 5%;
+            text-align: center;
+            color: var(--white);
+        }
+
+        .cta-section h2 {
+            font-size: 2.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .btn-white {
+            background-color: var(--white);
+            color: var(--text-dark);
+            padding: 1rem 2.5rem;
+            border-radius: 8px;
+            font-weight: 700;
+            font-size: 1.1rem;
+        }
+
+        .btn-white:hover {
+            background-color: #f0f0f0;
+        }
+
+        /* --- 7. FOOTER --- */
+        .footer {
+            background-color: #111827;
+            color: #d1d5db;
+            padding: 4rem 5% 1rem;
+        }
+
+        .footer-grid {
+            display: grid;
+            grid-template-columns: 1.5fr 1fr 1fr 1fr;
+            gap: 3rem;
+            margin-bottom: 3rem;
+        }
+
+        .footer-logo h3 {
+            font-family: var(--font-serif);
+            font-size: 1.5rem;
+            color: var(--white);
+            margin-bottom: 1rem;
+        }
+
+        .footer-col h4 {
+            color: var(--white);
+            margin-bottom: 1.2rem;
+            font-size: 1.1rem;
+        }
+
+        .footer-col ul li {
+            margin-bottom: 0.8rem;
+        }
+
+        .footer-col ul li a:hover {
+            color: var(--white);
+        }
+
+        .social-icons a {
+            font-size: 1.2rem;
+            margin-right: 1rem;
+        }
+
+        .footer-bottom {
+            border-top: 1px solid #374151;
+            padding-top: 1.5rem;
+            text-align: center;
+            font-size: 0.9rem;
+        }
+
+        /* --- RESPONSIVE --- */
+        @media (max-width: 768px) {
+            .navbar {
+                padding: 1rem;
+            }
+
+            .nav-links {
+                display: none;
+            }
+
+            /* Hide links on mobile for simplicity */
+
+            .hero {
+                flex-direction: column;
+                text-align: center;
+                padding-top: 8rem;
+            }
+
+            .hero-text {
+                padding-right: 0;
+                margin-bottom: 3rem;
+            }
+
+            .hero-text p {
+                margin: 0 auto 2rem;
+            }
+
+            .social-proof {
+                justify-content: center;
+            }
+
+            .pain-points {
+                flex-direction: column;
+                gap: 1.5rem;
+            }
+
+            .step-row,
+            .step-row:nth-child(even) {
+                flex-direction: column;
+                gap: 2rem;
+            }
+
+            .footer-grid {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <nav class="navbar">
+        <div class="logo">StyleStash</div>
+        <ul class="nav-links">
+            <li><a href="#how-it-works">How it Works</a></li>
+            <li><a href="#features">Features</a></li>
+            <li><a href="#about">About Us</a></li>
+        </ul>
+        <div class="nav-actions">
+            <a href="/login.html" class="btn-login">Login</a>
+            <a href="/signup.html" class="btn-primary">Get Started</a>
+        </div>
+    </nav>
+
+    <header class="hero">
+        <div class="hero-text">
+            <h1>Your Dream Closet, <br> Now Digital.</h1>
+            <p>Organize your clothes, get AI-powered outfit suggestions based on the weather, and never say "I have
+                nothing to wear" again.</p>
+            <a href="/signup" class="btn-primary" style="padding: 1rem 2rem; font-size: 1.1rem;">
+                Start My Wardrobe <i class="fa-solid fa-arrow-right" style="margin-left: 8px;"></i>
+            </a>
+            <div class="social-proof">
+                <i class="fa-solid fa-users"></i>
+                <span>Join 1,000+ stylish users.</span>
+            </div>
+        </div>
+        <div class="hero-visual">
+            <img src="/photo/original-39d85a4f0ac9fcfcf2cde52c4cf3d424.webp" alt="StyleStash App Interface" width="800"
+                height="1000">
+        </div>
+    </header>
+
+    <section class="pain-points">
+        <div class="pain-point-item">
+            <i class="fa-solid fa-circle-question"></i> Closet overflowing?
+        </div>
+        <div class="pain-point-item">
+            <i class="fa-solid fa-bolt"></i> Tired of decision fatigue?
+        </div>
+        <div class="pain-point-item">
+            <i class="fa-solid fa-shirt"></i> Always wearing the same 5 shirts?
+        </div>
+    </section>
+
+    <section id="how-it-works" class="how-it-works">
+        <h2 class="section-title">Streamline Your Morning Routine in 3 Steps</h2>
+
+        <div class="step-row">
+            <div class="step-visual">
+                <img src="/photo/gettyimages-1215798706-612x612.jpg" alt="Taking photo of shirt">
+            </div>
+            <div class="step-text">
+                <h3>Step 1: Snap & Upload</h3>
+                <p>Add items to your digital inventory in seconds. Tag them by season and occasion so you always know
+                    what you have.</p>
+            </div>
+        </div>
+
+        <div class="step-row">
+            <div class="step-visual">
+                <img src="/photo/original-eaac4071946a3bd1268e9b5f89dc95d6.webp"
+                    alt="Weather widget pointing to jacket">
+            </div>
+            <div class="step-text">
+                <h3>Step 2: Get Smart Suggestions</h3>
+                <p>Our weather-aware engine picks the perfect outfit for the forecast outside. Rain or shine, you’ll
+                    look your best.</p>
+            </div>
+        </div>
+
+        <div class="step-row">
+            <div class="step-visual">
+                <img src="/photo/Screenshot 2026-01-16 124456.png" alt="Mix and match tool">
+            </div>
+            <div class="step-text">
+                <h3>Step 3: Mix, Match & Plan</h3>
+                <p>Shuffle your wardrobe to find hidden gems and plan your week ahead. Visualize outfits before you put
+                    them on.</p>
+            </div>
+        </div>
+    </section>
+
+    <section id="features" class="features">
+        <h2 class="section-title">More Than Just a Photo Album</h2>
+        <div class="features-grid">
+            <div class="feature-card">
+                <div class="feature-icon"><i class="fa-solid fa-cloud-sun"></i></div>
+                <h3>Weather Sync</h3>
+                <p>Live integration with OpenWeatherMap ensures you never freeze or overheat.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon"><i class="fa-solid fa-soap"></i></div>
+                <h3>Laundry Tracker</h3>
+                <p>Keep track of what's clean and what's in the hamper easily.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon"><i class="fa-solid fa-suitcase-rolling"></i></div>
+                <h3>Packing Mode</h3>
+                <p>Create a collection for your next trip and ensure you don't forget essentials.</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="cta-section">
+        <h2>Ready to upgrade your style?</h2>
+        <button class="btn-white">Create Free Account</button>
+    </section>
+
+    <footer class="footer">
+        <div class="footer-grid">
+            <div class="footer-logo">
+                <h3>StyleStash</h3>
+                <p>Made with <span style="color: #ef4444;">&hearts;</span> for fashion lovers.</p>
+            </div>
+            <div class="footer-col">
+                <h4>Product</h4>
+                <ul>
+                    <li><a href="#">Pricing</a></li>
+                    <li><a href="#">Features</a></li>
+                    <li><a href="#">Roadmap</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>Company</h4>
+                <ul>
+                    <li><a href="#">About</a></li>
+                    <li><a href="#">Careers</a></li>
+                    <li><a href="#">Contact</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>Follow Us</h4>
+                <div class="social-icons">
+                    <a href="#"><i class="fa-brands fa-instagram"></i></a>
+                    <a href="#"><i class="fa-brands fa-twitter"></i></a>
+                    <a href="#"><i class="fa-brands fa-pinterest"></i></a>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>Copyright &copy; 2024 StyleStash. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+    </script>
+
+</body>
+
+</html>
