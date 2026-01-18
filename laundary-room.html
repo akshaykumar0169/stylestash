@@ -1,0 +1,685 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Laundry Room - StyleStash</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Poppins:wght@300;400;500;600&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+    <style>
+        :root {
+            --primary: #2563eb;
+            --accent-green: #10b981;
+            /* For Clean status */
+            --accent-red: #ef4444;
+            /* For Dirty/Full status */
+            --bg-body: #f1f5f9;
+            --bg-card: #ffffff;
+            --text-main: #1e293b;
+            --text-sub: #64748b;
+            --border: #e2e8f0;
+
+            /* Sidebar Variables */
+            --sidebar-bg: #0f172a;
+            --sidebar-text: #94a3b8;
+            --sidebar-active: #ffffff;
+            --accent-blue: #3b82f6;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-body);
+            display: flex;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        /* ================= SIDEBAR ================= */
+        .sidebar {
+            width: 260px;
+            background-color: var(--sidebar-bg);
+            color: var(--sidebar-text);
+            display: flex;
+            flex-direction: column;
+            padding: 2rem;
+            flex-shrink: 0;
+            z-index: 100;
+            transition: transform 0.3s ease;
+        }
+
+        .brand {
+            font-family: 'Poppins';
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #fff;
+            margin-bottom: 2.5rem;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .nav-links {
+            list-style: none;
+            flex-grow: 1;
+        }
+
+        .nav-item {
+            margin-bottom: 0.5rem;
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            padding: 12px 16px;
+            color: var(--sidebar-text);
+            text-decoration: none;
+            border-radius: 8px;
+            transition: all 0.2s;
+            font-family: 'Poppins';
+            font-size: 0.95rem;
+            cursor: pointer;
+            justify-content: space-between;
+            /* To push badge to right */
+        }
+
+        .nav-link div {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .nav-link:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+            color: #fff;
+        }
+
+        .nav-link.active {
+            background-color: var(--accent-blue) !important;
+            color: #ffffff !important;
+            font-weight: 500;
+            box-shadow: 0 4px 6px -1px rgba(59, 130, 246, 0.5);
+        }
+
+        /* Badge in Sidebar */
+        .nav-badge {
+            background: var(--accent-red);
+            color: white;
+            font-size: 0.75rem;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-weight: 600;
+        }
+
+        .sidebar-footer {
+            margin-top: auto;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            padding-top: 1rem;
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .logout-btn {
+            color: var(--accent-red);
+        }
+
+        /* ================= MAIN CONTENT ================= */
+        .main-content {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            overflow-y: auto;
+            position: relative;
+        }
+
+        /* --- Header --- */
+        .laundry-header {
+            background: white;
+            padding: 1.5rem 2rem;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        .header-left h1 {
+            font-family: 'Poppins';
+            font-size: 1.5rem;
+            color: var(--text-main);
+        }
+
+        .header-left p {
+            color: var(--accent-red);
+            font-size: 0.9rem;
+            font-weight: 500;
+            margin-top: 4px;
+        }
+
+        /* Capacity Bar */
+        .capacity-container {
+            flex: 1;
+            max-width: 400px;
+            margin: 0 2rem;
+        }
+
+        .capacity-label {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.85rem;
+            color: var(--text-sub);
+            margin-bottom: 6px;
+        }
+
+        .progress-bg {
+            width: 100%;
+            height: 8px;
+            background: #e2e8f0;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: var(--accent-green);
+            width: 92%;
+            border-radius: 4px;
+            transition: width 0.5s ease;
+        }
+
+        /* Wash All Button */
+        .wash-all-btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 50px;
+            font-weight: 600;
+            font-family: 'Poppins';
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(37, 99, 235, 0.3);
+            transition: transform 0.2s;
+        }
+
+        .wash-all-btn:hover {
+            transform: scale(1.02);
+            background: #1d4ed8;
+        }
+
+        /* --- Tabs --- */
+        .filter-tabs {
+            padding: 1rem 2rem;
+            display: flex;
+            gap: 1rem;
+            overflow-x: auto;
+        }
+
+        .tab-btn {
+            background: white;
+            border: 1px solid var(--border);
+            padding: 8px 16px;
+            border-radius: 20px;
+            cursor: pointer;
+            color: var(--text-sub);
+            font-size: 0.9rem;
+            transition: all 0.2s;
+            white-space: nowrap;
+        }
+
+        .tab-btn.active {
+            background: var(--text-main);
+            color: white;
+            border-color: var(--text-main);
+        }
+
+        /* --- Hamper Grid --- */
+        .hamper-grid {
+            padding: 0 2rem 2rem 2rem;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 20px;
+        }
+
+        .laundry-card {
+            background: white;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+            transition: transform 0.2s;
+            position: relative;
+            border: 1px solid var(--border);
+        }
+
+        /* The Image Area */
+        .card-image-box {
+            height: 250px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            /* Desaturated Look */
+            filter: grayscale(100%);
+            transition: filter 0.3s ease;
+        }
+
+        /* Hover Effect: Restore Color */
+        .laundry-card:hover .card-img {
+            filter: grayscale(0%);
+        }
+
+        /* Dirty Overlay/Stamp */
+        .dirty-overlay {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: rgba(0, 0, 0, 0.6);
+            color: white;
+            font-size: 0.7rem;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-weight: 700;
+            letter-spacing: 1px;
+        }
+
+        .card-info {
+            padding: 12px;
+            text-align: center;
+        }
+
+        .card-name {
+            font-weight: 600;
+            color: var(--text-main);
+            font-size: 0.95rem;
+        }
+
+        /* Mark Clean Button (Bottom Half) */
+        .mark-clean-btn {
+            width: 100%;
+            padding: 12px;
+            background: #f1f5f9;
+            border: none;
+            border-top: 1px solid var(--border);
+            color: var(--primary);
+            font-weight: 600;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .mark-clean-btn:hover {
+            background: var(--primary);
+            color: white;
+        }
+
+        .mobile-toggle {
+            display: none;
+            font-size: 1.5rem;
+            margin-right: 15px;
+            cursor: pointer;
+        }
+
+        /* ================= MOBILE RESPONSIVE ================= */
+        @media (max-width: 900px) {
+            .sidebar {
+                position: fixed;
+                height: 100%;
+                transform: translateX(-100%);
+            }
+
+            .sidebar.active {
+                transform: translateX(0);
+            }
+
+            .mobile-toggle {
+                display: block;
+            }
+
+            .laundry-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 15px;
+                padding: 1rem;
+            }
+
+            .capacity-container {
+                width: 100%;
+                margin: 0;
+                max-width: none;
+            }
+
+            .wash-all-btn {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .header-top-row {
+                display: flex;
+                align-items: center;
+                width: 100%;
+            }
+
+            /* Grid becomes List */
+            .hamper-grid {
+                display: flex;
+                flex-direction: column;
+                gap: 10px;
+                padding: 1rem;
+            }
+
+            .laundry-card {
+                display: flex;
+                flex-direction: row;
+                height: 100px;
+                overflow: hidden;
+                /* Hide swipe overflow */
+            }
+
+            .card-image-box {
+                width: 100px;
+                height: 100%;
+                flex-shrink: 0;
+            }
+
+            .card-info {
+                flex-grow: 1;
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                text-align: left;
+                padding: 0 15px;
+            }
+
+            .mark-clean-btn {
+                display: none;
+            }
+
+            /* Hide button, use swipe */
+
+            /* Swipe Hint */
+            .swipe-hint {
+                display: flex;
+                align-items: center;
+                color: var(--accent-green);
+                font-size: 0.8rem;
+                opacity: 0.6;
+            }
+
+            /* Swipe Animation Class */
+            .swiped-right {
+                transform: translateX(100%);
+                opacity: 0;
+                transition: all 0.3s ease;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <aside class="sidebar" id="sidebar">
+        <div class="brand"><i class="fa-solid fa-layer-group"></i> StyleStash</div>
+        <ul class="nav-links">
+            <li class="nav-item">
+                <a href="/dashboard.html" class="nav-link" onclick="setActive(this)">
+                    <div><i class="fa-solid fa-table-columns"></i> Dashboard</div>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="/wardrobe.html" class="nav-link" onclick="setActive(this)">
+                    <div><i class="fa-solid fa-shirt"></i> My Wardrobe</div>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="/mix-match.html" class="nav-link" onclick="setActive(this)">
+                    <div><i class="fa-solid fa-shuffle"></i> Mix & Match</div>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="/laundary-room.html" class="nav-link active" onclick="setActive(this)">
+                    <div><i class="fa-solid fa-jug-detergent"></i> Laundry Room</div>
+                    <span class="nav-badge" id="sidebarBadge">4</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="/calendar.html" class="nav-link" onclick="setActive(this)">
+                    <div><i class="fa-regular fa-calendar"></i> Calendar</div>
+                </a>
+            </li>
+
+        </ul>
+        <div class="sidebar-footer">
+            <a href="#" class="nav-link" onclick="setActive(this)">
+                <div><i class="fa-solid fa-gear"></i> Settings</div>
+            </a>
+            <a href="#" class="nav-link logout-btn">
+                <div><i class="fa-solid fa-arrow-right-from-bracket"></i> Logout</div>
+            </a>
+        </div>
+    </aside>
+
+    <main class="main-content">
+
+        <div class="laundry-header">
+            <div class="header-top-row">
+                <div class="mobile-toggle" onclick="toggleSidebar()"><i class="fa-solid fa-bars"></i></div>
+                <div class="header-left">
+                    <h1>Laundry Room</h1>
+                    <p id="unavailableText">4 items unavailable</p>
+                </div>
+            </div>
+
+            <div class="capacity-container">
+                <div class="capacity-label">
+                    <span>Wardrobe Cleanliness</span>
+                    <span id="capacityPercent">92% Clean</span>
+                </div>
+                <div class="progress-bg">
+                    <div class="progress-fill" style="width: 92%;"></div>
+                </div>
+            </div>
+
+            <button class="wash-all-btn" onclick="washAll()">
+                <i class="fa-solid fa-soap"></i> Wash All
+            </button>
+        </div>
+
+        <div class="filter-tabs">
+            <button class="tab-btn active" onclick="filterItems('all', this)">All Items</button>
+            <button class="tab-btn" onclick="filterItems('whites', this)">Whites</button>
+            <button class="tab-btn" onclick="filterItems('colors', this)">Colors</button>
+            <button class="tab-btn" onclick="filterItems('dryclean', this)">Dry Clean</button>
+        </div>
+
+        <div class="hamper-grid" id="hamperGrid">
+
+            <div class="laundry-card" data-category="whites">
+                <div class="card-image-box">
+                    <img src="https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?auto=format&fit=crop&w=400&q=80"
+                        class="card-img">
+                    <div class="dirty-overlay">DIRTY</div>
+                </div>
+                <div class="card-info">
+                    <div class="card-name">White Linen Shirt</div>
+                    <div class="swipe-hint mobile-only"><i class="fa-solid fa-angles-right"></i> Swipe to Clean</div>
+                </div>
+                <button class="mark-clean-btn" onclick="cleanItem(this)">MARK CLEAN</button>
+            </div>
+
+            <div class="laundry-card" data-category="colors">
+                <div class="card-image-box">
+                    <img src="https://images.unsplash.com/photo-1542272617-08f086303b96?auto=format&fit=crop&w=400&q=80"
+                        class="card-img">
+                    <div class="dirty-overlay">WASH</div>
+                </div>
+                <div class="card-info">
+                    <div class="card-name">Vintage Levis</div>
+                    <div class="swipe-hint mobile-only"><i class="fa-solid fa-angles-right"></i> Swipe to Clean</div>
+                </div>
+                <button class="mark-clean-btn" onclick="cleanItem(this)">MARK CLEAN</button>
+            </div>
+
+            <div class="laundry-card" data-category="dryclean">
+                <div class="card-image-box">
+                    <img src="https://images.unsplash.com/photo-1551028919-ac6635f00370?auto=format&fit=crop&w=400&q=80"
+                        class="card-img">
+                    <div class="dirty-overlay">DRY CLEAN</div>
+                </div>
+                <div class="card-info">
+                    <div class="card-name">Leather Biker Jacket</div>
+                    <div class="swipe-hint mobile-only"><i class="fa-solid fa-angles-right"></i> Swipe to Clean</div>
+                </div>
+                <button class="mark-clean-btn" onclick="cleanItem(this)">MARK CLEAN</button>
+            </div>
+
+            <div class="laundry-card" data-category="colors">
+                <div class="card-image-box">
+                    <img src="https://images.unsplash.com/photo-1595777457583-95e059d581b8?auto=format&fit=crop&w=400&q=80"
+                        class="card-img">
+                    <div class="dirty-overlay">DIRTY</div>
+                </div>
+                <div class="card-info">
+                    <div class="card-name">Summer Red Dress</div>
+                    <div class="swipe-hint mobile-only"><i class="fa-solid fa-angles-right"></i> Swipe to Clean</div>
+                </div>
+                <button class="mark-clean-btn" onclick="cleanItem(this)">MARK CLEAN</button>
+            </div>
+
+        </div>
+
+    </main>
+
+    <script>
+        // --- 1. Sidebar Logic ---
+        function setActive(clickedLink) {
+            document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+            clickedLink.classList.add('active');
+        }
+        function toggleSidebar() { document.getElementById('sidebar').classList.toggle('active'); }
+
+        // --- 2. Clean Logic ---
+        function cleanItem(btn) {
+            const card = btn.closest('.laundry-card');
+            animateAndRemove(card);
+        }
+
+        function washAll() {
+            const allCards = document.querySelectorAll('.laundry-card');
+            allCards.forEach((card, index) => {
+                setTimeout(() => {
+                    animateAndRemove(card);
+                }, index * 100); // Staggered removal
+            });
+        }
+
+        function animateAndRemove(card) {
+            // Visual feedback
+            card.style.transform = 'scale(0.9)';
+            card.style.opacity = '0';
+
+            setTimeout(() => {
+                card.remove();
+                updateStats();
+            }, 300);
+        }
+
+        // --- 3. Stats Update Logic ---
+        function updateStats() {
+            const count = document.querySelectorAll('.laundry-card').length;
+
+            // Update Text
+            document.getElementById('unavailableText').innerText = count === 0 ? "All clean!" : `${count} items unavailable`;
+            document.getElementById('sidebarBadge').innerText = count;
+
+            // Update Bar (Fake Math)
+            const totalCapacity = 50; // Arbitrary total wardrobe size
+            const percentage = Math.floor(((totalCapacity - count) / totalCapacity) * 100);
+
+            document.getElementById('capacityPercent').innerText = `${percentage}% Clean`;
+            document.querySelector('.progress-fill').style.width = `${percentage}%`;
+
+            // If empty, change bar color
+            if (count === 0) {
+                document.querySelector('.progress-fill').style.backgroundColor = '#10b981'; // Green
+            }
+        }
+
+        // --- 4. Filtering Tabs ---
+        function filterItems(category, btn) {
+            // Update buttons
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+
+            const cards = document.querySelectorAll('.laundry-card');
+            cards.forEach(card => {
+                if (category === 'all' || card.getAttribute('data-category') === category) {
+                    card.style.display = 'block';
+                    if (window.innerWidth <= 900) card.style.display = 'flex'; // Fix for mobile flex layout
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        }
+
+        // --- 5. Mobile Swipe Logic ---
+        const cards = document.querySelectorAll('.laundry-card');
+
+        cards.forEach(card => {
+            let startX = 0;
+            let currentX = 0;
+
+            card.addEventListener('touchstart', (e) => {
+                startX = e.touches[0].clientX;
+            });
+
+            card.addEventListener('touchmove', (e) => {
+                currentX = e.touches[0].clientX;
+                const diff = currentX - startX;
+
+                // Only allow swiping right
+                if (diff > 0) {
+                    card.style.transform = `translateX(${diff}px)`;
+                }
+            });
+
+            card.addEventListener('touchend', (e) => {
+                const diff = currentX - startX;
+                const threshold = 100; // Swipe distance required
+
+                if (diff > threshold) {
+                    // Successful Swipe
+                    card.classList.add('swiped-right');
+                    setTimeout(() => {
+                        card.remove();
+                        updateStats();
+                    }, 300);
+                } else {
+                    // Snap back
+                    card.style.transform = 'translateX(0)';
+                }
+            });
+        });
+
+    </script>
+</body>
+
+</html>
