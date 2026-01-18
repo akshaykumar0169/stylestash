@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - StyleStash</title>
+
+    <!-- Main CSS -->
+    <link rel="stylesheet" href="/style.css">
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Playfair+Display:ital,wght@0,700;1,400&display=swap"
+        rel="stylesheet">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        :root {
+            --primary-color: #2563EB;
+            --primary-dark: #1e40af;
+            --text-dark: #1f2937;
+            --text-grey: #6b7280;
+            --border-color: #e5e7eb;
+            --white: #ffffff;
+            --font-serif: 'Playfair Display', serif;
+            --font-sans: 'Inter', sans-serif;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: var(--font-sans);
+            color: var(--text-dark);
+            min-height: 100vh;
+            overflow-y: auto;
+        }
+
+        /* Layout */
+        .split-screen-container {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Left Pane */
+        .left-pane {
+            flex: 1;
+            background-image: url('https://images.unsplash.com/photo-1558769132-cb1aea458c5e?q=80&w=2574&auto=format&fit=crop');
+            background-size: cover;
+            background-position: center;
+            position: relative;
+        }
+
+        .overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.6));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+        }
+
+        .quote-container {
+            text-align: center;
+            color: white;
+        }
+
+        .quote {
+            font-family: var(--font-serif);
+            font-size: 2rem;
+            font-style: italic;
+            margin-bottom: 1rem;
+        }
+
+        .author {
+            font-size: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Right Pane */
+        .right-pane {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 2rem;
+        }
+
+        .login-box {
+            width: 100%;
+            max-width: 400px;
+        }
+
+        .brand {
+            font-family: var(--font-serif);
+            font-size: 2rem;
+            font-weight: 600;
+            color: #000000;
+            margin-bottom: 3rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        h2 {
+            margin-bottom: 0.5rem;
+        }
+
+        .subtitle {
+            color: var(--text-grey);
+            margin-bottom: 2rem;
+        }
+
+        /* Buttons */
+        .btn-google {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            background: white;
+            font-weight: 500;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .divider {
+            display: flex;
+            align-items: center;
+            margin: 1.5rem 0;
+            font-size: 0.85rem;
+            color: var(--text-grey);
+        }
+
+        .divider::before,
+        .divider::after {
+            content: "";
+            flex: 1;
+            height: 1px;
+            background: var(--border-color);
+        }
+
+        .divider span {
+            padding: 0 1rem;
+        }
+
+        /* Inputs */
+        .input-group {
+            margin-bottom: 1.25rem;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 0.75rem;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+        }
+
+        .password-wrapper {
+            position: relative;
+        }
+
+        .toggle-password {
+            position: absolute;
+            right: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+        }
+
+        .utilities {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 1.5rem;
+            font-size: 0.9rem;
+        }
+
+        .forgot-link {
+            color: var(--primary-color);
+            text-decoration: none;
+        }
+
+        .btn-signin {
+            width: 100%;
+            padding: 0.85rem;
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            font-size: 1rem;
+            cursor: pointer;
+        }
+
+        .signup-footer a {
+            color: #2563EB;
+            /* blue */
+            margin-top: 50px;
+            font-weight: 600;
+            text-decoration: none;
+        }
+
+        .signup-footer a:hover {
+            text-decoration: underline;
+        }
+
+
+        /* Footer */
+        .footer {
+            background: #111827;
+            color: #d1d5db;
+            padding: 2rem 1rem;
+            display: flex;
+            justify-content: center;
+            padding: 1rem 0;
+
+        }
+
+        .footer-bottom {
+            max-width: 1100px;
+            /* 👈 control footer width */
+            width: 100%;
+            border-top: 1px solid #374151;
+            padding-top: 1.5rem;
+            text-align: center;
+            font-size: 0.9rem;
+        }
+
+
+        /* Responsive */
+        @media (max-width: 900px) {
+            .left-pane {
+                display: none;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="split-screen-container">
+
+        <div class="left-pane">
+            <div class="overlay">
+                <div class="quote-container">
+                    <p class="quote">"Fashion is the armor to survive the reality of everyday life."</p>
+                    <p class="author">&mdash; Bill Cunningham</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="right-pane">
+            <div class="login-box">
+                <a href="home.html" class="brand">
+                    <i class="fa-solid fa-layer-group"></i> StyleStash
+                </a>
+
+                <h2>Welcome back</h2>
+                <p class="subtitle">Please enter your details to sign in.</p>
+
+                <button class="btn-google">
+                    <i class="fa-brands fa-google"></i> Log in with Google
+                </button>
+
+                <div class="divider"><span>or</span></div>
+
+                <form>
+                    <div class="input-group">
+                        <label>Email Address</label>
+                        <input type="email" required>
+                    </div>
+
+                    <div class="input-group">
+                        <label>Password</label>
+                        <div class="password-wrapper">
+                            <input type="password" id="password" required>
+                            <i class="fa-solid fa-eye toggle-password" id="togglePassword"></i>
+                        </div>
+                    </div>
+
+                    <div class="utilities">
+                        <label><input type="checkbox"> Remember me</label>
+                        <a href="#" class="forgot-link">Forgot password?</a>
+                    </div>
+
+                    <button class="btn-signin">Sign In</button>
+                </form>
+
+                <p class="signup-footer">
+                    Don't have an account? <a href="/signup.html">Create free account</a>
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <div class="footer-bottom">
+            <p>© 2024 StyleStash. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+        const togglePassword = document.getElementById('togglePassword');
+        const password = document.getElementById('password');
+
+        togglePassword.addEventListener('click', () => {
+            const type = password.type === 'password' ? 'text' : 'password';
+            password.type = type;
+            togglePassword.classList.toggle('fa-eye-slash');
+        });
+    </script>
+
+</body>
+
+</html>
