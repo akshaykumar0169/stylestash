@@ -9,13 +9,11 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <style>
+        /* --- STYLES --- */
         :root {
             --sidebar-bg: #0f172a;
-            /* Deep Navy */
             --sidebar-text: #94a3b8;
-            --sidebar-active: #ffffff;
             --bg-color: #f1f5f9;
-            /* Off-White/Light Grey */
             --card-bg: #ffffff;
             --text-main: #1e293b;
             --text-secondary: #64748b;
@@ -39,7 +37,7 @@
             min-height: 100vh;
         }
 
-        /* --- Sidebar (Fixed 260px) --- */
+        /* Sidebar */
         .sidebar {
             width: 260px;
             background-color: var(--sidebar-bg);
@@ -105,16 +103,14 @@
             padding-top: 1rem;
         }
 
-        /* --- Main Content (Fluid) --- */
+        /* Main Content */
         .main-content {
             margin-left: 260px;
-            /* Width of sidebar */
             flex: 1;
             padding: 2rem;
             width: calc(100% - 260px);
         }
 
-        /* Header */
         header {
             display: flex;
             justify-content: space-between;
@@ -125,7 +121,6 @@
         .mobile-toggle {
             display: none;
             font-size: 1.5rem;
-            color: var(--text-main);
             cursor: pointer;
             margin-right: 1rem;
         }
@@ -147,17 +142,17 @@
         }
 
         .notification-btn {
-            position: relative;
-            background: #fff;
-            border: none;
             width: 40px;
             height: 40px;
             border-radius: 50%;
+            border: none;
+            background: #fff;
             display: flex;
             align-items: center;
             justify-content: center;
-            cursor: pointer;
             box-shadow: var(--shadow);
+            cursor: pointer;
+            position: relative;
             color: var(--text-secondary);
         }
 
@@ -169,7 +164,6 @@
             height: 8px;
             background-color: var(--accent-red);
             border-radius: 50%;
-            border: 1px solid #fff;
         }
 
         .profile-pic {
@@ -181,16 +175,13 @@
             box-shadow: var(--shadow);
         }
 
-        /* Grid System */
+        /* Dashboard Grid */
         .dashboard-grid {
             display: grid;
             grid-template-columns: 2fr 1fr;
-            /* 2/3 and 1/3 split */
-            grid-template-rows: auto auto;
             gap: 24px;
         }
 
-        /* Cards Generic */
         .card {
             background: var(--card-bg);
             border-radius: var(--radius);
@@ -248,50 +239,24 @@
             align-items: center;
         }
 
-        .btn {
-            padding: 10px 20px;
-            border-radius: 8px;
-            border: none;
-            cursor: pointer;
-            font-weight: 500;
+        /* Empty State */
+        .empty-state {
+            text-align: center;
             display: flex;
-            align-items: center;
-            gap: 8px;
-            transition: 0.2s;
-        }
-
-        .btn-primary {
-            background-color: var(--accent-green);
-            color: white;
-            box-shadow: 0 4px 10px rgba(16, 185, 129, 0.3);
-        }
-
-        .btn-primary:hover {
-            background-color: #059669;
-        }
-
-        .btn-icon {
-            background: #f1f5f9;
-            color: var(--text-secondary);
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            display: flex;
+            flex-direction: column;
             align-items: center;
             justify-content: center;
-            font-size: 1.1rem;
+            height: 100%;
+            padding: 2rem;
         }
 
-        .btn-icon:hover {
-            background: #e2e8f0;
-            color: var(--accent-red);
+        .empty-icon {
+            font-size: 3rem;
+            color: #cbd5e1;
+            margin-bottom: 1rem;
         }
 
-        .refresh-btn {
-            margin-left: auto;
-        }
-
-        /* Weather Card */
+        /* Weather */
         .weather-card {
             grid-column: 2 / 3;
             background: linear-gradient(135deg, #60a5fa 0%, #3b82f6 100%);
@@ -319,7 +284,6 @@
             line-height: 1;
         }
 
-        /* New Location Styling */
         .location {
             margin-top: 8px;
             font-size: 0.95rem;
@@ -346,7 +310,7 @@
             text-align: left;
         }
 
-        /* Bottom Row Stats (3 Columns) */
+        /* Stats & Buttons */
         .stats-row {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
@@ -354,7 +318,6 @@
             grid-column: 1 / -1;
         }
 
-        /* Donut Chart Simulation */
         .donut-container {
             display: flex;
             align-items: center;
@@ -365,7 +328,7 @@
             width: 80px;
             height: 80px;
             border-radius: 50%;
-            background: conic-gradient(var(--accent-green) 0% 67%, #e2e8f0 67% 100%);
+            background: conic-gradient(var(--accent-green) 0% 1%, #e2e8f0 1% 100%);
             position: relative;
             display: flex;
             justify-content: center;
@@ -400,7 +363,6 @@
             margin-top: 5px;
         }
 
-        /* Laundry Card */
         .laundry-content {
             display: flex;
             align-items: center;
@@ -425,6 +387,25 @@
             font-weight: bold;
         }
 
+        .btn {
+            padding: 10px 20px;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: 0.2s;
+        }
+
+        .btn-primary {
+            background-color: var(--accent-green);
+            color: white;
+            box-shadow: 0 4px 10px rgba(16, 185, 129, 0.3);
+            text-decoration: none;
+        }
+
         .btn-outline {
             border: 1px solid var(--text-secondary);
             background: transparent;
@@ -435,12 +416,22 @@
             cursor: pointer;
         }
 
-        .btn-outline:hover {
-            border-color: var(--accent-blue);
-            color: var(--accent-blue);
+        .btn-icon {
+            background: #f1f5f9;
+            color: var(--text-secondary);
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1rem;
         }
 
-        /* Upload Card */
+        .refresh-btn {
+            margin-left: auto;
+        }
+
         .upload-card {
             border: 2px dashed #cbd5e1;
             display: flex;
@@ -464,7 +455,6 @@
             margin-bottom: 0.5rem;
         }
 
-        /* Mobile Responsive */
         @media (max-width: 900px) {
             .sidebar {
                 transform: translateX(-100%);
@@ -519,67 +509,38 @@
 <body>
 
     <aside class="sidebar" id="sidebar">
-        <div class="brand">
-            <i class="fa-solid fa-layer-group"></i> StyleStash
-        </div>
-
+        <div class="brand"><i class="fa-solid fa-layer-group"></i> StyleStash</div>
         <ul class="nav-links">
-            <li class="nav-item">
-                <a href="#" class="nav-link active">
-                    <i class="fa-solid fa-table-columns"></i> Dashboard
-                </a>
-            </li>
-            <li class="nav-item">
-                <a href="/my-wardrobe.html" class="nav-link">
-                    <i class="fa-solid fa-shirt"></i> My Wardrobe
-                </a>
-            </li>
-            <li class="nav-item">
-                <a href="/mix-match.html" class="nav-link" >
-                    <i class="fa-solid fa-shuffle"></i> Mix & Match
-                </a>
-            </li>
-            <li class="nav-item">
-                <a href="/laundary-room.html" class="nav-link">
-                    <i class="fa-solid fa-jug-detergent"></i> Laundry Room
-                </a>
-            </li>
-            <li class="nav-item">
-                <a href="/calendar.html" class="nav-link">
-                    <i class="fa-regular fa-calendar"></i> Calendar
-                </a>
-            </li>
+            <li class="nav-item"><a href="#" class="nav-link active"><i class="fa-solid fa-table-columns"></i>
+                    Dashboard</a></li>
+            <li class="nav-item"><a href="my-wardrobe.html" class="nav-link"><i class="fa-solid fa-shirt"></i> My
+                    Wardrobe</a></li>
+            <li class="nav-item"><a href="mix-match.html" class="nav-link"><i class="fa-solid fa-shuffle"></i> Mix &
+                    Match</a></li>
+            <li class="nav-item"><a href="laundry-room.html" class="nav-link"><i class="fa-solid fa-jug-detergent"></i>
+                    Laundry Room</a></li>
+            <li class="nav-item"><a href="calendar.html" class="nav-link"><i class="fa-regular fa-calendar"></i>
+                    Calendar</a></li>
         </ul>
-
         <div class="sidebar-footer">
-            <a href="/setting.html" class="nav-link" >
-                <i class="fa-solid fa-gear"></i> Settings
-            </a>
-
-            <a href="#" class="nav-link" style="color: #ef4444;">
-                <i class="fa-solid fa-arrow-right-from-bracket"></i> Logout
-            </a>
+            <a href="setting.html" class="nav-link" onclick="comingSoon(this, event)"><i class="fa-solid fa-gear"></i>
+                Settings</a>
+            <a href="#" class="nav-link" style="color: #ef4444;" onclick="logout()"><i
+                    class="fa-solid fa-arrow-right-from-bracket"></i> Logout</a>
         </div>
     </aside>
 
     <main class="main-content">
-
         <header>
             <div style="display: flex; align-items: center;">
-                <div class="mobile-toggle" onclick="toggleSidebar()">
-                    <i class="fa-solid fa-bars"></i>
-                </div>
+                <div class="mobile-toggle" onclick="toggleSidebar()"><i class="fa-solid fa-bars"></i></div>
                 <div class="greeting">
-                    <h1>Good Morning, User 👋</h1>
-                    <p>Friday, Jan 16</p>
+                    <h1 id="greeting-title">Good Morning, User 👋</h1>
+                    <p id="currentDate">Loading date...</p>
                 </div>
             </div>
-
             <div class="header-actions">
-                <button class="notification-btn">
-                    <i class="fa-regular fa-bell"></i>
-                    <span class="badge"></span>
-                </button>
+                <button class="notification-btn"><i class="fa-regular fa-bell"></i><span class="badge"></span></button>
                 <img src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?ixlib=rb-1.2.1&auto=format&fit=crop&w=100&q=80"
                     alt="Profile" class="profile-pic">
             </div>
@@ -587,62 +548,47 @@
 
         <div class="dashboard-grid">
 
-            <div class="card ootd-card">
+            <div class="card ootd-card" id="ootd-card-content">
                 <div class="card-header">
                     <div class="card-title">Your Daily Look</div>
                 </div>
-
                 <div class="ootd-container">
-                    <div class="ootd-item">
-                        <img src="https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?ixlib=rb-1.2.1&auto=format&fit=crop&w=400&q=80"
-                            alt="Shirt">
-                    </div>
-                    <div class="ootd-item">
-                        <img src="https://images.unsplash.com/photo-1552902865-b72c031ac5ea?ixlib=rb-1.2.1&auto=format&fit=crop&w=400&q=80"
-                            alt="Pants">
-                    </div>
+                    <div class="ootd-item"><img
+                            src="https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?auto=format&fit=crop&w=400&q=80"
+                            alt="Shirt"></div>
+                    <div class="ootd-item"><img
+                            src="https://images.unsplash.com/photo-1552902865-b72c031ac5ea?auto=format&fit=crop&w=400&q=80"
+                            alt="Pants"></div>
                 </div>
-
                 <div class="ootd-actions">
-                    <button class="btn btn-primary">
-                        Wear this
-                    </button>
-                    <button class="btn btn-icon">
-                        <i class="fa-regular fa-heart"></i>
-                    </button>
-                    <button class="btn btn-icon refresh-btn" onclick="animateRefresh(this)">
-                        <i class="fa-solid fa-rotate"></i>
-                    </button>
+                    <button class="btn btn-primary">Wear this</button>
+                    <button class="btn btn-icon"><i class="fa-regular fa-heart"></i></button>
+                    <button class="btn btn-icon refresh-btn" onclick="animateRefresh(this)"><i
+                            class="fa-solid fa-rotate"></i></button>
                 </div>
             </div>
 
             <div class="card weather-card">
-                <div class="weather-content">
-                    <i class="fa-solid fa-cloud-rain weather-icon"></i>
-                    <div class="temp">18°C</div>
-                    <div style="margin-bottom: 5px;">Rainy</div>
-
-                    <div class="location">
-                        <i class="fa-solid fa-location-dot"></i> New Delhi, India
-                    </div>
-
-                    <div class="ai-tip">
-                        <i class="fa-solid fa-robot"></i>
-                        <span>Don't forget an umbrella! I've filtered out your suede shoes today.</span>
-                    </div>
+                <div class="weather-content" id="weather-box">
+                    <i class="fa-solid fa-cloud-sun weather-icon" id="weather-icon"></i>
+                    <div class="temp" id="weather-temp">--°C</div>
+                    <div style="margin-bottom: 5px;" id="weather-desc">Loading...</div>
+                    <div class="location"><i class="fa-solid fa-location-dot"></i> <span
+                            id="user-location">Locating...</span></div>
+                    <div class="ai-tip"><i class="fa-solid fa-robot"></i><span id="ai-weather-tip">Fetching
+                            forecast...</span></div>
                 </div>
             </div>
 
             <div class="stats-row">
-
                 <div class="card">
                     <div class="card-title" style="margin-bottom: 1rem;">Wardrobe Stats</div>
                     <div class="donut-container">
-                        <div class="donut-chart"></div>
+                        <div class="donut-chart" id="stat-chart"></div>
                         <div class="stat-text">
-                            <h3>52</h3>
+                            <h3 id="total-items">0</h3>
                             <span>Total Items</span>
-                            <a href="/my-wardrobe.html" class="stat-link">View Wardrobe &rarr;</a>
+                            <a href="my-wardrobe.html" class="stat-link">View Wardrobe &rarr;</a>
                         </div>
                     </div>
                 </div>
@@ -652,11 +598,11 @@
                     <div class="laundry-content" style="margin-top: 1rem;">
                         <div class="laundry-icon-box">
                             <i class="fa-solid fa-basket-shopping"></i>
-                            <span class="laundry-badge">4</span>
+                            <span class="laundry-badge" id="laundry-count">0</span>
                         </div>
                         <div style="flex:1; margin-left: 15px;">
                             <p style="font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 8px;">
-                                4 items are in the wash.
+                                <span id="laundry-text">0 items</span> are in the wash.
                             </p>
                             <button class="btn-outline">Mark as Clean</button>
                         </div>
@@ -665,54 +611,181 @@
 
                 <a href="add-item.html" class="card upload-card">
                     <i class="fa-solid fa-plus plus-icon"></i>
-                    <span style="font-weight: 500; color: var(--text-secondary);">
-                        Bought something new?
-                    </span>
+                    <span style="font-weight: 500; color: var(--text-secondary);">Bought something new?</span>
                 </a>
-
-
             </div>
         </div>
     </main>
 
     <script>
-        // Sidebar Toggle
-        function toggleSidebar() {
-            const sidebar = document.getElementById('sidebar');
-            sidebar.classList.toggle('active');
-        }
+        // --- 1. CONFIGURATION ---
+        // I have inserted the key you provided below
+        const WEATHER_API_KEY = "6c5cadfae46bf2528c58dc878a31a614";
+        const token = localStorage.getItem('token');
 
-        // Close sidebar when clicking outside on mobile
-        document.addEventListener('click', function (event) {
-            const sidebar = document.getElementById('sidebar');
-            const toggle = document.querySelector('.mobile-toggle');
+        // Gatekeeper
+        if (!token) window.location.href = 'login.html';
 
-            if (sidebar.classList.contains('active') &&
-                !sidebar.contains(event.target) &&
-                !toggle.contains(event.target)) {
-                sidebar.classList.remove('active');
-            }
+        // --- 2. INITIALIZATION ---
+        document.addEventListener('DOMContentLoaded', () => {
+            updateDateGreeting();
+            fetchDashboardData();
+            fetchLocationAndWeather();
         });
 
-        // Handle "Coming Soon" pages like Settings
-        function comingSoon(el, event) {
-            event.preventDefault();
-
-            // Show alert
-            alert("🚧 Settings page is coming soon!");
+        // --- 3. DYNAMIC GREETING ---
+        function updateDateGreeting() {
+            const dateEl = document.getElementById('currentDate');
+            const options = { weekday: 'long', month: 'short', day: 'numeric' };
+            dateEl.textContent = new Date().toLocaleDateString('en-US', options);
         }
 
+        // --- 4. FETCH DASHBOARD DATA (USER NAME & STATS) ---
+        async function fetchDashboardData() {
+            try {
+                // This calls the server.js route we created
+                const res = await fetch('/api/dashboard/stats', {
+                    headers: { 'x-auth-token': token }
+                });
 
-        // Animation
+                if (!res.ok) throw new Error("Failed to load data");
+
+                const data = await res.json();
+
+                // A. Calculate Time Greeting
+                const hour = new Date().getHours();
+                let timeGreeting = "Good Morning";
+                if (hour >= 12 && hour < 17) timeGreeting = "Good Afternoon";
+                else if (hour >= 17) timeGreeting = "Good Evening";
+
+                // B. Capitalize Name and Set Title
+                // We use data.name coming from the backend
+                let displayName = "User";
+                if (data.name) {
+                    displayName = data.name.split(' ')[0]; // Get just the first name
+                    displayName = displayName.charAt(0).toUpperCase() + displayName.slice(1);
+                }
+
+                document.getElementById('greeting-title').innerText = `${timeGreeting}, ${displayName} 👋`;
+
+                // C. Update Stats
+                document.getElementById('total-items').innerText = data.totalItems || 0;
+                document.getElementById('laundry-count').innerText = data.dirtyItems || 0;
+                document.getElementById('laundry-text').innerText = `${data.dirtyItems || 0} items`;
+
+                // D. Handle Empty State (New User)
+                if (data.isNewUser) {
+                    renderEmptyState();
+                }
+
+            } catch (err) {
+                console.error("Dashboard Data Error:", err);
+                if (err.message.includes("Failed")) {
+                    // If dashboard fails, maybe token is expired
+                    // logout(); 
+                }
+            }
+        }
+
+        // --- 5. RENDER EMPTY STATE ---
+        function renderEmptyState() {
+            const ootdCard = document.getElementById('ootd-card-content');
+            ootdCard.innerHTML = `
+                <div class="card-header"><div class="card-title">Your Daily Look</div></div>
+                <div class="empty-state">
+                    <i class="fa-solid fa-shirt empty-icon"></i>
+                    <h3 style="margin-bottom: 0.5rem; color: var(--text-main);">Your closet is empty!</h3>
+                    <p style="color: var(--text-secondary); margin-bottom: 1.5rem; text-align:center;">
+                        Upload your clothes to get AI-powered outfit suggestions.
+                    </p>
+                    <a href="add-item.html" class="btn btn-primary">
+                        <i class="fa-solid fa-plus"></i> Add First Item
+                    </a>
+                </div>
+            `;
+        }
+
+        // --- 6. WEATHER & LOCATION ---
+        function fetchLocationAndWeather() {
+            if (!navigator.geolocation) {
+                document.getElementById('user-location').innerText = "Location disabled";
+                return;
+            }
+
+            navigator.geolocation.getCurrentPosition(async (position) => {
+                const lat = position.coords.latitude;
+                const lon = position.coords.longitude;
+
+                try {
+                    // Using the URL structure and key you provided
+                    const url = `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${WEATHER_API_KEY}&units=metric`;
+
+                    const res = await fetch(url);
+                    const weather = await res.json();
+
+                    if (weather.cod !== 200) throw new Error(weather.message);
+
+                    // Update UI
+                    document.getElementById('weather-temp').innerText = `${Math.round(weather.main.temp)}°C`;
+                    document.getElementById('weather-desc').innerText = weather.weather[0].main;
+                    document.getElementById('user-location').innerText = weather.name;
+
+                    // Dynamic Icon Logic
+                    const iconEl = document.getElementById('weather-icon');
+                    const condition = weather.weather[0].main.toLowerCase();
+                    const aiTip = document.getElementById('ai-weather-tip');
+
+                    // Reset icon class
+                    iconEl.className = "weather-icon fa-solid";
+
+                    if (condition.includes('rain') || condition.includes('drizzle')) {
+                        iconEl.classList.add("fa-cloud-rain");
+                        aiTip.innerText = "It's rainy. I suggest your waterproof boots today.";
+                    } else if (condition.includes('cloud')) {
+                        iconEl.classList.add("fa-cloud");
+                        aiTip.innerText = "It's cloudy. A light jacket is a safe bet.";
+                    } else if (condition.includes('clear') || condition.includes('sun')) {
+                        iconEl.classList.add("fa-sun");
+                        aiTip.innerText = "Sunny skies! Great day for that white tee.";
+                    } else if (condition.includes('snow')) {
+                        iconEl.classList.add("fa-snowflake"); // Note: snowflake is usually fa-regular or fa-solid depending on version
+                        aiTip.innerText = "It's freezing! Wear your heaviest coat.";
+                    } else {
+                        iconEl.classList.add("fa-cloud-sun");
+                        aiTip.innerText = "Check the forecast details before heading out.";
+                    }
+
+                } catch (err) {
+                    console.error("Weather Error", err);
+                    document.getElementById('weather-desc').innerText = "Unavailable";
+                }
+            }, (error) => {
+                console.error("Geo Error:", error);
+                document.getElementById('user-location').innerText = "Location Denied";
+                document.getElementById('weather-desc').innerText = "--";
+            });
+        }
+
+        // --- UTILS ---
+        function logout() {
+            localStorage.removeItem('token');
+            window.location.href = 'login.html';
+        }
+
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('active');
+        }
+
         function animateRefresh(btn) {
             const icon = btn.querySelector('i');
             icon.style.transition = 'transform 0.5s ease';
             icon.style.transform = 'rotate(360deg)';
+            setTimeout(() => { icon.style.transition = 'none'; icon.style.transform = 'rotate(0deg)'; }, 500);
+        }
 
-            setTimeout(() => {
-                icon.style.transition = 'none';
-                icon.style.transform = 'rotate(0deg)';
-            }, 500);
+        function comingSoon(el, event) {
+            event.preventDefault();
+            alert("page is coming soon!");
         }
     </script>
 </body>
