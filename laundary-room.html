@@ -14,16 +14,12 @@
         :root {
             --primary: #2563eb;
             --accent-green: #10b981;
-            /* For Clean status */
             --accent-red: #ef4444;
-            /* For Dirty/Full status */
             --bg-body: #f1f5f9;
             --bg-card: #ffffff;
             --text-main: #1e293b;
             --text-sub: #64748b;
             --border: #e2e8f0;
-
-            /* Sidebar Variables */
             --sidebar-bg: #0f172a;
             --sidebar-text: #94a3b8;
             --sidebar-active: #ffffff;
@@ -44,7 +40,7 @@
             overflow: hidden;
         }
 
-        /* ================= SIDEBAR ================= */
+        /* Sidebar */
         .sidebar {
             width: 260px;
             background-color: var(--sidebar-bg);
@@ -89,7 +85,6 @@
             font-size: 0.95rem;
             cursor: pointer;
             justify-content: space-between;
-            /* To push badge to right */
         }
 
         .nav-link div {
@@ -110,7 +105,6 @@
             box-shadow: 0 4px 6px -1px rgba(59, 130, 246, 0.5);
         }
 
-        /* Badge in Sidebar */
         .nav-badge {
             background: var(--accent-red);
             color: white;
@@ -133,7 +127,7 @@
             color: var(--accent-red);
         }
 
-        /* ================= MAIN CONTENT ================= */
+        /* Main Content */
         .main-content {
             flex-grow: 1;
             display: flex;
@@ -143,7 +137,6 @@
             position: relative;
         }
 
-        /* --- Header --- */
         .laundry-header {
             background: white;
             padding: 1.5rem 2rem;
@@ -169,7 +162,6 @@
             margin-top: 4px;
         }
 
-        /* Capacity Bar */
         .capacity-container {
             flex: 1;
             max-width: 400px;
@@ -195,12 +187,11 @@
         .progress-fill {
             height: 100%;
             background: var(--accent-green);
-            width: 92%;
+            width: 100%;
             border-radius: 4px;
-            transition: width 0.5s ease;
+            transition: width 0.5s ease, background-color 0.5s ease;
         }
 
-        /* Wash All Button */
         .wash-all-btn {
             background: var(--primary);
             color: white;
@@ -222,7 +213,6 @@
             background: #1d4ed8;
         }
 
-        /* --- Tabs --- */
         .filter-tabs {
             padding: 1rem 2rem;
             display: flex;
@@ -248,7 +238,6 @@
             border-color: var(--text-main);
         }
 
-        /* --- Hamper Grid --- */
         .hamper-grid {
             padding: 0 2rem 2rem 2rem;
             display: grid;
@@ -266,28 +255,28 @@
             border: 1px solid var(--border);
         }
 
-        /* The Image Area */
         .card-image-box {
             height: 250px;
             position: relative;
             overflow: hidden;
+            background: #f8fafc;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
         .card-img {
             width: 100%;
             height: 100%;
-            object-fit: cover;
-            /* Desaturated Look */
+            object-fit: contain;
             filter: grayscale(100%);
             transition: filter 0.3s ease;
         }
 
-        /* Hover Effect: Restore Color */
         .laundry-card:hover .card-img {
             filter: grayscale(0%);
         }
 
-        /* Dirty Overlay/Stamp */
         .dirty-overlay {
             position: absolute;
             top: 10px;
@@ -310,9 +299,11 @@
             font-weight: 600;
             color: var(--text-main);
             font-size: 0.95rem;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
 
-        /* Mark Clean Button (Bottom Half) */
         .mark-clean-btn {
             width: 100%;
             padding: 12px;
@@ -331,6 +322,19 @@
             color: white;
         }
 
+        .empty-state {
+            text-align: center;
+            padding: 4rem 2rem;
+            color: var(--text-sub);
+            grid-column: 1 / -1;
+        }
+
+        .empty-state i {
+            font-size: 4rem;
+            color: #cbd5e1;
+            margin-bottom: 1rem;
+        }
+
         .mobile-toggle {
             display: none;
             font-size: 1.5rem;
@@ -338,7 +342,6 @@
             cursor: pointer;
         }
 
-        /* ================= MOBILE RESPONSIVE ================= */
         @media (max-width: 900px) {
             .sidebar {
                 position: fixed;
@@ -377,59 +380,6 @@
                 align-items: center;
                 width: 100%;
             }
-
-            /* Grid becomes List */
-            .hamper-grid {
-                display: flex;
-                flex-direction: column;
-                gap: 10px;
-                padding: 1rem;
-            }
-
-            .laundry-card {
-                display: flex;
-                flex-direction: row;
-                height: 100px;
-                overflow: hidden;
-                /* Hide swipe overflow */
-            }
-
-            .card-image-box {
-                width: 100px;
-                height: 100%;
-                flex-shrink: 0;
-            }
-
-            .card-info {
-                flex-grow: 1;
-                display: flex;
-                align-items: center;
-                justify-content: space-between;
-                text-align: left;
-                padding: 0 15px;
-            }
-
-            .mark-clean-btn {
-                display: none;
-            }
-
-            /* Hide button, use swipe */
-
-            /* Swipe Hint */
-            .swipe-hint {
-                display: flex;
-                align-items: center;
-                color: var(--accent-green);
-                font-size: 0.8rem;
-                opacity: 0.6;
-            }
-
-            /* Swipe Animation Class */
-            .swiped-right {
-                transform: translateX(100%);
-                opacity: 0;
-                transition: all 0.3s ease;
-            }
         }
     </style>
 </head>
@@ -439,62 +389,50 @@
     <aside class="sidebar" id="sidebar">
         <div class="brand"><i class="fa-solid fa-layer-group"></i> StyleStash</div>
         <ul class="nav-links">
-            <li class="nav-item">
-                <a href="/dashboard.html" class="nav-link" onclick="setActive(this)">
+            <li class="nav-item"><a href="dashboard.html" class="nav-link">
                     <div><i class="fa-solid fa-table-columns"></i> Dashboard</div>
-                </a>
-            </li>
-            <li class="nav-item">
-                <a href="/wardrobe.html" class="nav-link" onclick="setActive(this)">
+                </a></li>
+            <li class="nav-item"><a href="my-wardrobe.html" class="nav-link">
                     <div><i class="fa-solid fa-shirt"></i> My Wardrobe</div>
-                </a>
-            </li>
-            <li class="nav-item">
-                <a href="/mix-match.html" class="nav-link" onclick="setActive(this)">
+                </a></li>
+            <li class="nav-item"><a href="mix-match.html" class="nav-link">
                     <div><i class="fa-solid fa-shuffle"></i> Mix & Match</div>
-                </a>
-            </li>
-            <li class="nav-item">
-                <a href="/laundary-room.html" class="nav-link active" onclick="setActive(this)">
-                    <div><i class="fa-solid fa-jug-detergent"></i> Laundry Room</div>
-                    <span class="nav-badge" id="sidebarBadge">4</span>
-                </a>
-            </li>
-            <li class="nav-item">
-                <a href="/calendar.html" class="nav-link" onclick="setActive(this)">
+                </a></li>
+            <li class="nav-item"><a href="laundry-room.html" class="nav-link active">
+                    <div><i class="fa-solid fa-jug-detergent"></i> Laundry Room</div><span class="nav-badge"
+                        id="sidebarBadge">0</span>
+                </a></li>
+            <li class="nav-item"><a href="calendar.html" class="nav-link">
                     <div><i class="fa-regular fa-calendar"></i> Calendar</div>
-                </a>
-            </li>
-
+                </a></li>
         </ul>
         <div class="sidebar-footer">
-            <a href="#" class="nav-link" onclick="setActive(this)">
+            <a href="setting.html" class="nav-link">
                 <div><i class="fa-solid fa-gear"></i> Settings</div>
             </a>
-            <a href="#" class="nav-link logout-btn">
+            <a href="login.html" class="nav-link logout-btn" onclick="logout(event)">
                 <div><i class="fa-solid fa-arrow-right-from-bracket"></i> Logout</div>
             </a>
         </div>
     </aside>
 
     <main class="main-content">
-
         <div class="laundry-header">
             <div class="header-top-row">
                 <div class="mobile-toggle" onclick="toggleSidebar()"><i class="fa-solid fa-bars"></i></div>
                 <div class="header-left">
                     <h1>Laundry Room</h1>
-                    <p id="unavailableText">4 items unavailable</p>
+                    <p id="unavailableText">Loading items...</p>
                 </div>
             </div>
 
             <div class="capacity-container">
                 <div class="capacity-label">
                     <span>Wardrobe Cleanliness</span>
-                    <span id="capacityPercent">92% Clean</span>
+                    <span id="capacityPercent">100% Clean</span>
                 </div>
                 <div class="progress-bg">
-                    <div class="progress-fill" style="width: 92%;"></div>
+                    <div class="progress-fill" id="capacityBar" style="width: 100%;"></div>
                 </div>
             </div>
 
@@ -507,125 +445,174 @@
             <button class="tab-btn active" onclick="filterItems('all', this)">All Items</button>
             <button class="tab-btn" onclick="filterItems('whites', this)">Whites</button>
             <button class="tab-btn" onclick="filterItems('colors', this)">Colors</button>
-            <button class="tab-btn" onclick="filterItems('dryclean', this)">Dry Clean</button>
         </div>
 
         <div class="hamper-grid" id="hamperGrid">
-
-            <div class="laundry-card" data-category="whites">
-                <div class="card-image-box">
-                    <img src="https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?auto=format&fit=crop&w=400&q=80"
-                        class="card-img">
-                    <div class="dirty-overlay">DIRTY</div>
-                </div>
-                <div class="card-info">
-                    <div class="card-name">White Linen Shirt</div>
-                    <div class="swipe-hint mobile-only"><i class="fa-solid fa-angles-right"></i> Swipe to Clean</div>
-                </div>
-                <button class="mark-clean-btn" onclick="cleanItem(this)">MARK CLEAN</button>
-            </div>
-
-            <div class="laundry-card" data-category="colors">
-                <div class="card-image-box">
-                    <img src="https://images.unsplash.com/photo-1542272617-08f086303b96?auto=format&fit=crop&w=400&q=80"
-                        class="card-img">
-                    <div class="dirty-overlay">WASH</div>
-                </div>
-                <div class="card-info">
-                    <div class="card-name">Vintage Levis</div>
-                    <div class="swipe-hint mobile-only"><i class="fa-solid fa-angles-right"></i> Swipe to Clean</div>
-                </div>
-                <button class="mark-clean-btn" onclick="cleanItem(this)">MARK CLEAN</button>
-            </div>
-
-            <div class="laundry-card" data-category="dryclean">
-                <div class="card-image-box">
-                    <img src="https://images.unsplash.com/photo-1551028919-ac6635f00370?auto=format&fit=crop&w=400&q=80"
-                        class="card-img">
-                    <div class="dirty-overlay">DRY CLEAN</div>
-                </div>
-                <div class="card-info">
-                    <div class="card-name">Leather Biker Jacket</div>
-                    <div class="swipe-hint mobile-only"><i class="fa-solid fa-angles-right"></i> Swipe to Clean</div>
-                </div>
-                <button class="mark-clean-btn" onclick="cleanItem(this)">MARK CLEAN</button>
-            </div>
-
-            <div class="laundry-card" data-category="colors">
-                <div class="card-image-box">
-                    <img src="https://images.unsplash.com/photo-1595777457583-95e059d581b8?auto=format&fit=crop&w=400&q=80"
-                        class="card-img">
-                    <div class="dirty-overlay">DIRTY</div>
-                </div>
-                <div class="card-info">
-                    <div class="card-name">Summer Red Dress</div>
-                    <div class="swipe-hint mobile-only"><i class="fa-solid fa-angles-right"></i> Swipe to Clean</div>
-                </div>
-                <button class="mark-clean-btn" onclick="cleanItem(this)">MARK CLEAN</button>
-            </div>
-
         </div>
-
     </main>
 
     <script>
-        // --- 1. Sidebar Logic ---
-        function setActive(clickedLink) {
-            document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
-            clickedLink.classList.add('active');
-        }
-        function toggleSidebar() { document.getElementById('sidebar').classList.toggle('active'); }
+        const token = localStorage.getItem('token');
+        if (!token) window.location.href = 'login.html';
 
-        // --- 2. Clean Logic ---
-        function cleanItem(btn) {
-            const card = btn.closest('.laundry-card');
-            animateAndRemove(card);
-        }
+        let allDirtyItems = [];
+        let totalWardrobeCount = 0;
 
-        function washAll() {
-            const allCards = document.querySelectorAll('.laundry-card');
-            allCards.forEach((card, index) => {
-                setTimeout(() => {
-                    animateAndRemove(card);
-                }, index * 100); // Staggered removal
-            });
-        }
+        document.addEventListener('DOMContentLoaded', fetchLaundry);
 
-        function animateAndRemove(card) {
-            // Visual feedback
-            card.style.transform = 'scale(0.9)';
-            card.style.opacity = '0';
+        // --- 1. Fetch Data from MongoDB ---
+        async function fetchLaundry() {
+            try {
+                // Fetch stats to get total wardrobe size for the math
+                const statsRes = await fetch('/api/dashboard/stats', { headers: { 'x-auth-token': token } });
+                if (statsRes.ok) {
+                    const stats = await statsRes.json();
+                    totalWardrobeCount = stats.totalItems || 0;
+                }
 
-            setTimeout(() => {
-                card.remove();
-                updateStats();
-            }, 300);
-        }
+                // Fetch actual items
+                const itemsRes = await fetch('/api/items', { headers: { 'x-auth-token': token } });
+                if (!itemsRes.ok) throw new Error("Failed to fetch items");
 
-        // --- 3. Stats Update Logic ---
-        function updateStats() {
-            const count = document.querySelectorAll('.laundry-card').length;
+                const items = await itemsRes.json();
 
-            // Update Text
-            document.getElementById('unavailableText').innerText = count === 0 ? "All clean!" : `${count} items unavailable`;
-            document.getElementById('sidebarBadge').innerText = count;
+                // Filter only the items that are NOT clean
+                allDirtyItems = items.filter(item => item.isClean === false);
 
-            // Update Bar (Fake Math)
-            const totalCapacity = 50; // Arbitrary total wardrobe size
-            const percentage = Math.floor(((totalCapacity - count) / totalCapacity) * 100);
+                renderGrid(allDirtyItems);
+                updateStatsUI();
 
-            document.getElementById('capacityPercent').innerText = `${percentage}% Clean`;
-            document.querySelector('.progress-fill').style.width = `${percentage}%`;
-
-            // If empty, change bar color
-            if (count === 0) {
-                document.querySelector('.progress-fill').style.backgroundColor = '#10b981'; // Green
+            } catch (err) {
+                console.error("Error loading laundry:", err);
+                document.getElementById('hamperGrid').innerHTML = `<div class="empty-state">Error loading database.</div>`;
             }
         }
 
-        // --- 4. Filtering Tabs ---
+        // --- 2. Render Cards ---
+        function renderGrid(itemsToRender) {
+            const grid = document.getElementById('hamperGrid');
+            grid.innerHTML = '';
+
+            if (itemsToRender.length === 0) {
+                grid.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fa-solid fa-check-circle" style="color: var(--accent-green);"></i>
+                        <h2>All Caught Up!</h2>
+                        <p>Your laundry basket is completely empty.</p>
+                    </div>`;
+                return;
+            }
+
+            itemsToRender.forEach(item => {
+                // Simple logic for tabs: If it's white, it goes to whites. Else colors.
+                let category = 'colors';
+                if (item.color && item.color.toLowerCase().includes('white')) {
+                    category = 'whites';
+                }
+
+                const cardHTML = `
+                    <div class="laundry-card" data-category="${category}" id="card-${item._id}">
+                        <div class="card-image-box">
+                            <img src="${item.imageUrl}" class="card-img" alt="${item.name}">
+                            <div class="dirty-overlay">DIRTY</div>
+                        </div>
+                        <div class="card-info">
+                            <div class="card-name">${item.name}</div>
+                        </div>
+                        <button class="mark-clean-btn" onclick="markClean('${item._id}')">
+                            <i class="fa-solid fa-sparkles"></i> MARK CLEAN
+                        </button>
+                    </div>
+                `;
+                grid.insertAdjacentHTML('beforeend', cardHTML);
+            });
+        }
+
+        // --- 3. Database Interaction: Mark Clean ---
+        async function markClean(itemId) {
+            try {
+                // Update button UI temporarily
+                const card = document.getElementById(`card-${itemId}`);
+                const btn = card.querySelector('.mark-clean-btn');
+                btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Cleaning...';
+
+                // Send request to backend to update isClean to true
+                const response = await fetch(`/api/items/${itemId}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'x-auth-token': token
+                    },
+                    body: JSON.stringify({ isClean: true }) // <--- The magic happens here
+                });
+
+                if (!response.ok) throw new Error("Failed to update");
+
+                // Remove from our local array and UI
+                allDirtyItems = allDirtyItems.filter(i => i._id !== itemId);
+
+                card.style.transform = 'scale(0.9)';
+                card.style.opacity = '0';
+                setTimeout(() => {
+                    card.remove();
+                    updateStatsUI();
+                    if (allDirtyItems.length === 0) renderGrid([]); // Show empty state
+                }, 300);
+
+            } catch (error) {
+                console.error(error);
+                alert("Database Error: Could not mark as clean.");
+            }
+        }
+
+        async function washAll() {
+            const btns = document.querySelectorAll('.mark-clean-btn');
+            if (btns.length === 0) return;
+
+            // Loop through every dirty item on screen and trigger the API call
+            allDirtyItems.forEach((item, index) => {
+                setTimeout(() => {
+                    markClean(item._id);
+                }, index * 400); // Stagger them slightly so we don't crash the server
+            });
+        }
+
+        // --- 4. UI Updates ---
+        function updateStatsUI() {
+            const count = allDirtyItems.length;
+            const badge = document.getElementById('sidebarBadge');
+            const text = document.getElementById('unavailableText');
+            const fill = document.getElementById('capacityBar');
+            const percentText = document.getElementById('capacityPercent');
+
+            badge.innerText = count;
+
+            if (count === 0) {
+                text.innerText = "All clean!";
+                text.style.color = 'var(--accent-green)';
+                badge.style.background = 'var(--accent-green)';
+            } else {
+                text.innerText = `${count} items unavailable`;
+                text.style.color = 'var(--accent-red)';
+                badge.style.background = 'var(--accent-red)';
+            }
+
+            if (totalWardrobeCount > 0) {
+                const cleanItems = totalWardrobeCount - count;
+                const percentage = Math.floor((cleanItems / totalWardrobeCount) * 100);
+                percentText.innerText = `${percentage}% Clean`;
+                fill.style.width = `${percentage}%`;
+
+                if (percentage < 30) fill.style.backgroundColor = 'var(--accent-red)';
+                else if (percentage < 70) fill.style.backgroundColor = '#f59e0b';
+                else fill.style.backgroundColor = 'var(--accent-green)';
+            } else {
+                percentText.innerText = `100% Clean`;
+                fill.style.width = `100%`;
+            }
+        }
+
         function filterItems(category, btn) {
-            // Update buttons
             document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
             btn.classList.add('active');
 
@@ -633,52 +620,33 @@
             cards.forEach(card => {
                 if (category === 'all' || card.getAttribute('data-category') === category) {
                     card.style.display = 'block';
-                    if (window.innerWidth <= 900) card.style.display = 'flex'; // Fix for mobile flex layout
                 } else {
                     card.style.display = 'none';
                 }
             });
         }
 
-        // --- 5. Mobile Swipe Logic ---
-        const cards = document.querySelectorAll('.laundry-card');
+        function toggleSidebar() { document.getElementById('sidebar').classList.toggle('active'); }
+        function logout() { localStorage.removeItem('token'); window.location.href = 'login.html'; }
 
-        cards.forEach(card => {
-            let startX = 0;
-            let currentX = 0;
 
-            card.addEventListener('touchstart', (e) => {
-                startX = e.touches[0].clientX;
-            });
+        // --- LOGOUT LOGIC (With Warning & Cancel Fix) ---
+        function logout(event) {
+            // 1. Stop the browser from automatically following the link
+            if (event) {
+                event.preventDefault();
+            }
 
-            card.addEventListener('touchmove', (e) => {
-                currentX = e.touches[0].clientX;
-                const diff = currentX - startX;
+            // 2. Show the warning popup
+            const isConfirmed = confirm("Are you sure you want to log out of StyleStash?");
 
-                // Only allow swiping right
-                if (diff > 0) {
-                    card.style.transform = `translateX(${diff}px)`;
-                }
-            });
-
-            card.addEventListener('touchend', (e) => {
-                const diff = currentX - startX;
-                const threshold = 100; // Swipe distance required
-
-                if (diff > threshold) {
-                    // Successful Swipe
-                    card.classList.add('swiped-right');
-                    setTimeout(() => {
-                        card.remove();
-                        updateStats();
-                    }, 300);
-                } else {
-                    // Snap back
-                    card.style.transform = 'translateX(0)';
-                }
-            });
-        });
-
+            // 3. If they click "OK" (Yes)
+            if (isConfirmed) {
+                localStorage.removeItem('token');
+                window.location.replace('login.html');
+            }
+            // If they click "Cancel", nothing else happens and they stay on the page!
+        }
     </script>
 </body>
 
