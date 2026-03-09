@@ -8,7 +8,6 @@
     <style>
         :root {
             --primary-accent: #6366f1;
-            /* Indigo */
             --primary-hover: #4f46e5;
             --bg-overlay: rgba(0, 0, 0, 0.5);
             --bg-modal: #ffffff;
@@ -57,7 +56,6 @@
             display: flex;
             overflow: hidden;
             max-height: 90vh;
-            /* Prevent overflow on small screens */
             position: relative;
         }
 
@@ -117,7 +115,6 @@
         /* Preview State */
         .image-preview-container {
             display: none;
-            /* Hidden by default */
             width: 100%;
             height: 100%;
             position: relative;
@@ -193,7 +190,6 @@
             width: 60%;
             padding: 24px 32px;
             overflow-y: auto;
-            /* Scrollable form */
             display: flex;
             flex-direction: column;
         }
@@ -275,28 +271,56 @@
             box-shadow: 0 4px 6px rgba(99, 102, 241, 0.3);
         }
 
-        /* Color Circles */
-        .color-row {
+        /* Honeycomb Hex Grid */
+        .honeycomb {
             display: flex;
-            gap: 12px;
+            flex-direction: column;
+            align-items: center;
+            padding: 10px 0;
         }
 
-        .color-radio {
+        .honeycomb-row {
+            display: flex;
+            justify-content: center;
+            gap: 2px;
+            margin-top: -6px;
+            /* Pulls rows up to interlock hexagons */
+        }
+
+        .honeycomb-row:first-child {
+            margin-top: 0;
+        }
+
+        .honeycomb-cell {
+            position: relative;
+            width: 24px;
+            height: 28px;
+            cursor: pointer;
+        }
+
+        .honeycomb-cell input {
             display: none;
         }
 
-        .color-circle {
-            width: 32px;
-            height: 32px;
-            border-radius: 50%;
-            cursor: pointer;
-            border: 2px solid transparent;
+        .honeycomb-hex {
+            width: 100%;
+            height: 100%;
+            background-color: #ccc;
+            /* Creates the hexagon shape */
+            clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
             transition: transform 0.2s;
         }
 
-        .color-radio:checked+.color-circle {
-            transform: scale(1.2);
-            border-color: var(--text-main);
+        .honeycomb-cell input:checked+.honeycomb-hex {
+            transform: scale(1.3);
+            z-index: 10;
+            position: relative;
+        }
+
+        .honeycomb-cell:hover .honeycomb-hex {
+            transform: scale(1.15);
+            z-index: 5;
+            position: relative;
         }
 
         /* Warmth Slider */
@@ -369,7 +393,6 @@
             .left-col {
                 width: 100%;
                 height: 250px;
-                /* Fixed height for image area on mobile */
                 padding: 16px;
                 border-right: none;
                 border-bottom: 1px solid var(--border-color);
@@ -449,10 +472,6 @@
                     <div class="form-group">
                         <label for="subCategory">Sub-Category</label>
                         <select id="subCategory">
-                            <option value="tshirt">T-Shirt</option>
-                            <option value="shirt">Button Shirt</option>
-                            <option value="sweater">Sweater</option>
-                            <option value="hoodie">Hoodie</option>
                         </select>
                     </div>
 
@@ -472,25 +491,7 @@
 
                     <div class="form-group">
                         <label>Dominant Color</label>
-                        <div class="color-row">
-                            <label><input type="radio" name="color" class="color-radio">
-                                <div class="color-circle" style="background:#000;"></div>
-                            </label>
-                            <label><input type="radio" name="color" class="color-radio">
-                                <div class="color-circle" style="background:#fff; border: 1px solid #ddd;"></div>
-                            </label>
-                            <label><input type="radio" name="color" class="color-radio">
-                                <div class="color-circle" style="background:#1d4ed8;"></div>
-                            </label>
-                            <label><input type="radio" name="color" class="color-radio">
-                                <div class="color-circle" style="background:#b91c1c;"></div>
-                            </label>
-                            <label><input type="radio" name="color" class="color-radio">
-                                <div class="color-circle" style="background:#15803d;"></div>
-                            </label>
-                            <label><input type="radio" name="color" class="color-radio">
-                                <div class="color-circle" style="background:#d97706;"></div>
-                            </label>
+                        <div class="honeycomb" id="honeycombGrid">
                         </div>
                     </div>
 
@@ -506,7 +507,7 @@
 
                 <div class="modal-footer">
                     <button class="btn btn-ghost" id="cancelBtn">Cancel</button>
-                    <button class="btn btn-primary">Save Item</button>
+                    <button class="btn btn-primary" id="saveItemBtn">Save Item</button>
                 </div>
             </div>
         </div>
@@ -522,99 +523,203 @@
         const warmthRange = document.getElementById('warmthRange');
         const warmthValue = document.getElementById('warmthValue');
 
-        // Update Slider Value Display
+        // Track the file globally so Drag & Drop works perfectly
+        let selectedFile = null;
+
+        // --- 1. Basic UI Navigation ---
+        document.querySelector('.close-modal-btn').addEventListener('click', () => {
+            window.location.href = "dashboard.html";
+        });
+
+        document.getElementById('cancelBtn').addEventListener('click', (e) => {
+            e.preventDefault();
+            window.location.href = "dashboard.html";
+        });
+
         warmthRange.addEventListener('input', (e) => {
             warmthValue.textContent = e.target.value;
         });
 
-        // Click to Browse
+        // --- 2. Image Upload & Preview Logic ---
         dropZone.addEventListener('click', () => fileInput.click());
+        dropZone.addEventListener('dragover', (e) => { e.preventDefault(); dropZone.classList.add('drag-over'); });
+        dropZone.addEventListener('dragleave', () => dropZone.classList.remove('drag-over'));
 
-        // Drag & Drop Events
-        dropZone.addEventListener('dragover', (e) => {
-            e.preventDefault();
-            dropZone.classList.add('drag-over');
-        });
-
-        dropZone.addEventListener('dragleave', () => {
-            dropZone.classList.remove('drag-over');
-        });
-
+        // Handle Drag & Drop
         dropZone.addEventListener('drop', (e) => {
             e.preventDefault();
             dropZone.classList.remove('drag-over');
-            const file = e.dataTransfer.files[0];
-            handleFile(file);
+            selectedFile = e.dataTransfer.files[0]; // Capture dropped file
+            handleFile(selectedFile);
         });
 
-        // File Input Change
+        // Handle Clicking "Browse"
         fileInput.addEventListener('change', (e) => {
-            const file = e.target.files[0];
-            handleFile(file);
+            selectedFile = e.target.files[0]; // Capture clicked file
+            handleFile(selectedFile);
         });
 
-        // Handle File Logic
         function handleFile(file) {
             if (file && file.type.startsWith('image/')) {
-                // Show AI Loader
                 dropZone.style.display = 'none';
                 aiLoader.style.display = 'flex';
-
                 const reader = new FileReader();
                 reader.onload = (e) => {
-                    // Simulate AI Analysis Delay (1.5 seconds)
                     setTimeout(() => {
                         aiLoader.style.display = 'none';
                         imagePreview.src = e.target.result;
                         previewContainer.style.display = 'block';
-
-                        // Optional: Here you would inject logic to auto-fill tags
-                        console.log("AI Tagging simulated...");
-                    }, 1500);
+                    }, 1000);
                 };
                 reader.readAsDataURL(file);
             }
         }
 
-        // Remove Image
         removeImgBtn.addEventListener('click', () => {
-            fileInput.value = ''; // Reset input
+            fileInput.value = '';
+            selectedFile = null; // Clear the file
             imagePreview.src = '';
             previewContainer.style.display = 'none';
             dropZone.style.display = 'flex';
         });
 
-        // Dynamic Sub-Category (Simple Example)
+        // --- 3. Dynamic Sub-Categories ---
         const categoryRadios = document.querySelectorAll('input[name="category"]');
         const subCategorySelect = document.getElementById('subCategory');
 
         const subCatOptions = {
-            top: ['T-Shirt', 'Button Shirt', 'Sweater', 'Hoodie'],
-            bottom: ['Jeans', 'Chinos', 'Shorts', 'Skirt'],
-            shoes: ['Sneakers', 'Boots', 'Sandals', 'Formal'],
-            outerwear: ['Jacket', 'Coat', 'Vest', 'Blazer']
+            top: ['T-Shirt', 'Button Shirt', 'Polo', 'Tank Top', 'Blouse', 'Sweater', 'Hoodie', 'Long Sleeve', 'Henley', 'Crop Top'],
+            bottom: ['Jeans', 'Chinos', 'Shorts', 'Skirt', 'Sweatpants', 'Leggings', 'Slacks', 'Cargo Pants', 'Trousers', 'Capris'],
+            shoes: ['Sneakers', 'Boots', 'Sandals', 'Loafers', 'Heels', 'Flats', 'Wedges', 'Dress Shoes', 'Running Shoes', 'Slippers'],
+            outerwear: ['Jacket', 'Coat', 'Vest', 'Blazer', 'Cardigan', 'Windbreaker', 'Parka', 'Raincoat', 'Trench Coat', 'Poncho']
         };
 
-        categoryRadios.forEach(radio => {
-            radio.addEventListener('change', (e) => {
-                const selected = e.target.value;
-                const options = subCatOptions[selected];
-
-                subCategorySelect.innerHTML = ''; // Clear existing
-                options.forEach(opt => {
-                    const el = document.createElement('option');
-                    el.value = opt.toLowerCase();
-                    el.textContent = opt;
-                    subCategorySelect.appendChild(el);
-                });
+        function updateSubCategories(selected) {
+            const options = subCatOptions[selected];
+            subCategorySelect.innerHTML = '';
+            options.forEach(opt => {
+                const el = document.createElement('option');
+                el.value = opt.toLowerCase();
+                el.textContent = opt;
+                subCategorySelect.appendChild(el);
             });
+        }
+
+        updateSubCategories('top');
+        categoryRadios.forEach(radio => radio.addEventListener('change', (e) => updateSubCategories(e.target.value)));
+
+        // --- 4. Generate Honeycomb Hex Grid ---
+        const honeycombGrid = document.getElementById('honeycombGrid');
+        const honeycombPalette = [
+            ['#0a2540', '#0d3b66', '#10528c', '#146ab3', '#1783d9', '#429eec'],
+            ['#074f4f', '#096b6b', '#0c8787', '#0fa3a3', '#12bfbf', '#3ed1d1', '#6ae3e3'],
+            ['#0e590e', '#137a13', '#189b18', '#1dbc1d', '#22dd22', '#4ee44e', '#7aeb7a', '#a6f2a6'],
+            ['#335c00', '#4c8a00', '#66b800', '#80e600', '#99ff1a', '#b3ff4d', '#ccff80', '#e6ffb3', '#ffffff'],
+            ['#5c5c00', '#8a8a00', '#b8b800', '#e6e600', '#ffff1a', '#ffff4d', '#ffff80', '#ffffb3', '#ffe6f0', '#ffb3d1'],
+            ['#5c3d00', '#8a5c00', '#b87a00', '#e69900', '#ffb81a', '#ffc74d', '#ffd680', '#ff99bb', '#ff4d88'],
+            ['#5c1f00', '#8a2e00', '#b83d00', '#e64d00', '#ff661a', '#ff854d', '#ff3377', '#cc0044'],
+            ['#4a0000', '#6e0000', '#910000', '#b50000', '#d90000', '#ff1a1a', '#ff4d4d'],
+            ['#2b0000', '#400000', '#550000', '#6a0000', '#800000', '#950000']
+        ];
+
+        let colorChecked = false;
+        honeycombPalette.forEach((rowColors) => {
+            const rowDiv = document.createElement('div');
+            rowDiv.className = 'honeycomb-row';
+            rowColors.forEach((hex) => {
+                const label = document.createElement('label');
+                label.className = 'honeycomb-cell';
+                let isChecked = '';
+                if (!colorChecked && hex === '#ffffff') { isChecked = 'checked'; colorChecked = true; }
+                label.innerHTML = `
+                    <input type="radio" name="color" value="${hex}" ${isChecked}>
+                    <div class="honeycomb-hex" style="background:${hex};"></div>
+                `;
+                rowDiv.appendChild(label);
+            });
+            honeycombGrid.appendChild(rowDiv);
         });
 
-        // Cancel button → redirect to dashboard
-        document.getElementById('cancelBtn').addEventListener('click', () => {
-            window.location.href = "dashboard.html"; // change path if needed
-        });
+        // --- 5. Save Logic (MongoDB Integration) ---
+        document.getElementById('saveItemBtn').addEventListener('click', async (e) => {
+            e.preventDefault();
 
+            // Check if we captured a file
+            if (!selectedFile) {
+                alert("Please upload an image first!");
+                return;
+            }
+
+            // Gather all form data safely
+            const name = document.getElementById('itemName').value || 'Untitled Item';
+            const category = document.querySelector('input[name="category"]:checked')?.value || 'top';
+            const subCategory = document.getElementById('subCategory').value;
+            const color = document.querySelector('input[name="color"]:checked')?.value || '#ffffff';
+            const warmth = document.getElementById('warmthRange').value;
+
+            // Get selected seasons
+            const seasonCheckboxes = document.querySelectorAll('input[type="checkbox"]:checked');
+            const seasons = Array.from(seasonCheckboxes).map(cb => cb.nextElementSibling.innerText);
+
+            // Change button to loading state
+            const btn = document.getElementById('saveItemBtn');
+            const originalText = btn.innerHTML;
+            btn.innerHTML = 'Uploading...';
+            btn.disabled = true;
+
+            try {
+                // Get user token for authentication
+                const token = localStorage.getItem('token');
+                if (!token) {
+                    alert("You must be logged in to save items.");
+                    window.location.href = 'login.html';
+                    return;
+                }
+
+                // Create FormData for Multer
+                const formData = new FormData();
+                formData.append('image', selectedFile);
+                formData.append('name', name);
+                formData.append('category', category);
+                formData.append('subCategory', subCategory);
+                formData.append('color', color);
+                formData.append('warmth', warmth);
+                formData.append('seasons', JSON.stringify(seasons));
+
+                // Send POST request to backend
+                const response = await fetch('/api/items', {
+                    method: 'POST',
+                    headers: { 'x-auth-token': token }, // Do NOT set Content-Type with FormData!
+                    body: formData
+                });
+
+                if (response.ok) {
+                    // Success! Redirect to wardrobe
+                    window.location.href = "my-wardrobe.html";
+                } else {
+                    // Smart Error Handling
+                    let errorMsg = "Server Error";
+                    const contentType = response.headers.get("content-type");
+                    if (contentType && contentType.includes("application/json")) {
+                        const errData = await response.json();
+                        errorMsg = errData.error || errData.msg || "Unknown Error";
+                    } else {
+                        console.error("Server crashed:", await response.text());
+                        errorMsg = "Backend crash! Check your VS Code terminal for red text.";
+                    }
+
+                    alert("Failed to save: \n" + errorMsg);
+                    btn.innerHTML = originalText;
+                    btn.disabled = false;
+                }
+
+            } catch (error) {
+                console.error("Total Fetch Failure:", error);
+                alert("Network error: " + error.message + "\n\nIs your Node.js server running in the terminal?");
+                btn.innerHTML = originalText;
+                btn.disabled = false;
+            }
+        });
     </script>
 </body>
 
