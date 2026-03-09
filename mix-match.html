@@ -5,19 +5,21 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mix & Match - StyleStash</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Poppins:wght@300;400;500;600&display=swap"
+        rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
     <style>
         :root {
             --primary: #2563eb;
-            --accent-pink: #ec4899; /* For Save/Love */
+            --accent-pink: #ec4899;
             --bg-body: #f1f5f9;
             --bg-card: #ffffff;
             --text-main: #1e293b;
             --text-sub: #64748b;
             --border: #e2e8f0;
-            
+
             /* Sidebar Variables */
             --sidebar-bg: #0f172a;
             --sidebar-text: #94a3b8;
@@ -26,7 +28,11 @@
             --accent-red: #ef4444;
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
         body {
             font-family: 'Inter', sans-serif;
@@ -60,8 +66,14 @@
             gap: 12px;
         }
 
-        .nav-links { list-style: none; flex-grow: 1; }
-        .nav-item { margin-bottom: 0.5rem; }
+        .nav-links {
+            list-style: none;
+            flex-grow: 1;
+        }
+
+        .nav-item {
+            margin-bottom: 0.5rem;
+        }
 
         .nav-link {
             display: flex;
@@ -73,19 +85,25 @@
             transition: all 0.2s;
             font-family: 'Poppins';
             font-size: 0.95rem;
-            cursor: pointer;
         }
 
-        .nav-link:hover { background-color: rgba(255, 255, 255, 0.1); color: #fff; }
+        .nav-link:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+            color: #fff;
+        }
 
         .nav-link.active {
-            background-color: var(--accent-blue) !important;
-            color: #ffffff !important;
+            background-color: var(--accent-blue);
+            color: #ffffff;
             font-weight: 500;
             box-shadow: 0 4px 6px -1px rgba(59, 130, 246, 0.5);
         }
 
-        .nav-link i { margin-right: 12px; width: 20px; text-align: center; }
+        .nav-link i {
+            margin-right: 12px;
+            width: 20px;
+            text-align: center;
+        }
 
         .sidebar-footer {
             margin-top: auto;
@@ -95,8 +113,10 @@
             flex-direction: column;
             gap: 5px;
         }
-        
-        .logout-btn { color: var(--accent-red); }
+
+        .logout-btn {
+            color: var(--accent-red);
+        }
 
         /* ================= MAIN CONTENT ================= */
         .main-content {
@@ -106,28 +126,28 @@
             position: relative;
         }
 
-        /* --- Zone A: The Canvas (Center) --- */
-        .canvas-area {
-            flex: 3; /* Takes ~75% of remaining space */
-            background: #e2e8f0; /* Darker bg to make images pop */
+        /* --- Zone A: The Workspace (Center) --- */
+        .workspace-area {
+            flex: 3;
+            background: #e2e8f0;
             display: flex;
-            flex-direction: column;
+            gap: 2rem;
             justify-content: center;
             align-items: center;
             padding: 2rem;
             position: relative;
         }
 
+        /* Left Side: Carousels */
         .mannequin-container {
-            width: 100%;
-            max-width: 400px;
+            flex: 1;
+            max-width: 350px;
             height: 80vh;
             display: flex;
             flex-direction: column;
-            gap: 5px;
+            gap: 10px;
         }
 
-        /* Carousel Row Styling */
         .carousel-row {
             flex: 1;
             background: white;
@@ -144,10 +164,9 @@
             width: 100%;
             height: 100%;
             object-fit: cover;
-            transition: transform 0.3s ease;
+            transition: transform 0.3s ease, opacity 0.3s ease;
         }
 
-        /* Controls: Arrows */
         .nav-arrow {
             position: absolute;
             top: 50%;
@@ -166,52 +185,150 @@
             z-index: 10;
             transition: background 0.2s;
         }
-        .nav-arrow:hover { background: white; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
-        .arrow-left { left: 15px; }
-        .arrow-right { right: 15px; }
 
-        /* Controls: Lock */
+        .nav-arrow:hover {
+            background: white;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .arrow-left {
+            left: 10px;
+        }
+
+        .arrow-right {
+            right: 10px;
+        }
+
         .lock-toggle {
             position: absolute;
-            top: 15px;
-            right: 15px;
+            top: 10px;
+            right: 10px;
             background: rgba(255, 255, 255, 0.9);
             border: none;
-            width: 36px;
-            height: 36px;
+            width: 32px;
+            height: 32px;
             border-radius: 8px;
             cursor: pointer;
             z-index: 10;
             color: var(--text-sub);
-            font-size: 1rem;
             display: flex;
             align-items: center;
             justify-content: center;
             transition: all 0.2s;
         }
-        
+
         .lock-toggle.locked {
             background: var(--accent-red);
             color: white;
         }
 
-        /* Mobile Toggle Button */
-        .mobile-toggle-btn {
+        /* Right Side: AR / VR Try On */
+        .ar-vr-container {
+            flex: 1;
+            max-width: 400px;
+            height: 80vh;
+            background: #0f172a;
+            border-radius: 16px;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.3);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .ar-header {
+            background: rgba(0, 0, 0, 0.5);
+            padding: 15px;
+            color: white;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 600;
+            z-index: 20;
+            backdrop-filter: blur(5px);
+        }
+
+        .ar-view {
+            flex: 1;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+            /* Prevent internal stretching */
+            overflow: hidden;
+        }
+
+        .avatar-silhouette {
             position: absolute;
-            top: 20px;
-            left: 20px;
-            background: white;
-            border: none;
-            padding: 10px;
-            border-radius: 8px;
-            cursor: pointer;
+            height: 80%;
+            object-fit: cover;
+            transition: opacity 0.5s ease;
+        }
+
+        /* Basic Preview "Sticker" Clothes - ADDED MAX-HEIGHT TO STOP STRETCHING */
+        .ar-clothing {
+            width: 80%;
+            max-height: 45%;
+            object-fit: contain;
+            transition: all 0.4s ease;
+            z-index: 5;
+            mix-blend-mode: lighten;
+        }
+
+        .ar-top {
+            margin-bottom: -5%;
+        }
+
+        .ar-bottom {
+            height: 45%;
+        }
+
+        .scanner-line {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: #3b82f6;
+            box-shadow: 0 0 15px 5px rgba(59, 130, 246, 0.5);
+            animation: scan 3s infinite linear;
+            z-index: 10;
+        }
+
+        @keyframes scan {
+            0% {
+                top: 10%;
+                opacity: 0;
+            }
+
+            10% {
+                opacity: 1;
+            }
+
+            90% {
+                opacity: 1;
+            }
+
+            100% {
+                top: 90%;
+                opacity: 0;
+            }
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 20px;
+            color: var(--text-sub);
             display: none;
-            z-index: 100;
+            z-index: 5;
         }
 
         /* --- Zone B: Control Panel (Right) --- */
         .control-panel {
-            flex: 1; /* Takes ~25% */
+            flex: 1;
             background: white;
             border-left: 1px solid var(--border);
             padding: 2rem;
@@ -230,9 +347,17 @@
             margin-bottom: 1rem;
         }
 
-        /* Filters */
-        .form-group { margin-bottom: 1rem; }
-        .form-group label { display: block; font-size: 0.9rem; margin-bottom: 5px; font-weight: 500; }
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 0.9rem;
+            margin-bottom: 5px;
+            font-weight: 500;
+        }
+
         .styled-select {
             width: 100%;
             padding: 10px;
@@ -242,11 +367,29 @@
             font-family: 'Inter';
         }
 
-        .season-toggles { display: flex; gap: 5px; background: var(--bg-body); padding: 5px; border-radius: 8px; }
-        .season-btn { flex: 1; border: none; background: none; padding: 8px; font-size: 0.85rem; cursor: pointer; border-radius: 6px; }
-        .season-btn.active { background: white; shadow: 0 1px 2px rgba(0,0,0,0.1); font-weight: 600; }
+        .season-toggles {
+            display: flex;
+            gap: 5px;
+            background: var(--bg-body);
+            padding: 5px;
+            border-radius: 8px;
+        }
 
-        /* Magic Button */
+        .season-btn {
+            flex: 1;
+            border: none;
+            background: none;
+            padding: 8px;
+            font-size: 0.85rem;
+            cursor: pointer;
+            border-radius: 6px;
+        }
+
+        .season-btn.active {
+            background: white;
+            font-weight: 600;
+        }
+
         .shuffle-btn {
             width: 100%;
             padding: 1.2rem;
@@ -263,22 +406,43 @@
             justify-content: center;
             gap: 10px;
         }
+
         .shuffle-btn:hover {
             transform: translateY(-2px);
             box-shadow: 0 10px 20px rgba(99, 102, 241, 0.4);
         }
-        .shuffle-btn:active { transform: scale(0.98); }
 
-        /* Stats & Save */
+        .shuffle-btn:active {
+            transform: scale(0.98);
+        }
+
         .stat-box {
             background: var(--bg-body);
             padding: 15px;
             border-radius: 12px;
             margin-bottom: 1rem;
         }
-        .warmth-label { display: flex; justify-content: space-between; font-size: 0.9rem; margin-bottom: 8px; }
-        .warmth-bar { height: 8px; background: #cbd5e1; border-radius: 4px; overflow: hidden; }
-        .warmth-fill { height: 100%; background: #f59e0b; width: 0%; transition: width 0.5s ease; }
+
+        .warmth-label {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.9rem;
+            margin-bottom: 8px;
+        }
+
+        .warmth-bar {
+            height: 8px;
+            background: #cbd5e1;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .warmth-fill {
+            height: 100%;
+            background: #f59e0b;
+            width: 0%;
+            transition: width 0.5s ease;
+        }
 
         .save-btn {
             width: 100%;
@@ -291,20 +455,69 @@
             cursor: pointer;
             transition: 0.2s;
         }
-        .save-btn:hover { background: var(--accent-pink); color: white; }
+
+        .save-btn:hover {
+            background: var(--accent-pink);
+            color: white;
+        }
+
+        .mobile-toggle-btn {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: white;
+            border: none;
+            padding: 10px;
+            border-radius: 8px;
+            cursor: pointer;
+            display: none;
+            z-index: 100;
+        }
 
         /* ================= RESPONSIVE ================= */
+        @media (max-width: 1100px) {
+            .workspace-area {
+                flex-direction: column;
+                height: auto;
+                padding-top: 5rem;
+            }
+
+            .mannequin-container,
+            .ar-vr-container {
+                width: 100%;
+                max-width: 500px;
+                height: 60vh;
+            }
+
+            .control-panel {
+                min-width: auto;
+            }
+        }
+
         @media (max-width: 900px) {
-            .sidebar { position: fixed; height: 100%; transform: translateX(-100%); }
-            .sidebar.active { transform: translateX(0); }
-            .mobile-toggle-btn { display: block; }
-            
-            .main-content { flex-direction: column; overflow-y: auto; }
-            
-            .canvas-area { height: auto; padding: 4rem 1rem 1rem 1rem; flex: none; }
-            .mannequin-container { height: 400px; }
-            
-            .control-panel { border-left: none; border-top: 1px solid var(--border); min-width: auto; }
+            .sidebar {
+                position: fixed;
+                height: 100%;
+                transform: translateX(-100%);
+            }
+
+            .sidebar.active {
+                transform: translateX(0);
+            }
+
+            .mobile-toggle-btn {
+                display: block;
+            }
+
+            .main-content {
+                flex-direction: column;
+                overflow-y: auto;
+            }
+
+            .control-panel {
+                border-left: none;
+                border-top: 1px solid var(--border);
+            }
         }
     </style>
 </head>
@@ -314,76 +527,83 @@
     <aside class="sidebar" id="sidebar">
         <div class="brand"><i class="fa-solid fa-layer-group"></i> StyleStash</div>
         <ul class="nav-links">
-            <li class="nav-item">
-                <a href="/dashboard.html" class="nav-link" onclick="setActive(this)">
-                    <i class="fa-solid fa-table-columns"></i> Dashboard
-                </a>
-            </li>
-            <li class="nav-item">
-                <a href="/my-wardrobe.html" class="nav-link" onclick="setActive(this)">
-                    <i class="fa-solid fa-shirt"></i> My Wardrobe
-                </a>
-            </li>
-            <li class="nav-item">
-                <a href="/mix-match.html" class="nav-link active" onclick="setActive(this)">
-                    <i class="fa-solid fa-shuffle"></i> Mix & Match
-                </a>
-            </li>
-            <li class="nav-item">
-                <a href="/calendar.html" class="nav-link" onclick="setActive(this)">
-                    <i class="fa-regular fa-calendar"></i> Calendar
-                </a>
-            </li>
-            <li class="nav-item">
-                <a href="/laundary-room.html" class="nav-link" onclick="setActive(this)">
-                    <i class="fa-solid fa-jug-detergent"></i> Laundry Room
-                </a>
-            </li>
+            <li class="nav-item"><a href="dashboard.html" class="nav-link"><i class="fa-solid fa-table-columns"></i>
+                    Dashboard</a></li>
+            <li class="nav-item"><a href="my-wardrobe.html" class="nav-link"><i class="fa-solid fa-shirt"></i> My
+                    Wardrobe</a></li>
+            <li class="nav-item"><a href="mix-match.html" class="nav-link active"><i class="fa-solid fa-shuffle"></i>
+                    Mix & Match</a></li>
+            <li class="nav-item"><a href="laundry-room.html" class="nav-link"><i class="fa-solid fa-jug-detergent"></i>
+                    Laundry Room</a></li>
+            <li class="nav-item"><a href="calendar.html" class="nav-link"><i class="fa-regular fa-calendar"></i>
+                    Calendar</a></li>
         </ul>
         <div class="sidebar-footer">
-            <a href="#" class="nav-link" onclick="setActive(this)">
-                <i class="fa-solid fa-gear"></i> Settings
-            </a>
-            <a href="#" class="nav-link logout-btn">
-                <i class="fa-solid fa-arrow-right-from-bracket"></i> Logout
+            <a href="settings.html" class="nav-link"><i class="fa-solid fa-gear"></i> Settings</a>
+            <a href="login.html" class="nav-link logout-btn" onclick="logout(event)">
+                <div><i class="fa-solid fa-arrow-right-from-bracket"></i> Logout</div>
             </a>
         </div>
     </aside>
 
     <main class="main-content">
-        
+
         <button class="mobile-toggle-btn" onclick="toggleSidebar()">
             <i class="fa-solid fa-bars"></i>
         </button>
 
-        <div class="canvas-area">
+        <div class="workspace-area">
+
             <div class="mannequin-container">
-                
                 <div class="carousel-row" id="topRow">
-                    <button class="nav-arrow arrow-left" onclick="prevItem('top')"><i class="fa-solid fa-chevron-left"></i></button>
+                    <button class="nav-arrow arrow-left" onclick="prevItem('top')"><i
+                            class="fa-solid fa-chevron-left"></i></button>
+                    <div class="empty-state" id="emptyTopMsg" style="position: absolute;">No Tops Found.<br><a
+                            href="add-item.html">Add one!</a></div>
                     <img src="" class="carousel-img" id="imgTop">
-                    <button class="nav-arrow arrow-right" onclick="nextItem('top')"><i class="fa-solid fa-chevron-right"></i></button>
-                    
-                    <button class="lock-toggle" id="lockTop" onclick="toggleLock('top')">
-                        <i class="fa-solid fa-lock-open"></i>
-                    </button>
+                    <button class="nav-arrow arrow-right" onclick="nextItem('top')"><i
+                            class="fa-solid fa-chevron-right"></i></button>
+                    <button class="lock-toggle" id="lockTop" onclick="toggleLock('top')"><i
+                            class="fa-solid fa-lock-open"></i></button>
                 </div>
 
                 <div class="carousel-row" id="bottomRow">
-                    <button class="nav-arrow arrow-left" onclick="prevItem('bottom')"><i class="fa-solid fa-chevron-left"></i></button>
+                    <button class="nav-arrow arrow-left" onclick="prevItem('bottom')"><i
+                            class="fa-solid fa-chevron-left"></i></button>
+                    <div class="empty-state" id="emptyBottomMsg" style="position: absolute;">No Bottoms Found.<br><a
+                            href="add-item.html">Add one!</a></div>
                     <img src="" class="carousel-img" id="imgBottom">
-                    <button class="nav-arrow arrow-right" onclick="nextItem('bottom')"><i class="fa-solid fa-chevron-right"></i></button>
-                    
-                    <button class="lock-toggle" id="lockBottom" onclick="toggleLock('bottom')">
-                        <i class="fa-solid fa-lock-open"></i>
-                    </button>
+                    <button class="nav-arrow arrow-right" onclick="nextItem('bottom')"><i
+                            class="fa-solid fa-chevron-right"></i></button>
+                    <button class="lock-toggle" id="lockBottom" onclick="toggleLock('bottom')"><i
+                            class="fa-solid fa-lock-open"></i></button>
+                </div>
+            </div>
+
+            <div class="ar-vr-container">
+                <div class="ar-header">
+                    <i class="fa-solid fa-vr-cardboard"></i> Smart Mirror: Virtual Try-On
                 </div>
 
+                <div class="ar-view">
+                    <div class="scanner-line" style="display: none;"></div>
+
+                    <img src="https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?auto=format&fit=crop&w=400&q=80"
+                        class="avatar-silhouette" id="mainModelImage" alt="Avatar">
+
+                    <img src="" class="ar-clothing ar-top" id="arTop">
+                    <img src="" class="ar-clothing ar-bottom" id="arBottom">
+                </div>
+
+                <button id="aiTryOnBtn"
+                    style="position: absolute; bottom: 25px; left: 50%; transform: translateX(-50%); z-index: 9999; padding: 15px 30px; border-radius: 50px; border: none; background: linear-gradient(135deg, #a855f7 0%, #6366f1 100%); color: white; font-size: 1.1rem; font-weight: bold; cursor: pointer; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4); display: flex; align-items: center; gap: 10px; white-space: nowrap;">
+                    <i class="fa-solid fa-wand-magic-sparkles"></i> Generate Realistic Try-On
+                </button>
             </div>
+
         </div>
 
         <div class="control-panel">
-            
             <div class="panel-section">
                 <h3>Filters</h3>
                 <div class="form-group">
@@ -414,93 +634,190 @@
                 <div class="stat-box">
                     <div class="warmth-label">
                         <span>Warmth Level</span>
-                        <span id="warmthText">6/10</span>
+                        <span id="warmthText">0/10</span>
                     </div>
                     <div class="warmth-bar">
-                        <div class="warmth-fill" id="warmthBar" style="width: 60%;"></div>
+                        <div class="warmth-fill" id="warmthBar" style="width: 0%;"></div>
                     </div>
                 </div>
                 <button class="save-btn" onclick="saveLook()">
                     <i class="fa-regular fa-heart"></i> Save Look
                 </button>
             </div>
-
         </div>
 
     </main>
 
     <script>
-        // --- 1. Mock Data ---
-        const tops = [
-            { src: 'https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?auto=format&fit=crop&w=600&q=80', warmth: 4 }, // White Shirt
-            { src: 'https://images.unsplash.com/photo-1618354691373-d851c5c3a990?auto=format&fit=crop&w=600&q=80', warmth: 2 }, // Black Tee
-            { src: 'https://images.unsplash.com/photo-1576566588028-4147f3842f27?auto=format&fit=crop&w=600&q=80', warmth: 8 }, // Sweater
-            { src: 'https://images.unsplash.com/photo-1551028919-ac6635f00370?auto=format&fit=crop&w=600&q=80', warmth: 7 }  // Jacket
-        ];
-
-        const bottoms = [
-            { src: 'https://images.unsplash.com/photo-1542272617-08f086303b96?auto=format&fit=crop&w=600&q=80', warmth: 5 }, // Jeans
-            { src: 'https://images.unsplash.com/photo-1591195853828-11db59a44f6b?auto=format&fit=crop&w=600&q=80', warmth: 2 }, // Shorts
-            { src: 'https://images.unsplash.com/photo-1473966968600-fa801b869a1a?auto=format&fit=crop&w=600&q=80', warmth: 4 }  // Chinos
-        ];
-
-        // --- 2. State Management ---
+        // --- 1. State Management ---
+        let tops = [];
+        let bottoms = [];
         let topIndex = 0;
         let bottomIndex = 0;
         let lockTop = false;
         let lockBottom = false;
 
-        // --- 3. Render Logic ---
+        // DOM Elements
         const imgTop = document.getElementById('imgTop');
         const imgBottom = document.getElementById('imgBottom');
+        const arTop = document.getElementById('arTop');
+        const arBottom = document.getElementById('arBottom');
+        const emptyTopMsg = document.getElementById('emptyTopMsg');
+        const emptyBottomMsg = document.getElementById('emptyBottomMsg');
         const warmthBar = document.getElementById('warmthBar');
         const warmthText = document.getElementById('warmthText');
 
-        function updateView() {
-            imgTop.src = tops[topIndex].src;
-            imgBottom.src = bottoms[bottomIndex].src;
-            updateStats();
+        // --- LOGOUT LOGIC (With Warning & Cancel Fix) ---
+        function logout(event) {
+            // 1. Stop the browser from automatically following the link
+            if (event) {
+                event.preventDefault();
+            }
+
+            // 2. Show the warning popup
+            const isConfirmed = confirm("Are you sure you want to log out of StyleStash?");
+
+            // 3. If they click "OK" (Yes)
+            if (isConfirmed) {
+                localStorage.removeItem('token');
+                window.location.replace('login.html');
+            }
+            // If they click "Cancel", nothing else happens and they stay on the page!
         }
 
-        function updateStats() {
-            // Calculate Average Warmth
-            const avgWarmth = Math.round((tops[topIndex].warmth + bottoms[bottomIndex].warmth) / 2 * 10) / 10;
+        // --- 2. Fetch from MongoDB Database ---
+        async function fetchWardrobeFromDB() {
+            try {
+                const token = localStorage.getItem('token');
+                if (!token) {
+                    window.location.href = 'login.html';
+                    return;
+                }
+
+                const response = await fetch('http://localhost:5000/api/items', {
+                    method: 'GET',
+                    headers: {
+                        'x-auth-token': token,
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                if (!response.ok) throw new Error('Failed to fetch from database');
+
+                const allItems = await response.json();
+
+                tops = allItems.filter(item => item.category === 'top');
+                bottoms = allItems.filter(item => item.category === 'bottom');
+
+                init();
+
+            } catch (error) {
+                console.error("Database fetch error:", error);
+                alert("Failed to load clothes. Please make sure your server is running.");
+            }
+        }
+
+        // --- 3. Initial Setup & Validation ---
+        function init() {
+            if (tops.length === 0) {
+                imgTop.style.display = 'none';
+                arTop.style.display = 'none';
+                emptyTopMsg.style.display = 'block';
+            } else {
+                imgTop.style.display = 'block';
+                arTop.style.display = 'block';
+                emptyTopMsg.style.display = 'none';
+            }
+
+            if (bottoms.length === 0) {
+                imgBottom.style.display = 'none';
+                arBottom.style.display = 'none';
+                emptyBottomMsg.style.display = 'block';
+            } else {
+                imgBottom.style.display = 'block';
+                arBottom.style.display = 'block';
+                emptyBottomMsg.style.display = 'none';
+            }
+
+            if (tops.length > 0 || bottoms.length > 0) {
+                updateView();
+            }
+        }
+
+        // --- 4. Render Logic ---
+        function updateView() {
+            let tWarmth = 0;
+            let bWarmth = 0;
+
+            if (tops.length > 0) {
+                const currentTop = tops[topIndex];
+                imgTop.src = currentTop.imageUrl;
+                arTop.src = currentTop.imageUrl;
+                tWarmth = parseInt(currentTop.warmth) || 0;
+            }
+
+            if (bottoms.length > 0) {
+                const currentBottom = bottoms[bottomIndex];
+                imgBottom.src = currentBottom.imageUrl;
+                arBottom.src = currentBottom.imageUrl;
+                bWarmth = parseInt(currentBottom.warmth) || 0;
+            }
+
+            updateStats(tWarmth, bWarmth);
+        }
+
+        function updateStats(tWarmth, bWarmth) {
+            let divisor = 0;
+            if (tops.length > 0) divisor++;
+            if (bottoms.length > 0) divisor++;
+
+            if (divisor === 0) return;
+
+            const avgWarmth = Math.round((tWarmth + bWarmth) / divisor * 10) / 10;
             const percentage = (avgWarmth / 10) * 100;
-            
+
             warmthText.innerText = `${avgWarmth}/10`;
             warmthBar.style.width = `${percentage}%`;
-            
-            // Color logic for warmth
-            if(percentage < 40) warmthBar.style.backgroundColor = '#60a5fa'; // Blue (Cool)
-            else if(percentage > 70) warmthBar.style.backgroundColor = '#ef4444'; // Red (Hot)
-            else warmthBar.style.backgroundColor = '#f59e0b'; // Orange (Mild)
+
+            if (percentage <= 30) warmthBar.style.backgroundColor = '#60a5fa';
+            else if (percentage >= 70) warmthBar.style.backgroundColor = '#ef4444';
+            else warmthBar.style.backgroundColor = '#f59e0b';
         }
 
-        // --- 4. Navigation Logic ---
+        // --- 5. Navigation Logic ---
         function nextItem(type) {
-            if(type === 'top' && !lockTop) {
+            if (type === 'top' && !lockTop && tops.length > 0) {
                 topIndex = (topIndex + 1) % tops.length;
-            } else if(type === 'bottom' && !lockBottom) {
+            } else if (type === 'bottom' && !lockBottom && bottoms.length > 0) {
                 bottomIndex = (bottomIndex + 1) % bottoms.length;
             }
             updateView();
+            resetMirror(); // Switch back to preview mode if they change clothes
         }
 
         function prevItem(type) {
-            if(type === 'top' && !lockTop) {
+            if (type === 'top' && !lockTop && tops.length > 0) {
                 topIndex = (topIndex - 1 + tops.length) % tops.length;
-            } else if(type === 'bottom' && !lockBottom) {
+            } else if (type === 'bottom' && !lockBottom && bottoms.length > 0) {
                 bottomIndex = (bottomIndex - 1 + bottoms.length) % bottoms.length;
             }
             updateView();
+            resetMirror();
         }
 
-        // --- 5. Lock Logic ---
+        function resetMirror() {
+            // Restore the placeholder model and the sticker overlays
+            document.getElementById('mainModelImage').style.opacity = '0.1';
+            document.getElementById('mainModelImage').src = "https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?auto=format&fit=crop&w=400&q=80";
+            if (tops.length > 0) arTop.style.display = 'block';
+            if (bottoms.length > 0) arBottom.style.display = 'block';
+        }
+
         function toggleLock(type) {
             const btn = document.getElementById(type === 'top' ? 'lockTop' : 'lockBottom');
             const icon = btn.querySelector('i');
 
-            if(type === 'top') {
+            if (type === 'top') {
                 lockTop = !lockTop;
                 btn.classList.toggle('locked');
                 icon.className = lockTop ? 'fa-solid fa-lock' : 'fa-solid fa-lock-open';
@@ -511,29 +828,91 @@
             }
         }
 
-        // --- 6. Shuffle Logic ---
         function shuffleOutfit() {
-            // Add slight animation effect (fade out/in)
-            const rows = [];
-            if(!lockTop) rows.push(imgTop);
-            if(!lockBottom) rows.push(imgBottom);
+            const elementsToAnimate = [];
+            if (!lockTop && tops.length > 0) elementsToAnimate.push(imgTop, arTop);
+            if (!lockBottom && bottoms.length > 0) elementsToAnimate.push(imgBottom, arBottom);
 
-            rows.forEach(img => img.style.opacity = 0);
+            elementsToAnimate.forEach(el => el.style.opacity = 0);
 
             setTimeout(() => {
-                if(!lockTop) topIndex = Math.floor(Math.random() * tops.length);
-                if(!lockBottom) bottomIndex = Math.floor(Math.random() * bottoms.length);
+                if (!lockTop && tops.length > 0) topIndex = Math.floor(Math.random() * tops.length);
+                if (!lockBottom && bottoms.length > 0) bottomIndex = Math.floor(Math.random() * bottoms.length);
+
                 updateView();
-                rows.forEach(img => img.style.opacity = 1);
-            }, 200);
+                resetMirror();
+
+                elementsToAnimate.forEach(el => el.style.opacity = 1);
+            }, 300);
         }
 
-        // --- 7. Save Logic ---
+        // --- 8. AI Virtual Try-On Logic ---
+        document.getElementById('aiTryOnBtn').addEventListener('click', async () => {
+            if (tops.length === 0) {
+                alert("Please upload a Top in 'My Wardrobe' first!");
+                return;
+            }
+
+            const currentTop = tops[topIndex];
+            const btn = document.getElementById('aiTryOnBtn');
+            const scanner = document.querySelector('.scanner-line');
+            const mainModel = document.getElementById('mainModelImage');
+
+            // Base model URL
+            const modelImageUrl = "https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?auto=format&fit=crop&w=400&q=80";
+
+            // UI Loading State
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Generating... (Wait 20s)';
+            btn.disabled = true;
+            scanner.style.display = 'block'; // Turn on the laser scanner
+
+            try {
+                const token = localStorage.getItem('token');
+
+                const response = await fetch('http://localhost:5000/api/try-on', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'x-auth-token': token
+                    },
+                    body: JSON.stringify({
+                        garmentUrl: currentTop.imageUrl,
+                        modelUrl: modelImageUrl,
+                        category: "upper_body"
+                    })
+                });
+
+                if (!response.ok) {
+                    const err = await response.json();
+                    throw new Error(err.error || "Server error");
+                }
+
+                const data = await response.json();
+
+                // Replace generic model image with the highly realistic AI-generated result!
+                mainModel.src = data.resultImage;
+                mainModel.style.opacity = '1';
+
+                // Hide the ugly CSS sticker overlays
+                document.getElementById('arTop').style.display = 'none';
+                document.getElementById('arBottom').style.display = 'none';
+
+            } catch (error) {
+                console.error("AI Error:", error);
+                alert("Failed to generate AI Try-On: " + error.message);
+            } finally {
+                btn.innerHTML = '<i class="fa-solid fa-wand-magic-sparkles"></i> Generate Realistic Try-On';
+                btn.disabled = false;
+                scanner.style.display = 'none';
+            }
+        });
+
+        // --- 9. Save Logic ---
         function saveLook() {
             const btn = document.querySelector('.save-btn');
             const originalHTML = btn.innerHTML;
-            
-            btn.innerHTML = '<i class="fa-solid fa-check"></i> Saved!';
+
+            btn.innerHTML = '<i class="fa-solid fa-check"></i> Saved to Calendar!';
             btn.style.backgroundColor = 'var(--accent-pink)';
             btn.style.color = 'white';
 
@@ -544,16 +923,14 @@
             }, 2000);
         }
 
-        // Sidebar Utils
-        function setActive(clickedLink) {
-            document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
-            clickedLink.classList.add('active');
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('active');
         }
-        function toggleSidebar() { document.getElementById('sidebar').classList.toggle('active'); }
 
-        // Initialize
-        updateView();
+        // Start App
+        document.addEventListener('DOMContentLoaded', fetchWardrobeFromDB);
 
     </script>
 </body>
+
 </html>
