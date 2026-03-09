@@ -103,6 +103,14 @@
             padding-top: 1rem;
         }
 
+        /* Added for the new logout button class if you want it red */
+        .logout-btn {
+            color: var(--accent-red) !important;
+        }
+        .logout-btn:hover {
+            background-color: rgba(239, 68, 68, 0.1) !important;
+        }
+
         /* Main Content */
         .main-content {
             margin-left: 260px;
@@ -219,12 +227,16 @@
             border-radius: 12px;
             overflow: hidden;
             position: relative;
+            background: #f8fafc;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
         .ootd-item img {
             width: 100%;
             height: 100%;
-            object-fit: cover;
+            object-fit: contain;
             transition: transform 0.3s;
         }
 
@@ -523,10 +535,11 @@
                     Calendar</a></li>
         </ul>
         <div class="sidebar-footer">
-            <a href="setting.html" class="nav-link" onclick="comingSoon(this, event)"><i class="fa-solid fa-gear"></i>
+            <a href="setting.html" class="nav-link"><i class="fa-solid fa-gear"></i>
                 Settings</a>
-            <a href="#" class="nav-link" style="color: #ef4444;" onclick="logout()"><i
-                    class="fa-solid fa-arrow-right-from-bracket"></i> Logout</a>
+            <a href="login.html" class="nav-link logout-btn" onclick="logout(event)">
+                <div><i class="fa-solid fa-arrow-right-from-bracket"></i> Logout</div>
+            </a>
         </div>
     </aside>
 
@@ -539,12 +552,7 @@
                     <p id="currentDate">Loading date...</p>
                 </div>
             </div>
-            <div class="header-actions">
-                <button class="notification-btn"><i class="fa-regular fa-bell"></i><span class="badge"></span></button>
-                <img src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?ixlib=rb-1.2.1&auto=format&fit=crop&w=100&q=80"
-                    alt="Profile" class="profile-pic">
-            </div>
-        </header>
+            </header>
 
         <div class="dashboard-grid">
 
@@ -552,20 +560,28 @@
                 <div class="card-header">
                     <div class="card-title">Your Daily Look</div>
                 </div>
-                <div class="ootd-container">
-                    <div class="ootd-item"><img
-                            src="https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?auto=format&fit=crop&w=400&q=80"
-                            alt="Shirt"></div>
-                    <div class="ootd-item"><img
-                            src="https://images.unsplash.com/photo-1552902865-b72c031ac5ea?auto=format&fit=crop&w=400&q=80"
-                            alt="Pants"></div>
+
+                <div class="ootd-container" id="outfit-display-area" style="display: none;">
+                    <div class="ootd-item">
+                        <img id="ootdTop" src="" alt="Top">
+                    </div>
+                    <div class="ootd-item">
+                        <img id="ootdBottom" src="" alt="Bottom">
+                    </div>
                 </div>
-                <div class="ootd-actions">
+
+                <div class="ootd-actions" id="outfit-actions" style="display: none;">
                     <button class="btn btn-primary">Wear this</button>
                     <button class="btn btn-icon"><i class="fa-regular fa-heart"></i></button>
                     <button class="btn btn-icon refresh-btn" onclick="animateRefresh(this)"><i
                             class="fa-solid fa-rotate"></i></button>
                 </div>
+
+                <div class="empty-state" id="outfit-empty-state">
+                    <i class="fa-solid fa-shirt empty-icon"></i>
+                    <h3 style="margin-bottom: 0.5rem; color: var(--text-main);">Loading your closet...</h3>
+                </div>
+
             </div>
 
             <div class="card weather-card">
@@ -618,10 +634,13 @@
     </main>
 
     <script>
-        // --- 1. CONFIGURATION ---
-        // I have inserted the key you provided below
+        // --- 1. CONFIGURATION & STATE ---
         const WEATHER_API_KEY = "6c5cadfae46bf2528c58dc878a31a614";
         const token = localStorage.getItem('token');
+
+        // Arrays to hold the user's actual clothes
+        let myTops = [];
+        let myBottoms = [];
 
         // Gatekeeper
         if (!token) window.location.href = 'login.html';
@@ -630,6 +649,7 @@
         document.addEventListener('DOMContentLoaded', () => {
             updateDateGreeting();
             fetchDashboardData();
+            fetchWardrobeForOOTD(); // Added new fetch for clothes
             fetchLocationAndWeather();
         });
 
@@ -643,7 +663,6 @@
         // --- 4. FETCH DASHBOARD DATA (USER NAME & STATS) ---
         async function fetchDashboardData() {
             try {
-                // This calls the server.js route we created
                 const res = await fetch('/api/dashboard/stats', {
                     headers: { 'x-auth-token': token }
                 });
@@ -659,10 +678,9 @@
                 else if (hour >= 17) timeGreeting = "Good Evening";
 
                 // B. Capitalize Name and Set Title
-                // We use data.name coming from the backend
                 let displayName = "User";
-                if (data.name) {
-                    displayName = data.name.split(' ')[0]; // Get just the first name
+                if (data.name && data.name.toLowerCase() !== 'undefined') {
+                    displayName = data.name.split(' ')[0];
                     displayName = displayName.charAt(0).toUpperCase() + displayName.slice(1);
                 }
 
@@ -673,35 +691,73 @@
                 document.getElementById('laundry-count').innerText = data.dirtyItems || 0;
                 document.getElementById('laundry-text').innerText = `${data.dirtyItems || 0} items`;
 
-                // D. Handle Empty State (New User)
-                if (data.isNewUser) {
+            } catch (err) {
+                console.error("Dashboard Data Error:", err);
+            }
+        }
+
+        // --- NEW: FETCH WARDROBE ITEMS FOR DAILY LOOK ---
+        async function fetchWardrobeForOOTD() {
+            try {
+                const res = await fetch('/api/items', {
+                    headers: { 'x-auth-token': token }
+                });
+
+                if (!res.ok) throw new Error("Failed to fetch wardrobe");
+
+                const items = await res.json();
+
+                // Sort items into tops and bottoms
+                myTops = items.filter(item => item.category === 'top');
+                myBottoms = items.filter(item => item.category === 'bottom');
+
+                // Check if user has enough clothes to make an outfit
+                if (myTops.length === 0 || myBottoms.length === 0) {
                     renderEmptyState();
+                } else {
+                    // Hide empty state, show outfit area
+                    document.getElementById('outfit-empty-state').style.display = 'none';
+                    document.getElementById('outfit-display-area').style.display = 'flex';
+                    document.getElementById('outfit-actions').style.display = 'flex';
+
+                    shuffleOutfit(); // Pick random clothes
                 }
 
             } catch (err) {
-                console.error("Dashboard Data Error:", err);
-                if (err.message.includes("Failed")) {
-                    // If dashboard fails, maybe token is expired
-                    // logout(); 
-                }
+                console.error("Failed to load OOTD items:", err);
+                renderEmptyState();
             }
+        }
+
+        // --- NEW: SHUFFLE OUTFIT LOGIC ---
+        function shuffleOutfit() {
+            if (myTops.length === 0 || myBottoms.length === 0) return;
+
+            // Pick a random top and random bottom
+            const randomTop = myTops[Math.floor(Math.random() * myTops.length)];
+            const randomBottom = myBottoms[Math.floor(Math.random() * myBottoms.length)];
+
+            // Set the images to the actual Cloudinary URLs from the database
+            document.getElementById('ootdTop').src = randomTop.imageUrl;
+            document.getElementById('ootdBottom').src = randomBottom.imageUrl;
         }
 
         // --- 5. RENDER EMPTY STATE ---
         function renderEmptyState() {
-            const ootdCard = document.getElementById('ootd-card-content');
-            ootdCard.innerHTML = `
-                <div class="card-header"><div class="card-title">Your Daily Look</div></div>
-                <div class="empty-state">
-                    <i class="fa-solid fa-shirt empty-icon"></i>
-                    <h3 style="margin-bottom: 0.5rem; color: var(--text-main);">Your closet is empty!</h3>
-                    <p style="color: var(--text-secondary); margin-bottom: 1.5rem; text-align:center;">
-                        Upload your clothes to get AI-powered outfit suggestions.
-                    </p>
-                    <a href="add-item.html" class="btn btn-primary">
-                        <i class="fa-solid fa-plus"></i> Add First Item
-                    </a>
-                </div>
+            const emptyStateDiv = document.getElementById('outfit-empty-state');
+            document.getElementById('outfit-display-area').style.display = 'none';
+            document.getElementById('outfit-actions').style.display = 'none';
+            emptyStateDiv.style.display = 'flex';
+
+            emptyStateDiv.innerHTML = `
+                <i class="fa-solid fa-shirt empty-icon"></i>
+                <h3 style="margin-bottom: 0.5rem; color: var(--text-main);">Needs more clothes!</h3>
+                <p style="color: var(--text-secondary); margin-bottom: 1.5rem; text-align:center;">
+                    You need at least one Top and one Bottom uploaded to generate a Daily Look.
+                </p>
+                <a href="add-item.html" class="btn btn-primary">
+                    <i class="fa-solid fa-plus"></i> Upload Clothes
+                </a>
             `;
         }
 
@@ -717,9 +773,7 @@
                 const lon = position.coords.longitude;
 
                 try {
-                    // Using the URL structure and key you provided
                     const url = `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${WEATHER_API_KEY}&units=metric`;
-
                     const res = await fetch(url);
                     const weather = await res.json();
 
@@ -735,7 +789,6 @@
                     const condition = weather.weather[0].main.toLowerCase();
                     const aiTip = document.getElementById('ai-weather-tip');
 
-                    // Reset icon class
                     iconEl.className = "weather-icon fa-solid";
 
                     if (condition.includes('rain') || condition.includes('drizzle')) {
@@ -748,7 +801,7 @@
                         iconEl.classList.add("fa-sun");
                         aiTip.innerText = "Sunny skies! Great day for that white tee.";
                     } else if (condition.includes('snow')) {
-                        iconEl.classList.add("fa-snowflake"); // Note: snowflake is usually fa-regular or fa-solid depending on version
+                        iconEl.classList.add("fa-snowflake");
                         aiTip.innerText = "It's freezing! Wear your heaviest coat.";
                     } else {
                         iconEl.classList.add("fa-cloud-sun");
@@ -767,19 +820,38 @@
         }
 
         // --- UTILS ---
-        function logout() {
-            localStorage.removeItem('token');
-            window.location.href = 'login.html';
+        
+        // --- LOGOUT LOGIC (With Warning & Cancel Fix) ---
+        function logout(event) {
+            // 1. Stop the browser from automatically following the link
+            if (event) {
+                event.preventDefault();
+            }
+
+            // 2. Show the warning popup
+            const isConfirmed = confirm("Are you sure you want to log out of StyleStash?");
+
+            // 3. If they click "OK" (Yes)
+            if (isConfirmed) {
+                localStorage.removeItem('token');
+                window.location.replace('login.html');
+            }
+            // If they click "Cancel", nothing else happens and they stay on the page!
         }
 
         function toggleSidebar() {
             document.getElementById('sidebar').classList.toggle('active');
         }
 
+        // Updated Refresh Button to Shuffle Outfit
         function animateRefresh(btn) {
             const icon = btn.querySelector('i');
             icon.style.transition = 'transform 0.5s ease';
             icon.style.transform = 'rotate(360deg)';
+
+            // Call the shuffle function!
+            shuffleOutfit();
+
             setTimeout(() => { icon.style.transition = 'none'; icon.style.transform = 'rotate(0deg)'; }, 500);
         }
 
