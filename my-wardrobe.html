@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Curated Gallery – StyleStash</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Poppins:wght@300;400;500;600&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+    <style>
+        :root {
+            /* Gallery Variables */
+            --accent: #2563eb;
+            --text-dark: #0f172a;
+            --text-light: #64748b;
+            --bg: #f8fafc;
+            --card-radius: 16px;
+
+            /* Sidebar Variables */
+            --sidebar-bg: #0f172a;
+            --sidebar-text: #94a3b8;
+            --sidebar-active: #ffffff;
+            --accent-blue: #3b82f6;
+            --accent-red: #ef4444;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg);
+            color: var(--text-dark);
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* ================= SIDEBAR STYLES ================= */
+        .sidebar {
+            width: 260px;
+            background-color: var(--sidebar-bg);
+            color: var(--sidebar-text);
+            display: flex;
+            flex-direction: column;
+            padding: 2rem;
+            position: fixed;
+            height: 100vh;
+            transition: transform 0.3s ease;
+            z-index: 1000;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .brand {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #fff;
+            margin-bottom: 3rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .nav-links {
+            list-style: none;
+            flex-grow: 1;
+        }
+
+        .nav-item {
+            margin-bottom: 0.5rem;
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            padding: 12px 16px;
+            color: var(--sidebar-text);
+            text-decoration: none;
+            border-radius: 8px;
+            transition: all 0.2s;
+            font-size: 0.95rem;
+        }
+
+        .nav-link:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+            color: #fff;
+        }
+
+        .nav-link.active {
+            background-color: var(--accent-blue);
+            color: #fff;
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+        }
+
+        .nav-link i {
+            margin-right: 12px;
+            width: 20px;
+            text-align: center;
+        }
+
+        .sidebar-footer {
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            padding-top: 1rem;
+        }
+
+        .logout-btn {
+            color: var(--accent-red) !important;
+        }
+
+        .logout-btn:hover {
+            background-color: rgba(239, 68, 68, 0.1) !important;
+        }
+
+        .mobile-toggle {
+            display: none;
+            font-size: 1.5rem;
+            color: var(--text-dark);
+            cursor: pointer;
+            margin-right: 1rem;
+        }
+
+        /* ================= MAIN CONTENT WRAPPER ================= */
+        .main-content {
+            margin-left: 260px;
+            flex: 1;
+            width: calc(100% - 260px);
+            position: relative;
+        }
+
+        /* ================= TOP CONTROL BAR ================= */
+        .control-bar {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background: white;
+            padding: 1rem 1.5rem;
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .search-input {
+            flex: 1;
+            padding: 0.7rem 1rem;
+            border-radius: 999px;
+            border: 1px solid #e5e7eb;
+            font-size: 0.9rem;
+        }
+
+        .filter-chips {
+            display: flex;
+            gap: 0.5rem;
+            overflow-x: auto;
+        }
+
+        .chip {
+            padding: 0.5rem 1rem;
+            border-radius: 999px;
+            border: 1px solid #e5e7eb;
+            background: white;
+            cursor: pointer;
+            font-size: 0.85rem;
+            white-space: nowrap;
+        }
+
+        .chip.active {
+            background: var(--accent);
+            color: white;
+            border-color: var(--accent);
+        }
+
+        .sort-select {
+            padding: 0.5rem;
+            border-radius: 8px;
+            border: 1px solid #e5e7eb;
+        }
+
+        .view-toggle {
+            font-size: 1.2rem;
+            cursor: pointer;
+            color: var(--text-light);
+        }
+
+        /* ================= GALLERY ================= */
+        .gallery {
+            column-count: 4;
+            column-gap: 1.5rem;
+            padding: 1.5rem;
+        }
+
+        @media (max-width: 1200px) {
+            .gallery {
+                column-count: 3;
+            }
+        }
+
+        @media (max-width: 900px) {
+            .sidebar {
+                transform: translateX(-100%);
+            }
+
+            .sidebar.active {
+                transform: translateX(0);
+                box-shadow: 10px 0 30px rgba(0, 0, 0, 0.5);
+            }
+
+            .main-content {
+                margin-left: 0;
+                width: 100%;
+            }
+
+            .mobile-toggle {
+                display: block;
+            }
+
+            .gallery {
+                column-count: 2;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .gallery {
+                column-count: 1;
+            }
+        }
+
+        .card {
+            position: relative;
+            margin-bottom: 1.5rem;
+            border-radius: var(--card-radius);
+            overflow: hidden;
+            break-inside: avoid;
+            background: #ddd;
+        }
+
+        .card img {
+            width: 100%;
+            display: block;
+        }
+
+        /* ================= BADGES ================= */
+        .badge {
+            position: absolute;
+            top: 12px;
+            left: 12px;
+            background: rgba(0, 0, 0, 0.6);
+            color: white;
+            padding: 0.3rem 0.6rem;
+            border-radius: 999px;
+            font-size: 0.75rem;
+            display: flex;
+            gap: 0.3rem;
+            align-items: center;
+        }
+
+        .warmth {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            font-size: 1.5rem;
+        }
+
+        /* ================= HOVER ACTION BAR ================= */
+        .action-bar {
+            position: absolute;
+            bottom: -60px;
+            left: 0;
+            right: 0;
+            background: rgba(255, 255, 255, 0.95);
+            display: flex;
+            justify-content: space-around;
+            padding: 0.7rem 0;
+            transition: 0.3s ease;
+        }
+
+        .card:hover .action-bar {
+            bottom: 0;
+        }
+
+        .action-bar i {
+            cursor: pointer;
+            color: var(--text-dark);
+            font-size: 1.1rem;
+        }
+
+        .action-bar i:hover {
+            color: var(--accent);
+        }
+
+        /* ================= FAB ================= */
+        .fab {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: var(--accent);
+            color: white;
+            font-size: 1.8rem;
+            border: none;
+            cursor: pointer;
+            box-shadow: 0 12px 30px rgba(37, 99, 235, 0.4);
+            z-index: 900;
+        }
+    </style>
+</head>
+
+<body>
+
+    <aside class="sidebar" id="sidebar">
+        <div class="brand">
+            <i class="fa-solid fa-layer-group"></i> StyleStash
+        </div>
+
+        <ul class="nav-links">
+            <li class="nav-item">
+                <a href="dashboard.html" class="nav-link">
+                    <i class="fa-solid fa-table-columns"></i> Dashboard
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="my-wardrobe.html" class="nav-link active">
+                    <i class="fa-solid fa-shirt"></i> My Wardrobe
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="mix-match.html" class="nav-link">
+                    <i class="fa-solid fa-shuffle"></i> Mix & Match
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="laundry-room.html" class="nav-link">
+                    <i class="fa-solid fa-jug-detergent"></i> Laundry Room
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="calendar.html" class="nav-link">
+                    <i class="fa-regular fa-calendar"></i> Calendar
+                </a>
+            </li>
+        </ul>
+
+        <div class="sidebar-footer">
+            <a href="setting.html" class="nav-link">
+                <i class="fa-solid fa-gear"></i> Settings
+            </a>
+            <a href="login.html" class="nav-link logout-btn" onclick="logout(event)">
+                <div><i class="fa-solid fa-arrow-right-from-bracket"></i> Logout</div>
+            </a>
+        </div>
+    </aside>
+
+    <main class="main-content">
+
+        <div class="control-bar">
+            <div class="mobile-toggle" onclick="toggleSidebar()">
+                <i class="fa-solid fa-bars"></i>
+            </div>
+
+            <input class="search-input" placeholder="Search 'Blue Jeans'...">
+
+            <div class="filter-chips">
+                <div class="chip active">All</div>
+                <div class="chip">Tops</div>
+                <div class="chip">Bottoms</div>
+                <div class="chip">Shoes</div>
+                <div class="chip">Outerwear</div>
+                <div class="chip">Accessories</div>
+            </div>
+
+            <select class="sort-select">
+                <option>Newest</option>
+                <option>Last Worn</option>
+                <option>Color</option>
+            </select>
+
+            <i class="fa-solid fa-grip view-toggle"></i>
+        </div>
+
+        <div class="gallery" id="wardrobeGallery">
+        </div>
+
+        <button class="fab" onclick="window.location.href='add-item.html'">+</button>
+
+    </main>
+
+    <script>
+        // --- Sidebar Logic ---
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('active');
+        }
+
+        document.addEventListener('click', function (event) {
+            const sidebar = document.getElementById('sidebar');
+            const toggle = document.querySelector('.mobile-toggle');
+
+            if (sidebar.classList.contains('active') &&
+                !sidebar.contains(event.target) &&
+                !toggle.contains(event.target)) {
+                sidebar.classList.remove('active');
+            }
+        });
+
+        // --- Fetch Wardrobe Items from MongoDB ---
+        async function fetchWardrobe() {
+            const gallery = document.getElementById('wardrobeGallery');
+            const token = localStorage.getItem('token');
+
+            if (!token) {
+                window.location.href = 'login.html';
+                return;
+            }
+
+            try {
+                // Fetch from your backend
+                const response = await fetch('/api/items', {
+                    headers: { 'x-auth-token': token }
+                });
+
+                if (!response.ok) throw new Error("Failed to fetch items");
+
+                const wardrobe = await response.json();
+
+                if (wardrobe.length === 0) {
+                    gallery.innerHTML = `<p style="text-align: center; grid-column: 1/-1; color: var(--text-light); padding: 2rem;">Your wardrobe is empty. Click the + button to add clothes!</p>`;
+                    return;
+                }
+
+                gallery.innerHTML = ''; // Clear the container
+
+                // Build HTML cards dynamically inside my-wardrobe.html
+                wardrobe.forEach(item => {
+                    // Skip showing this item if it is in the laundry room!
+                    if (item.isClean === false) return;
+
+                    let warmthIcon = '☀️';
+                    if (item.warmth <= 3) warmthIcon = '❄️';
+                    else if (item.warmth >= 8) warmthIcon = '🔥';
+
+                    const cardHTML = `
+                        <div class="card" id="item-${item._id}">
+                            <img src="${item.imageUrl}" alt="${item.name}">
+                            <div class="warmth">${warmthIcon}</div>
+                            <div class="action-bar">
+                                <i class="fa-solid fa-pen"></i>
+                                <i class="fa-solid fa-basket-shopping" onclick="sendToLaundry('${item._id}')" title="Send to Laundry"></i>
+                                <i class="fa-solid fa-trash" onclick="deleteItem('${item._id}')" title="Delete"></i>
+                            </div>
+                        </div>
+                    `;
+                    gallery.insertAdjacentHTML('beforeend', cardHTML);
+                });
+
+            } catch (err) {
+                console.error("Error loading wardrobe:", err);
+                gallery.innerHTML = `<p style="text-align: center; grid-column: 1/-1; color: var(--accent-red); padding: 2rem;">Error loading wardrobe. Is your backend server running?</p>`;
+            }
+        }
+
+        // Run fetch when the page loads
+        document.addEventListener('DOMContentLoaded', fetchWardrobe);
+
+        // --- Delete Logic (MongoDB) ---
+        async function deleteItem(id) {
+            if (confirm('Are you sure you want to delete this item?')) {
+                const token = localStorage.getItem('token');
+
+                try {
+                    // Send delete request to backend
+                    const response = await fetch(`/api/items/${id}`, {
+                        method: 'DELETE',
+                        headers: { 'x-auth-token': token }
+                    });
+
+                    if (response.ok) {
+                        // Backend successfully deleted it, now remove it from the screen
+                        document.getElementById(`item-${id}`).remove();
+
+                        // Show empty state if that was the last item
+                        const gallery = document.getElementById('wardrobeGallery');
+                        if (gallery.children.length === 0) {
+                            gallery.innerHTML = `<p style="text-align: center; grid-column: 1/-1; color: var(--text-light); padding: 2rem;">Your wardrobe is empty. Click the + button to add clothes!</p>`;
+                        }
+                    } else {
+                        const errData = await response.json();
+                        alert("Database Error: " + (errData.msg || errData.error || "Could not delete."));
+                    }
+                } catch (err) {
+                    console.error("Failed to delete item", err);
+                    alert("Network error: Could not reach the server to delete.");
+                }
+            }
+        }
+
+        // --- Send Item to Laundry Room ---
+        async function sendToLaundry(id) {
+            const token = localStorage.getItem('token');
+            try {
+                // Tell the database this item is dirty
+                const response = await fetch(`/api/items/${id}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'x-auth-token': token
+                    },
+                    body: JSON.stringify({ isClean: false })
+                });
+
+                if (response.ok) {
+                    // Remove it from the Wardrobe view
+                    document.getElementById(`item-${id}`).remove();
+                    // Alert the user
+                    alert("Sent to Laundry Room!");
+                }
+            } catch (err) {
+                console.error(err);
+                alert("Failed to send to laundry.");
+            }
+        }
+
+        // --- LOGOUT LOGIC (With Warning & Cancel Fix) ---
+        function logout(event) {
+            // 1. Stop the browser from automatically following the link
+            if (event) {
+                event.preventDefault();
+            }
+
+            // 2. Show the warning popup
+            const isConfirmed = confirm("Are you sure you want to log out of StyleStash?");
+
+            // 3. If they click "OK" (Yes)
+            if (isConfirmed) {
+                localStorage.removeItem('token');
+                window.location.replace('login.html');
+            }
+            // If they click "Cancel", nothing else happens and they stay on the page!
+        }
+    </script>
+</body>
+
+</html>

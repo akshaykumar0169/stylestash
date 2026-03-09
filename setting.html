@@ -1,0 +1,666 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Settings - StyleStash</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@300;400;500;600&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+    <style>
+        :root {
+            --primary: #111827;
+            --text-grey: #6b7280;
+            --border-color: #e5e7eb;
+            --bg-body: #ffffff;
+            --bg-hover: #f3f4f6;
+            --danger: #ef4444;
+            --radius: 8px;
+
+            /* Main Sidebar Variables */
+            --sidebar-bg: #0f172a;
+            --sidebar-text: #94a3b8;
+            --sidebar-active: #ffffff;
+            --accent-blue: #3b82f6;
+            --accent-red: #ef4444;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-body);
+            display: flex;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        /* ================= 1. MAIN APP SIDEBAR (Dark Navy) ================= */
+        .main-sidebar {
+            width: 260px;
+            background-color: var(--sidebar-bg);
+            color: var(--sidebar-text);
+            display: flex;
+            flex-direction: column;
+            padding: 2rem;
+            flex-shrink: 0;
+            z-index: 1000;
+            transition: transform 0.3s ease;
+        }
+
+        .brand {
+            font-family: 'Poppins';
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #fff;
+            margin-bottom: 2.5rem;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .main-nav-links {
+            list-style: none;
+            flex-grow: 1;
+        }
+
+        .main-nav-item {
+            margin-bottom: 0.5rem;
+        }
+
+        .main-nav-link {
+            display: flex;
+            align-items: center;
+            padding: 12px 16px;
+            color: var(--sidebar-text);
+            text-decoration: none;
+            border-radius: 8px;
+            transition: all 0.2s;
+            font-family: 'Poppins';
+            font-size: 0.95rem;
+            cursor: pointer;
+        }
+
+        .main-nav-link i {
+            margin-right: 12px;
+            width: 20px;
+            text-align: center;
+        }
+
+        .main-nav-link:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+            color: #fff;
+        }
+
+        /* Blue Active Strip */
+        .main-nav-link.active {
+            background-color: var(--accent-blue) !important;
+            color: #ffffff !important;
+            font-weight: 500;
+            box-shadow: 0 4px 6px -1px rgba(59, 130, 246, 0.5);
+        }
+
+        .sidebar-footer {
+            margin-top: auto;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            padding-top: 1rem;
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .logout-btn {
+            color: var(--accent-red);
+        }
+
+        /* ================= 2. MAIN CONTENT WRAPPER ================= */
+        .content-wrapper {
+            flex-grow: 1;
+            display: flex;
+            height: 100vh;
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* ================= 3. SETTINGS LAYOUT (Sub-Sidebar + Form) ================= */
+
+        /* 3A. Settings Sub-Navigation (Light) */
+        .settings-sub-sidebar {
+            width: 240px;
+            background: #fff;
+            border-right: 1px solid var(--border-color);
+            padding: 40px 20px;
+            display: flex;
+            flex-direction: column;
+            flex-shrink: 0;
+        }
+
+        .sub-nav-list {
+            list-style: none;
+            margin-top: 20px;
+        }
+
+        .sub-nav-item {
+            margin-bottom: 5px;
+        }
+
+        .sub-nav-link {
+            display: block;
+            padding: 10px 15px;
+            color: var(--primary);
+            text-decoration: none;
+            font-size: 0.95rem;
+            font-weight: 500;
+            border-radius: var(--radius);
+            transition: all 0.2s;
+            cursor: pointer;
+        }
+
+        .sub-nav-link:hover {
+            background-color: var(--bg-hover);
+        }
+
+        /* Sub-Nav Active Style (Bold + Left Border) */
+        .sub-nav-link.active {
+            font-weight: 700;
+            background-color: var(--bg-hover);
+            border-left: 3px solid var(--primary);
+            border-radius: 0 var(--radius) var(--radius) 0;
+        }
+
+        /* 3B. Settings Content Area */
+        .settings-form-area {
+            flex-grow: 1;
+            padding: 40px 60px;
+            overflow-y: auto;
+            background: var(--bg-body);
+        }
+
+        .mobile-header-bar {
+            display: none;
+        }
+
+        /* Hidden on desktop */
+
+        /* --- Page Headers & Forms --- */
+        .page-header {
+            margin-bottom: 30px;
+            border-bottom: 1px solid transparent;
+            padding-bottom: 20px;
+        }
+
+        .page-title {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 8px;
+            color: var(--primary);
+        }
+
+        .page-subtitle {
+            color: var(--text-grey);
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+
+        .settings-section {
+            display: none;
+            animation: fadeIn 0.3s ease;
+            max-width: 700px;
+        }
+
+        .settings-section.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(5px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Form Controls */
+        .form-group {
+            margin-bottom: 24px;
+        }
+
+        .input-wrapper {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        label {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--primary);
+        }
+
+        input[type="text"],
+        input[type="email"],
+        textarea,
+        select,
+        input[type="password"] {
+            padding: 12px 16px;
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius);
+            font-size: 1rem;
+            font-family: 'Inter', sans-serif;
+            color: var(--primary);
+            outline: none;
+            width: 100%;
+            background: #fff;
+        }
+
+        input:focus,
+        textarea:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 2px rgba(17, 24, 39, 0.05);
+        }
+
+        /* Photo Change */
+        .photo-section {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .avatar-circle {
+            width: 80px;
+            height: 80px;
+            background-color: #10b981;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 2rem;
+            font-weight: 600;
+        }
+
+        .btn-pill {
+            padding: 8px 20px;
+            background-color: white;
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .btn-pill:hover {
+            background-color: var(--bg-hover);
+        }
+
+        /* Primary Button */
+        .btn-primary {
+            background-color: var(--primary);
+            color: white;
+            padding: 12px 24px;
+            border-radius: var(--radius);
+            border: none;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .btn-primary:hover {
+            background-color: #000;
+        }
+
+        .btn-danger {
+            color: var(--danger);
+            background: none;
+            border: none;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: underline;
+        }
+
+        /* Toggles */
+        .toggle-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px 0;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .checkbox-label {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 0;
+            cursor: pointer;
+        }
+
+        input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            accent-color: var(--primary);
+        }
+
+        /* Switch */
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 44px;
+            height: 24px;
+        }
+
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+            border-radius: 34px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 18px;
+            width: 18px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+
+        input:checked+.slider {
+            background-color: var(--primary);
+        }
+
+        input:checked+.slider:before {
+            transform: translateX(20px);
+        }
+
+        /* ================= RESPONSIVE ================= */
+        @media (max-width: 900px) {
+            .main-sidebar {
+                position: fixed;
+                height: 100%;
+                transform: translateX(-100%);
+            }
+
+            .main-sidebar.active {
+                transform: translateX(0);
+            }
+
+            .content-wrapper {
+                flex-direction: column;
+            }
+
+            /* Show Mobile Header with Hamburger */
+            .mobile-header-bar {
+                display: flex;
+                align-items: center;
+                padding: 15px 20px;
+                border-bottom: 1px solid var(--border-color);
+                background: #fff;
+            }
+
+            .mobile-toggle {
+                font-size: 1.5rem;
+                margin-right: 15px;
+                cursor: pointer;
+            }
+
+            /* Flatten Layout */
+            .settings-sub-sidebar {
+                width: 100%;
+                padding: 10px 20px;
+                border-right: none;
+                border-bottom: 1px solid var(--border-color);
+                overflow-x: auto;
+                flex-shrink: 0;
+            }
+
+            .sub-nav-list {
+                display: flex;
+                margin-top: 0;
+                gap: 10px;
+            }
+
+            .sub-nav-link {
+                white-space: nowrap;
+                padding: 8px 12px;
+                border-radius: 20px;
+                border: 1px solid transparent;
+            }
+
+            .sub-nav-link.active {
+                border-left: 1px solid transparent;
+                background: var(--primary);
+                color: white;
+                border-radius: 20px;
+            }
+
+            .settings-form-area {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <aside class="main-sidebar" id="mainSidebar">
+        <div class="brand">
+            <i class="fa-solid fa-layer-group"></i> StyleStash
+        </div>
+        <ul class="main-nav-links">
+            <li class="main-nav-item"><a href="/dashboard.html" class="main-nav-link" onclick="setMainActive(this)"><i
+                        class="fa-solid fa-table-columns"></i> Dashboard</a></li>
+            <li class="main-nav-item"><a href="/my-wardrobe.html" class="main-nav-link" onclick="setMainActive(this)"><i
+                        class="fa-solid fa-shirt"></i> My Wardrobe</a></li>
+            <li class="main-nav-item"><a href="/mixmatch.html" class="main-nav-link" onclick="setMainActive(this)"><i
+                        class="fa-solid fa-shuffle"></i> Mix & Match</a></li>
+            <li class="main-nav-item"><a href="/laundry.html" class="main-nav-link" onclick="setMainActive(this)"><i
+                        class="fa-solid fa-jug-detergent"></i> Laundry Room</a></li>
+            <li class="main-nav-item"><a href="/calendar.html" class="main-nav-link" onclick="setMainActive(this)"><i
+                        class="fa-regular fa-calendar"></i> Calendar</a></li>
+        </ul>
+        <div class="sidebar-footer">
+            <a href="/setting.html" class="main-nav-link active" onclick="setMainActive(this)"><i
+                    class="fa-solid fa-gear"></i>
+                Settings</a>
+            <a href="login.html" class="main-nav-link logout-btn" onclick="logout(event)">
+                <div><i class="fa-solid fa-arrow-right-from-bracket"></i> Logout</div>
+            </a>
+        </div>
+    </aside>
+
+    <div class="content-wrapper">
+
+        <div class="mobile-header-bar">
+            <div class="mobile-toggle" onclick="toggleMainSidebar()"><i class="fa-solid fa-bars"></i></div>
+            <h2 style="font-size: 1.2rem; font-weight: 700;">Settings</h2>
+        </div>
+
+        <nav class="settings-sub-sidebar">
+            <h3 style="font-size: 0.85rem; text-transform: uppercase; color: var(--text-grey); letter-spacing: 1px;">
+                General</h3>
+            <ul class="sub-nav-list">
+                <li class="sub-nav-item">
+                    <a class="sub-nav-link active" onclick="switchSettingsTab('edit-profile', this)">Edit Profile</a>
+                </li>
+                <li class="sub-nav-item">
+                    <a class="sub-nav-link" onclick="switchSettingsTab('account', this)">Account</a>
+                </li>
+                <li class="sub-nav-item">
+                    <a class="sub-nav-link" onclick="switchSettingsTab('privacy', this)">Privacy & Data</a>
+                </li>
+                <li class="sub-nav-item">
+                    <a class="sub-nav-link" onclick="switchSettingsTab('notifications', this)">Notifications</a>
+                </li>
+            </ul>
+        </nav>
+
+        <div class="settings-form-area">
+
+            <section id="edit-profile" class="settings-section active">
+                <div class="page-header">
+                    <h1 class="page-title">Edit profile</h1>
+                    <p class="page-subtitle">Keep your personal details private. Information you add here is visible to
+                        anyone who can view your profile.</p>
+                </div>
+
+                <div class="photo-section">
+                    <div class="avatar-circle">A</div>
+                    <button class="btn-pill">Change</button>
+                </div>
+
+                <form>
+                    <div class="form-group" style="display: flex; gap: 20px;">
+                        <div class="input-wrapper" style="flex: 1;">
+                            <label>First name</label>
+                            <input type="text" value="Akshay">
+                        </div>
+                        <div class="input-wrapper" style="flex: 1;">
+                            <label>Surname</label>
+                            <input type="text" value="Kumar">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>About</label>
+                        <textarea rows="4">Tell your story</textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Location</label>
+                        <input type="text" value="New Delhi, India">
+                        <p style="font-size: 0.8rem; color: var(--text-grey); margin-top: 5px;">Used for accurate
+                            weather recommendations.</p>
+                    </div>
+
+                    <button type="button" class="btn-primary">Save Changes</button>
+                </form>
+            </section>
+
+            <section id="account" class="settings-section">
+                <div class="page-header">
+                    <h1 class="page-title">Account Management</h1>
+                    <p class="page-subtitle">Manage your login details and account security.</p>
+                </div>
+
+                <div class="form-group">
+                    <label>Email Address</label>
+                    <input type="email" value="akshay.kumar@example.com" disabled
+                        style="background:#f9fafb; color: #9ca3af;">
+                </div>
+
+                <div class="form-group">
+                    <label>Password</label>
+                    <div style="display: flex; gap: 10px;">
+                        <input type="password" value="password123" disabled style="background:#f9fafb;">
+                        <button class="btn-pill" style="white-space: nowrap;">Reset</button>
+                    </div>
+                </div>
+
+                <div style="margin-top: 40px; padding-top: 20px; border-top: 1px solid var(--border-color);">
+                    <h4 style="color: var(--danger); margin-bottom: 10px;">Danger Zone</h4>
+                    <button class="btn-danger">Deactivate Account</button>
+                </div>
+            </section>
+
+            <section id="privacy" class="settings-section">
+                <div class="page-header">
+                    <h1 class="page-title">Privacy and Data</h1>
+                    <p class="page-subtitle">Control who sees your profile.</p>
+                </div>
+                <div class="toggle-row">
+                    <div>
+                        <h4>Profile Visibility</h4>
+                        <p style="color:var(--text-grey); font-size:0.85rem;">When off, only you can see your wardrobe.
+                        </p>
+                    </div>
+                    <label class="switch"><input type="checkbox" checked><span class="slider"></span></label>
+                </div>
+            </section>
+
+            <section id="notifications" class="settings-section">
+                <div class="page-header">
+                    <h1 class="page-title">Notifications</h1>
+                    <p class="page-subtitle">Manage your alert preferences.</p>
+                </div>
+                <div class="form-group">
+                    <label class="checkbox-label"><input type="checkbox" checked> <span>Daily OOTD</span></label>
+                    <label class="checkbox-label"><input type="checkbox"> <span>Laundry Alerts</span></label>
+                    <label class="checkbox-label"><input type="checkbox" checked> <span>Weather Warnings</span></label>
+                </div>
+                <button class="btn-primary">Save Preferences</button>
+            </section>
+
+        </div>
+    </div>
+
+    <script>
+        // --- Main Sidebar Logic ---
+        function setMainActive(link) {
+            document.querySelectorAll('.main-nav-link').forEach(l => l.classList.remove('active'));
+            link.classList.add('active');
+        }
+
+        function toggleMainSidebar() {
+            document.getElementById('mainSidebar').classList.toggle('active');
+        }
+
+        // --- Settings Sub-Nav Logic ---
+        function switchSettingsTab(tabId, link) {
+            // Hide all sections
+            document.querySelectorAll('.settings-section').forEach(sec => sec.classList.remove('active'));
+            // Remove active from links
+            document.querySelectorAll('.sub-nav-link').forEach(l => l.classList.remove('active'));
+
+            // Activate target
+            document.getElementById(tabId).classList.add('active');
+            link.classList.add('active');
+        }
+
+        // --- LOGOUT LOGIC (With Warning & Cancel Fix) ---
+        function logout(event) {
+            // 1. Stop the browser from automatically following the link
+            if (event) {
+                event.preventDefault();
+            }
+
+            // 2. Show the warning popup
+            const isConfirmed = confirm("Are you sure you want to log out of StyleStash?");
+
+            // 3. If they click "OK" (Yes)
+            if (isConfirmed) {
+                localStorage.removeItem('token');
+                window.location.replace('login.html');
+            }
+            // If they click "Cancel", nothing else happens and they stay on the page!
+        }
+    </script>
+</body>
+
+</html>
