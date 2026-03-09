@@ -600,12 +600,12 @@
                 </a>
             </li>
             <li class="nav-item">
-                <a href="/mix-match.html" class="nav-link" onclick="setActive(this)">
+                <a href="mix-match.html" class="nav-link" onclick="setActive(this)">
                     <i class="fa-solid fa-shuffle"></i> Mix & Match
                 </a>
             </li>
             <li class="nav-item">
-                <a href="/laundary-room.html" class="nav-link" onclick="setActive(this)">
+                <a href="laundry-room.html" class="nav-link" onclick="setActive(this)">
                     <i class="fa-solid fa-jug-detergent"></i> Laundry Room
                 </a>
             </li>
@@ -617,11 +617,11 @@
         </ul>
 
         <div class="sidebar-footer">
-            <a href="#" class="nav-link" onclick="setActive(this)">
+            <a href="setting.html" class="nav-link" onclick="setActive(this)">
                 <i class="fa-solid fa-gear"></i> Settings
             </a>
-            <a href="#" class="nav-link logout-btn">
-                <i class="fa-solid fa-arrow-right-from-bracket"></i> Logout
+            <a href="login.html" class="nav-link logout-btn" onclick="logout(event)">
+                <div><i class="fa-solid fa-arrow-right-from-bracket"></i> Logout</div>
             </a>
         </div>
     </aside>
@@ -659,39 +659,12 @@
                 <h3>Quick Picker</h3>
             </div>
             <div class="tabs">
-                <div class="tab active">Outfits</div>
-                <div class="tab">Items</div>
+                <div class="tab active">Items</div>
             </div>
             <input type="text" class="search-bar" placeholder="Search clothes...">
 
-            <div class="picker-list">
-                <div class="draggable-item" draggable="true"
-                    data-img="https://images.unsplash.com/photo-1596755094514-f87e34085b2c?auto=format&fit=crop&w=200&q=80">
-                    <img
-                        src="https://images.unsplash.com/photo-1596755094514-f87e34085b2c?auto=format&fit=crop&w=200&q=80">
-                    <div class="item-name">Blue Denim Shirt</div>
-                </div>
-
-                <div class="draggable-item" draggable="true"
-                    data-img="https://images.unsplash.com/photo-1542272617-08f086303b96?auto=format&fit=crop&w=200&q=80">
-                    <img
-                        src="https://images.unsplash.com/photo-1542272617-08f086303b96?auto=format&fit=crop&w=200&q=80">
-                    <div class="item-name">Casual Jeans</div>
-                </div>
-
-                <div class="draggable-item" draggable="true"
-                    data-img="https://images.unsplash.com/photo-1591561954557-26941169b49e?auto=format&fit=crop&w=200&q=80">
-                    <img
-                        src="https://images.unsplash.com/photo-1591561954557-26941169b49e?auto=format&fit=crop&w=200&q=80">
-                    <div class="item-name">Beige Coat</div>
-                </div>
-
-                <div class="draggable-item" draggable="true"
-                    data-img="https://images.unsplash.com/photo-1549298916-b41d501d3772?auto=format&fit=crop&w=200&q=80">
-                    <img
-                        src="https://images.unsplash.com/photo-1549298916-b41d501d3772?auto=format&fit=crop&w=200&q=80">
-                    <div class="item-name">Running Shoes</div>
-                </div>
+            <div class="picker-list" id="pickerList">
+                <p style="padding: 10px; color: var(--text-sub); font-size: 0.85rem;">Loading your clothes...</p>
             </div>
         </aside>
 
@@ -733,6 +706,7 @@
 
         document.addEventListener('DOMContentLoaded', () => {
             renderCalendar();
+            fetchWardrobeForCalendar(); // Added: Fetch dynamic clothes on load
         });
 
         function renderCalendar() {
@@ -874,16 +848,85 @@
             renderCalendar();
         }
 
-        // --- 3. Drag Logic ---
-        document.querySelectorAll('.draggable-item').forEach(item => {
-            item.addEventListener('dragstart', (e) => {
-                e.dataTransfer.setData('text/plain', item.getAttribute('data-img'));
-            });
-        });
+        // --- 3. Fetch Real Clothes for Sidebar ---
+        async function fetchWardrobeForCalendar() {
+            const pickerList = document.getElementById('pickerList');
+            const token = localStorage.getItem('token');
+
+            if (!token) {
+                window.location.href = 'login.html';
+                return;
+            }
+
+            try {
+                // Fetch user's actual clothes from the backend
+                const response = await fetch('/api/items', {
+                    headers: { 'x-auth-token': token }
+                });
+
+                if (!response.ok) throw new Error("Failed to fetch items");
+
+                const items = await response.json();
+
+                pickerList.innerHTML = ''; // Clear the "Loading..." text
+
+                if (items.length === 0) {
+                    pickerList.innerHTML = `<p style="padding: 10px; color: var(--text-sub); font-size: 0.85rem;">Your wardrobe is empty. Go add some clothes!</p>`;
+                    return;
+                }
+
+                // Optional: Filter out dirty clothes if you only want to plan with clean ones
+                // const availableItems = items.filter(item => item.isClean !== false);
+                const availableItems = items;
+
+                // Generate draggable elements for each piece of clothing
+                availableItems.forEach(item => {
+                    const itemDiv = document.createElement('div');
+                    itemDiv.className = 'draggable-item';
+                    itemDiv.draggable = true;
+                    itemDiv.setAttribute('data-img', item.imageUrl);
+
+                    itemDiv.innerHTML = `
+                        <img src="${item.imageUrl}" alt="${item.name || 'Item'}">
+                        <div class="item-name">${item.name || 'Clothing Item'}</div>
+                    `;
+
+                    // Attach the drag start event
+                    itemDiv.addEventListener('dragstart', (e) => {
+                        // Store the image URL to drop onto the calendar days
+                        e.dataTransfer.setData('text/plain', item.imageUrl);
+                    });
+
+                    pickerList.appendChild(itemDiv);
+                });
+
+            } catch (err) {
+                console.error("Error fetching wardrobe:", err);
+                pickerList.innerHTML = `<p style="padding: 10px; color: var(--accent-red); font-size: 0.85rem;">Failed to load clothes.</p>`;
+            }
+        }
 
         // --- 4. Modal ---
         function closeModal() { document.getElementById('dayModal').style.display = 'none'; }
         window.onclick = function (e) { if (e.target == document.getElementById('dayModal')) closeModal(); }
+
+        // --- LOGOUT LOGIC (With Warning & Cancel Fix) ---
+        function logout(event) {
+            // 1. Stop the browser from automatically following the link
+            if (event) {
+                event.preventDefault();
+            }
+
+            // 2. Show the warning popup
+            const isConfirmed = confirm("Are you sure you want to log out of StyleStash?");
+
+            // 3. If they click "OK" (Yes)
+            if (isConfirmed) {
+                localStorage.removeItem('token');
+                window.location.replace('login.html');
+            }
+            // If they click "Cancel", nothing else happens and they stay on the page!
+        }
     </script>
 </body>
 
