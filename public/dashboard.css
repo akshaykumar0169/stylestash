@@ -1,0 +1,495 @@
+        :root {
+            --sidebar-bg: #0f172a;
+            /* Deep Navy */
+            --sidebar-text: #94a3b8;
+            --sidebar-active: #ffffff;
+            --bg-color: #f1f5f9;
+            /* Off-White/Light Grey */
+            --card-bg: #ffffff;
+            --text-main: #1e293b;
+            --text-secondary: #64748b;
+            --accent-green: #10b981;
+            --accent-red: #ef4444;
+            --accent-blue: #3b82f6;
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            --radius: 16px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            display: flex;
+            background-color: var(--bg-color);
+            min-height: 100vh;
+        }
+
+        /* --- Sidebar (20% width roughly, fixed 260px for better UX) --- */
+        .sidebar {
+            width: 260px;
+            background-color: var(--sidebar-bg);
+            color: var(--sidebar-text);
+            display: flex;
+            flex-direction: column;
+            padding: 2rem;
+            position: fixed;
+            height: 100vh;
+            transition: transform 0.3s ease;
+            z-index: 100;
+        }
+
+        .brand {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #fff;
+            margin-bottom: 3rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .nav-links {
+            list-style: none;
+            flex-grow: 1;
+        }
+
+        .nav-item {
+            margin-bottom: 0.5rem;
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            padding: 12px 16px;
+            color: var(--sidebar-text);
+            text-decoration: none;
+            border-radius: 8px;
+            transition: all 0.2s;
+            font-size: 0.95rem;
+        }
+
+        .nav-link:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+            color: #fff;
+        }
+
+        .nav-link.active {
+            background-color: var(--accent-blue);
+            color: #fff;
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+        }
+
+        .nav-link i {
+            margin-right: 12px;
+            width: 20px;
+            text-align: center;
+        }
+
+        .sidebar-footer {
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            padding-top: 1rem;
+        }
+
+        /* --- Main Content (Fluid) --- */
+        .main-content {
+            margin-left: 260px;
+            /* Width of sidebar */
+            flex: 1;
+            padding: 2rem;
+            width: calc(100% - 260px);
+        }
+
+        /* Header */
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .mobile-toggle {
+            display: none;
+            font-size: 1.5rem;
+            color: var(--text-main);
+            cursor: pointer;
+            margin-right: 1rem;
+        }
+
+        .greeting h1 {
+            font-size: 1.5rem;
+            color: var(--text-main);
+        }
+
+        .greeting p {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .notification-btn {
+            position: relative;
+            background: #fff;
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: var(--shadow);
+            color: var(--text-secondary);
+        }
+
+        .badge {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            width: 8px;
+            height: 8px;
+            background-color: var(--accent-red);
+            border-radius: 50%;
+            border: 1px solid #fff;
+        }
+
+        .profile-pic {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid #fff;
+            box-shadow: var(--shadow);
+        }
+
+        /* Grid System */
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            /* 2/3 and 1/3 split */
+            grid-template-rows: auto auto;
+            gap: 24px;
+        }
+
+        /* Cards Generic */
+        .card {
+            background: var(--card-bg);
+            border-radius: var(--radius);
+            padding: 1.5rem;
+            box-shadow: var(--shadow);
+            position: relative;
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .card-title {
+            font-weight: 600;
+            color: var(--text-main);
+            font-size: 1.1rem;
+        }
+
+        /* OOTD Card */
+        .ootd-card {
+            grid-column: 1 / 2;
+        }
+
+        .ootd-container {
+            display: flex;
+            gap: 20px;
+            height: 300px;
+        }
+
+        .ootd-item {
+            flex: 1;
+            border-radius: 12px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .ootd-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.3s;
+        }
+
+        .ootd-item:hover img {
+            transform: scale(1.05);
+        }
+
+        .ootd-actions {
+            margin-top: 1.5rem;
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: 0.2s;
+        }
+
+        .btn-primary {
+            background-color: var(--accent-green);
+            color: white;
+            box-shadow: 0 4px 10px rgba(16, 185, 129, 0.3);
+        }
+
+        .btn-primary:hover {
+            background-color: #059669;
+        }
+
+        .btn-icon {
+            background: #f1f5f9;
+            color: var(--text-secondary);
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1rem;
+        }
+
+        .btn-icon:hover {
+            background: #e2e8f0;
+            color: var(--accent-red);
+        }
+
+        .refresh-btn {
+            margin-left: auto;
+        }
+
+        /* Weather Card */
+        .weather-card {
+            grid-column: 2 / 3;
+            background: linear-gradient(135deg, #60a5fa 0%, #3b82f6 100%);
+            color: white;
+        }
+
+        .weather-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            height: 100%;
+            justify-content: center;
+        }
+
+        .weather-icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            opacity: 0.9;
+        }
+
+        .temp {
+            font-size: 2.5rem;
+            font-weight: 600;
+        }
+
+        .ai-tip {
+            margin-top: 1.5rem;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 12px;
+            border-radius: 12px;
+            font-size: 0.9rem;
+            backdrop-filter: blur(5px);
+            display: flex;
+            align-items: start;
+            gap: 10px;
+            text-align: left;
+        }
+
+        /* Bottom Row Stats (3 Columns) */
+        .stats-row {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 24px;
+            grid-column: 1 / -1;
+            /* Span full width */
+        }
+
+        /* Donut Chart Simulation */
+        .donut-container {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .donut-chart {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: conic-gradient(var(--accent-green) 0% 67%, #e2e8f0 67% 100%);
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .donut-chart::after {
+            content: "";
+            position: absolute;
+            width: 60px;
+            height: 60px;
+            background: white;
+            border-radius: 50%;
+        }
+
+        .stat-text h3 {
+            font-size: 1.8rem;
+            color: var(--text-main);
+        }
+
+        .stat-text span {
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+        }
+
+        .stat-link {
+            color: var(--accent-blue);
+            font-size: 0.85rem;
+            text-decoration: none;
+            font-weight: 500;
+            display: block;
+            margin-top: 5px;
+        }
+
+        /* Laundry Card */
+        .laundry-content {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .laundry-icon-box {
+            position: relative;
+            font-size: 2rem;
+            color: var(--text-secondary);
+        }
+
+        .laundry-badge {
+            position: absolute;
+            top: -5px;
+            right: -10px;
+            background: var(--accent-red);
+            color: white;
+            font-size: 0.75rem;
+            padding: 2px 6px;
+            border-radius: 10px;
+            font-weight: bold;
+        }
+
+        .btn-outline {
+            border: 1px solid var(--text-secondary);
+            background: transparent;
+            padding: 8px 16px;
+            border-radius: 6px;
+            color: var(--text-main);
+            font-size: 0.85rem;
+            cursor: pointer;
+        }
+
+        .btn-outline:hover {
+            border-color: var(--accent-blue);
+            color: var(--accent-blue);
+        }
+
+        /* Upload Card */
+        .upload-card {
+            border: 2px dashed #cbd5e1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            background: transparent;
+        }
+
+        .upload-card:hover {
+            border-color: var(--accent-blue);
+            background: rgba(59, 130, 246, 0.05);
+        }
+
+        .plus-icon {
+            font-size: 2rem;
+            color: var(--accent-blue);
+            margin-bottom: 0.5rem;
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 900px) {
+            .sidebar {
+                transform: translateX(-100%);
+                /* Hide sidebar */
+            }
+
+            .sidebar.active {
+                transform: translateX(0);
+                box-shadow: 10px 0 30px rgba(0, 0, 0, 0.5);
+            }
+
+            .main-content {
+                margin-left: 0;
+                width: 100%;
+                padding: 1.5rem;
+            }
+
+            .mobile-toggle {
+                display: block;
+            }
+
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+                /* Single column */
+            }
+
+            /* Stack Elements */
+            .weather-card {
+                grid-column: 1 / -1;
+                grid-row: 1;
+                /* Move weather to top */
+            }
+
+            .ootd-card {
+                grid-column: 1 / -1;
+                grid-row: 2;
+            }
+
+            .ootd-container {
+                flex-direction: column;
+                /* Stack images vertically */
+                height: auto;
+            }
+
+            .ootd-item {
+                height: 250px;
+            }
+
+            .stats-row {
+                grid-template-columns: 1fr;
+                /* Stack stats vertically */
+                grid-row: 3;
+            }
+        }

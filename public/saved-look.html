@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Saved Looks - StyleStash</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Poppins:wght@300;400;500;600&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+    <style>
+        :root {
+            --primary: #2563eb;
+            --accent-pink: #ec4899;
+            --bg-body: #f1f5f9;
+            --bg-card: #ffffff;
+            --text-main: #1e293b;
+            --text-sub: #64748b;
+            --border: #e2e8f0;
+            --danger: #ef4444;
+
+            /* Sidebar Variables */
+            --sidebar-bg: #0f172a;
+            --sidebar-text: #94a3b8;
+            --sidebar-active: #ffffff;
+            --accent-blue: #3b82f6;
+            --accent-red: #ef4444;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-body);
+            display: flex;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        /* ================= SIDEBAR ================= */
+        .sidebar {
+            width: 260px;
+            background-color: var(--sidebar-bg);
+            color: var(--sidebar-text);
+            display: flex;
+            flex-direction: column;
+            padding: 2rem;
+            flex-shrink: 0;
+            z-index: 100;
+            transition: transform 0.3s ease;
+        }
+
+        .brand {
+            font-family: 'Poppins';
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #fff;
+            margin-bottom: 2.5rem;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .nav-links {
+            list-style: none;
+            flex-grow: 1;
+        }
+
+        .nav-item {
+            margin-bottom: 0.5rem;
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            padding: 12px 16px;
+            color: var(--sidebar-text);
+            text-decoration: none;
+            border-radius: 8px;
+            transition: all 0.2s;
+            font-family: 'Poppins';
+            font-size: 0.95rem;
+        }
+
+        .nav-link:hover {
+            background-color: rgba(255, 255, 255, 0.05);
+            color: #fff;
+        }
+
+        .nav-link.active {
+            background-color: var(--accent-blue);
+            color: #ffffff;
+            font-weight: 500;
+            box-shadow: 0 4px 15px rgba(59, 130, 246, 0.4);
+        }
+
+        .nav-link i {
+            margin-right: 12px;
+            width: 20px;
+            text-align: center;
+        }
+
+        .sidebar-footer {
+            margin-top: auto;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            padding-top: 1rem;
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .logout-btn {
+            color: var(--accent-red);
+        }
+
+        .logout-btn:hover {
+            background-color: rgba(239, 68, 68, 0.1);
+            color: var(--accent-red);
+        }
+
+        /* ================= MAIN CONTENT ================= */
+        .main-content {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            position: relative;
+            background: var(--bg-body);
+        }
+
+        .page-header {
+            background: white;
+            padding: 1.5rem 2.5rem;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+        }
+
+        .page-header h1 {
+            font-size: 1.5rem;
+            color: var(--text-main);
+            font-family: 'Poppins';
+            font-weight: 600;
+        }
+
+        .page-header i {
+            color: var(--accent-blue);
+            font-size: 1.6rem;
+        }
+
+        /* Full Page Gallery */
+        .archive-workspace {
+            padding: 2.5rem;
+            overflow-y: auto;
+            flex: 1;
+            width: calc(100% - 260px);
+            margin-left: 260px;
+        }
+
+        .lookbook-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 25px;
+            align-content: start;
+        }
+
+        .lookbook-card {
+            background: white;
+            border-radius: 14px;
+            padding: 12px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+            border: 1px solid var(--border);
+            text-align: center;
+            transition: transform 0.2s, box-shadow 0.2s;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+
+        .lookbook-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--accent-blue);
+            box-shadow: 0 15px 25px -5px rgba(0, 0, 0, 0.1);
+        }
+
+        .delete-btn {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background: var(--danger);
+            color: white;
+            border: none;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 0.85rem;
+            opacity: 0;
+            transition: opacity 0.2s, transform 0.2s;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+            z-index: 20;
+        }
+
+        .delete-btn:hover {
+            transform: scale(1.1);
+        }
+
+        .lookbook-card:hover .delete-btn {
+            opacity: 1;
+        }
+
+        .lookbook-images {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin-bottom: 12px;
+            flex-grow: 1;
+        }
+
+        .lookbook-images img {
+            width: 100%;
+            height: 120px;
+            object-fit: cover;
+            border-radius: 8px;
+            background: var(--bg-body);
+        }
+
+        .lookbook-title {
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: var(--text-main);
+            margin-bottom: 4px;
+        }
+
+        .lookbook-date {
+            font-size: 0.8rem;
+            color: var(--text-sub);
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: var(--text-sub);
+            display: none;
+            grid-column: 1 / -1;
+            background: white;
+            border-radius: 16px;
+            border: 2px dashed var(--border);
+        }
+
+        .empty-state i {
+            font-size: 3rem;
+            color: var(--border);
+            margin-bottom: 15px;
+        }
+
+        .empty-state a {
+            display: inline-block;
+            margin-top: 15px;
+            padding: 10px 20px;
+            background: var(--accent-blue);
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 500;
+            transition: background 0.2s;
+        }
+
+        .empty-state a:hover {
+            background: #2563eb;
+        }
+
+        .mobile-toggle-btn {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: white;
+            border: 1px solid var(--border);
+            padding: 10px;
+            border-radius: 8px;
+            cursor: pointer;
+            display: none;
+            z-index: 100;
+        }
+
+        /* ================= RESPONSIVE ================= */
+        @media (max-width: 900px) {
+            .sidebar {
+                position: fixed;
+                height: 100%;
+                transform: translateX(-100%);
+            }
+
+            .sidebar.active {
+                transform: translateX(0);
+            }
+
+            .mobile-toggle-btn {
+                display: block;
+            }
+
+            .lookbook-grid {
+                grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+                gap: 15px;
+            }
+
+            .lookbook-images img {
+                height: 100px;
+            }
+
+            .archive-workspace {
+                width: 100%;
+                margin-left: 0;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <aside class="sidebar" id="sidebar">
+        <div class="brand"><i class="fa-solid fa-layer-group"></i> StyleStash</div>
+        <ul class="nav-links">
+            <li class="nav-item"><a href="dashboard.html" class="nav-link"><i class="fa-solid fa-table-columns"></i>
+                    Dashboard</a></li>
+            <li class="nav-item"><a href="my-wardrobe.html" class="nav-link"><i class="fa-solid fa-shirt"></i> My
+                    Wardrobe</a></li>
+            <li class="nav-item"><a href="mix-match.html" class="nav-link"><i class="fa-solid fa-shuffle"></i> Mix &
+                    Match</a></li>
+            <li class="nav-item"><a href="laundry-room.html" class="nav-link"><i class="fa-solid fa-jug-detergent"></i>
+                    Laundry Room</a></li>
+            <li class="nav-item"><a href="calendar.html" class="nav-link"><i class="fa-regular fa-calendar"></i>
+                    Calendar</a></li>
+
+            <li class="nav-item"><a href="saved-look.html" class="nav-link active"><i class="fa-solid fa-heart"></i>
+                    Saved-Look</a></li>
+        </ul>
+        <div class="sidebar-footer">
+            <a href="settings.html" class="nav-link"><i class="fa-solid fa-gear"></i> Settings</a>
+            <a href="login.html" class="nav-link logout-btn" onclick="logout(event)">
+                <div><i class="fa-solid fa-arrow-right-from-bracket"></i> Logout</div>
+            </a>
+        </div>
+    </aside>
+
+    <main class="main-content">
+        <button class="mobile-toggle-btn" onclick="toggleSidebar()"><i class="fa-solid fa-bars"></i></button>
+
+        <header class="page-header">
+            <i class="fa-regular fa-clipboard"></i>
+            <h1>Saved Looks</h1>
+        </header>
+
+        <div class="archive-workspace">
+            <div class="lookbook-grid" id="lookbookGrid">
+
+                <div id="loadingState"
+                    style="grid-column: 1/-1; text-align: center; padding: 40px; color: var(--text-sub);">
+                    <i class="fa-solid fa-spinner fa-spin" style="font-size: 2rem; margin-bottom: 10px;"></i>
+                    <p>Loading your archive...</p>
+                </div>
+
+                <div class="empty-state" id="emptyLookbookMsg">
+                    <i class="fa-regular fa-folder-open"></i>
+                    <h2>No outfits saved yet</h2>
+                    <p>Head over to Mix & Match to create and save your first look!</p>
+                    <a href="mix-match.html">Go to Mix & Match</a>
+                </div>
+
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // Define your backend URL here so it's easy to change later if you deploy
+        const BACKEND_URL = 'http://localhost:5000';
+
+        async function fetchData() {
+            const token = localStorage.getItem('token');
+            const grid = document.getElementById('lookbookGrid');
+            const loading = document.getElementById('loadingState');
+            const emptyMsg = document.getElementById('emptyLookbookMsg');
+
+            // Redirect to login if no token is found
+            if (!token) {
+                window.location.replace('login.html');
+                return;
+            }
+
+            try {
+                // FIXED: Using absolute URL to match the delete function
+                const response = await fetch(`${BACKEND_URL}/api/outfits`, {
+                    method: 'GET',
+                    headers: {
+                        'x-auth-token': token,
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                if (!response.ok) throw new Error("Failed to fetch outfits");
+
+                const outfits = await response.json();
+                console.log("Fetched Outfits:", outfits); // <-- Use this to check your data structure
+
+                // Hide loading spinner
+                loading.style.display = 'none';
+
+                // Check if the user has any outfits
+                if (outfits.length === 0) {
+                    emptyMsg.style.display = 'block';
+                } else {
+                    emptyMsg.style.display = 'none';
+                    // Loop through and display each outfit
+                    outfits.forEach(outfit => {
+                        appendOutfitToDOM(outfit);
+                    });
+                }
+            } catch (err) {
+                console.error("Fetch Error:", err);
+                loading.innerHTML = `<p style="color: var(--danger); padding: 20px;">
+                Unable to load looks. Please ensure your backend server is running at ${BACKEND_URL}.
+            </p>`;
+            }
+        }
+
+        // FIXED: Added helper function to process image URLs
+        function getFullImageUrl(url) {
+            if (!url) return null;
+            if (url.startsWith('http')) return url; // Already a full URL
+            // Prepend backend URL for relative paths
+            return url.startsWith('/') ? `${BACKEND_URL}${url}` : `${BACKEND_URL}/${url}`;
+        }
+
+        function appendOutfitToDOM(outfit) {
+            const grid = document.getElementById('lookbookGrid');
+
+            // Because of .populate('items') in server.js, outfit.items should be an array of OBJECTS
+            const top = outfit.items[0] || {};
+            const bottom = outfit.items[1] || {};
+
+            // Format the date
+            const dateObj = new Date(outfit.date);
+            const dateStr = dateObj.toLocaleDateString('en-US', {
+                month: 'short',
+                day: 'numeric',
+                year: 'numeric'
+            });
+
+            // FIXED: Process the image paths through our helper function
+            const topImageSrc = getFullImageUrl(top.imageUrl) || 'https://via.placeholder.com/150?text=Top';
+            const bottomImageSrc = getFullImageUrl(bottom.imageUrl) || 'https://via.placeholder.com/150?text=Bottom';
+
+            const card = document.createElement('div');
+            card.className = 'lookbook-card';
+            card.innerHTML = `
+            <button class="delete-btn" onclick="deleteLook('${outfit._id}', this)" title="Delete Look">
+                <i class="fa-solid fa-trash"></i>
+            </button>
+            <div class="lookbook-images">
+                <img src="${topImageSrc}" alt="Top">
+                <img src="${bottomImageSrc}" alt="Bottom">
+            </div>
+            <div class="lookbook-title">Saved Style</div>
+            <div class="lookbook-date">${dateStr}</div>
+        `;
+            grid.appendChild(card);
+        }
+
+        async function deleteLook(id, btn) {
+            if (!confirm("Are you sure you want to remove this look from your archive?")) return;
+
+            const token = localStorage.getItem('token');
+            try {
+                const res = await fetch(`${BACKEND_URL}/api/outfits/${id}`, {
+                    method: 'DELETE',
+                    headers: { 'x-auth-token': token }
+                });
+
+                if (res.ok) {
+                    // Remove the card from the UI instantly
+                    btn.closest('.lookbook-card').remove();
+
+                    // Show empty message if it was the last one
+                    const grid = document.getElementById('lookbookGrid');
+                    if (grid.querySelectorAll('.lookbook-card').length === 0) {
+                        document.getElementById('emptyLookbookMsg').style.display = 'block';
+                    }
+                } else {
+                    alert("Failed to delete the outfit.");
+                }
+            } catch (err) {
+                console.error(err);
+                alert("Connection error. Try again.");
+            }
+        }
+
+        // Sidebar Toggle for Mobile
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('active');
+        }
+
+        // Logout Functionality
+        function logout(e) {
+            if (e) e.preventDefault();
+            if (confirm("Logout from StyleStash?")) {
+                localStorage.removeItem('token');
+                window.location.replace('login.html');
+            }
+        }
+
+        // Initialize page
+        document.addEventListener('DOMContentLoaded', fetchData);
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Account - StyleStash</title>
+
+    <link rel="stylesheet" href="/style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Playfair+Display:ital,wght@0,700;1,400&display=swap"
+        rel="stylesheet">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        :root {
+            --primary-color: #2563EB;
+            --primary-dark: #1e40af;
+            --text-dark: #1f2937;
+            --text-grey: #6b7280;
+            --border-color: #e5e7eb;
+            --error-color: #ef4444;
+            --white: #ffffff;
+            --font-serif: 'Playfair Display', serif;
+            --font-sans: 'Inter', sans-serif;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: var(--font-sans);
+            color: var(--text-dark);
+            min-height: 100vh;
+            overflow-y: auto;
+        }
+
+        /* Layout */
+        .split-screen-container {
+            display: flex;
+            min-height: 100vh;
+            width: 100%;
+        }
+
+        /* Left Pane */
+        .left-pane {
+            flex: 1;
+            background-image: url('https://images.unsplash.com/photo-1595341888016-a392ef81b7de?q=80&w=2679&auto=format&fit=crop');
+            background-size: cover;
+            background-position: center;
+            position: relative;
+        }
+
+        .overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to bottom right, rgba(37, 99, 235, 0.4), rgba(0, 0, 0, 0.6));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 3rem;
+        }
+
+        .quote-container {
+            text-align: center;
+            color: var(--white);
+            max-width: 80%;
+        }
+
+        .headline {
+            font-family: var(--font-serif);
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .subtext {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+
+        /* Right Pane */
+        .right-pane {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 2rem;
+        }
+
+        .signup-box {
+            width: 100%;
+            max-width: 420px;
+        }
+
+        .brand {
+            font-family: var(--font-serif);
+            font-size: 2rem;
+            font-weight: 600;
+            color: #000000;
+            margin-bottom: 3rem;
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+            gap: 10px;
+        }
+
+        h2 {
+            margin-bottom: 0.5rem;
+        }
+
+        .subtitle {
+            color: var(--text-grey);
+            margin-bottom: 2rem;
+        }
+
+        /* Inputs */
+        .input-group {
+            margin-bottom: 1.2rem;
+        }
+
+        /* NEW CSS: Row for First/Last Name */
+        .name-row {
+            display: flex;
+            gap: 1rem;
+        }
+        
+        .name-row .input-group {
+            flex: 1; /* Makes them split width equally */
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 0.4rem;
+            font-size: 0.9rem;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+        }
+
+        .password-wrapper {
+            position: relative;
+        }
+
+        .toggle-password {
+            position: absolute;
+            right: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+        }
+
+        .error-text {
+            color: var(--error-color);
+            font-size: 0.8rem;
+            display: none;
+        }
+
+        /* Terms */
+        .terms-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .terms-label {
+            font-size: 0.9rem;
+            color: var(--text-grey);
+        }
+
+        .terms-label a {
+            color: var(--primary-color);
+            text-decoration: none;
+        }
+
+        /* Button */
+        .btn-signup {
+            width: 100%;
+            padding: 0.9rem;
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            margin-bottom: 10px;
+
+            font-size: 1rem;
+            cursor: pointer;
+        }
+
+        .btn-signup:disabled {
+            background: #9ca3af;
+        }
+
+        .login-footer a {
+            color: #2563EB;
+            /* blue */
+            font-weight: 500;
+            text-decoration: none;
+        }
+
+        .login-footer a:hover {
+            text-decoration: underline;
+        }
+
+
+        /* Footer */
+        .footer {
+            background: #111827;
+            color: #d1d5db;
+            padding: 2rem 1rem;
+            display: flex;
+            justify-content: center;
+            padding: 1rem 0;
+
+        }
+
+        .footer-bottom {
+            max-width: 1100px;
+            /* 👈 control footer width */
+            width: 100%;
+            border-top: 1px solid #374151;
+            padding-top: 1.5rem;
+            text-align: center;
+            font-size: 0.9rem;
+        }
+
+
+        /* Responsive */
+        @media (max-width: 900px) {
+            .left-pane {
+                display: none;
+            }
+
+            .footer-bottom {
+                max-width: 100%;
+                border-radius: 0;
+            }
+        }
+        
+        /* Mobile specific for name fields */
+        @media (max-width: 480px) {
+            .name-row {
+                flex-direction: column;
+                gap: 0;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="split-screen-container">
+
+        <div class="left-pane">
+            <div class="overlay">
+                <div class="quote-container">
+                    <h1 class="headline">Your digital wardrobe awaits.</h1>
+                    <p class="subtext">Join thousands of users organizing their life, one outfit at a time.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="right-pane">
+            <div class="signup-box">
+                <a href="index.html" class="brand">
+                    <i class="fa-solid fa-layer-group"></i> StyleStash
+                </a>
+                <h2>Create an Account</h2>
+                <p class="subtitle">Start building your virtual closet today. It’s free.</p>
+
+                <form id="signupForm" action="#" method="POST">
+
+                    <div class="name-row">
+                        <div class="input-group">
+                            <label for="firstname">First Name</label>
+                            <input type="text" id="firstname" placeholder="John" required>
+                        </div>
+                        <div class="input-group">
+                            <label for="lastname">Last Name</label>
+                            <input type="text" id="lastname" placeholder="Doe" required>
+                        </div>
+                    </div>
+
+                    <div class="input-group">
+                        <label for="email">Email Address</label>
+                        <input type="email" id="email" placeholder="john@example.com" required>
+                    </div>
+
+                    <div class="input-group">
+                        <label for="password">Password</label>
+                        <div class="password-wrapper">
+                            <input type="password" id="password" placeholder="Min. 8 characters" minlength="8" required>
+                            <i class="fa-solid fa-eye toggle-password" data-target="password"></i>
+                        </div>
+                    </div>
+
+                    <div class="input-group">
+                        <label for="confirm-password">Confirm Password</label>
+                        <div class="password-wrapper">
+                            <input type="password" id="confirm-password" placeholder="Re-enter password" required>
+                            <i class="fa-solid fa-eye toggle-password" data-target="confirm-password"></i>
+                        </div>
+                        <small id="password-error" class="error-text">Passwords do not match</small>
+                    </div>
+
+                    <div class="terms-group">
+                        <label class="terms-label">
+                            <input type="checkbox" id="termsCheckbox" required>
+                            <span>I agree to the <a href="#">Terms of Service</a> and <a href="#">Privacy
+                                    Policy</a>.</span>
+                        </label>
+                    </div>
+
+                    <button type="submit" id="submitBtn" class="btn-signup" disabled>Create Account</button>
+                </form>
+
+                <p class="login-footer">
+                    Already have an account? <a href="login.html">Log in.</a>
+                </p>
+            </div>
+        </div>
+
+    </div>
+
+
+    <footer class="footer">
+        <div class="footer-bottom">
+            © 2024 StyleStash. All rights reserved.
+        </div>
+    </footer>
+    <script>
+        // DOM Elements
+        const passwordInput = document.getElementById('password');
+        const confirmInput = document.getElementById('confirm-password');
+        const errorText = document.getElementById('password-error');
+        const termsCheckbox = document.getElementById('termsCheckbox');
+        const submitBtn = document.getElementById('submitBtn');
+        const signupForm = document.getElementById('signupForm');
+        const toggleIcons = document.querySelectorAll('.toggle-password');
+        
+        // CHANGED: New selectors for First and Last Name
+        const firstNameInput = document.getElementById('firstname');
+        const lastNameInput = document.getElementById('lastname');
+        const emailInput = document.getElementById('email');
+
+        // 1. Password Match Validation
+        function validatePasswordMatch() {
+            const pass = passwordInput.value;
+            const confirm = confirmInput.value;
+            if (confirm.length > 0) {
+                if (pass !== confirm) {
+                    confirmInput.classList.add('input-error');
+                    errorText.style.display = 'block';
+                    return false;
+                } else {
+                    confirmInput.classList.remove('input-error');
+                    errorText.style.display = 'none';
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        confirmInput.addEventListener('input', validatePasswordMatch);
+        passwordInput.addEventListener('input', validatePasswordMatch);
+
+        // 2. Terms Checkbox Logic
+        termsCheckbox.addEventListener('change', function () {
+            if (this.checked) {
+                submitBtn.removeAttribute('disabled');
+            } else {
+                submitBtn.setAttribute('disabled', 'true');
+            }
+        });
+
+        // 3. Password Visibility Toggle
+        toggleIcons.forEach(icon => {
+            icon.addEventListener('click', function () {
+                const targetId = this.getAttribute('data-target');
+                const targetInput = document.getElementById(targetId);
+                const type = targetInput.getAttribute('type') === 'password' ? 'text' : 'password';
+                targetInput.setAttribute('type', type);
+                this.classList.toggle('fa-eye');
+                this.classList.toggle('fa-eye-slash');
+            });
+        });
+
+        // 4. REAL API SUBMISSION
+        signupForm.addEventListener('submit', async function (e) {
+            e.preventDefault();
+
+            // Final Validation
+            if (passwordInput.value !== confirmInput.value) {
+                validatePasswordMatch();
+                return;
+            }
+
+            // Loading State
+            const originalText = submitBtn.innerText;
+            submitBtn.innerText = 'Creating...';
+            submitBtn.style.opacity = '0.7';
+            submitBtn.style.cursor = 'not-allowed';
+            submitBtn.disabled = true;
+
+            // CHANGED: Structure matches new DB requirement (firstName, lastName)
+            const userData = {
+                firstName: firstNameInput.value,
+                lastName: lastNameInput.value,
+                email: emailInput.value,
+                password: passwordInput.value
+            };
+
+            try {
+                // Send data to server.js
+                const response = await fetch('/api/auth/register', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(userData)
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    // Success: Save token and redirect
+                    localStorage.setItem('token', data.token); // Save JWT token
+                    alert('Account created successfully!');
+                    window.location.href = "login.html"; // Redirect to dashboard/home
+                } else {
+                    // Error from server (e.g., "User already exists")
+                    alert(data.msg || 'Registration failed');
+                    resetButton();
+                }
+
+            } catch (err) {
+                console.error(err);
+                alert('Something went wrong. Please check your connection.');
+                resetButton();
+            }
+
+            function resetButton() {
+                submitBtn.innerText = originalText;
+                submitBtn.style.opacity = '1';
+                submitBtn.style.cursor = 'pointer';
+                submitBtn.disabled = false;
+            }
+        });
+    </script>
+</body>
+
+</html>

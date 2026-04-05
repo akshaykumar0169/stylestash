@@ -1,0 +1,865 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>StyleStash Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        /* --- STYLES --- */
+        :root {
+            --sidebar-bg: #0f172a;
+            --sidebar-text: #94a3b8;
+            --bg-color: #f1f5f9;
+            --card-bg: #ffffff;
+            --text-main: #1e293b;
+            --text-secondary: #64748b;
+            --accent-green: #10b981;
+            --accent-red: #ef4444;
+            --accent-blue: #3b82f6;
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            --radius: 16px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            display: flex;
+            background-color: var(--bg-color);
+            min-height: 100vh;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 260px;
+            background-color: var(--sidebar-bg);
+            color: var(--sidebar-text);
+            display: flex;
+            flex-direction: column;
+            padding: 2rem;
+            position: fixed;
+            height: 100vh;
+            transition: transform 0.3s ease;
+            z-index: 100;
+        }
+
+        .brand {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #fff;
+            margin-bottom: 3rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .nav-links {
+            list-style: none;
+            flex-grow: 1;
+        }
+
+        .nav-item {
+            margin-bottom: 0.5rem;
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            padding: 12px 16px;
+            color: var(--sidebar-text);
+            text-decoration: none;
+            border-radius: 8px;
+            transition: all 0.2s;
+            font-size: 0.95rem;
+        }
+
+        .nav-link:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+            color: #fff;
+        }
+
+        .nav-link.active {
+            background-color: var(--accent-blue);
+            color: #fff;
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+        }
+
+        .nav-link i {
+            margin-right: 12px;
+            width: 20px;
+            text-align: center;
+        }
+
+        .sidebar-footer {
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            padding-top: 1rem;
+        }
+
+        /* Added for the new logout button class if you want it red */
+        .logout-btn {
+            color: var(--accent-red) !important;
+        }
+        .logout-btn:hover {
+            background-color: rgba(239, 68, 68, 0.1) !important;
+        }
+
+        /* Main Content */
+        .main-content {
+            margin-left: 260px;
+            flex: 1;
+            padding: 2rem;
+            width: calc(100% - 260px);
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .mobile-toggle {
+            display: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            margin-right: 1rem;
+        }
+
+        .greeting h1 {
+            font-size: 1.5rem;
+            color: var(--text-main);
+        }
+
+        .greeting p {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .notification-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            border: none;
+            background: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: var(--shadow);
+            cursor: pointer;
+            position: relative;
+            color: var(--text-secondary);
+        }
+
+        .badge {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            width: 8px;
+            height: 8px;
+            background-color: var(--accent-red);
+            border-radius: 50%;
+        }
+
+        .profile-pic {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid #fff;
+            box-shadow: var(--shadow);
+        }
+
+        /* Dashboard Grid */
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 24px;
+        }
+
+        .card {
+            background: var(--card-bg);
+            border-radius: var(--radius);
+            padding: 1.5rem;
+            box-shadow: var(--shadow);
+            position: relative;
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .card-title {
+            font-weight: 600;
+            color: var(--text-main);
+            font-size: 1.1rem;
+        }
+
+        /* OOTD Card */
+        .ootd-card {
+            grid-column: 1 / 2;
+        }
+
+        .ootd-container {
+            display: flex;
+            gap: 20px;
+            height: 300px;
+        }
+
+        .ootd-item {
+            flex: 1;
+            border-radius: 12px;
+            overflow: hidden;
+            position: relative;
+            background: #f8fafc;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .ootd-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            transition: transform 0.3s;
+        }
+
+        .ootd-item:hover img {
+            transform: scale(1.05);
+        }
+
+        .ootd-actions {
+            margin-top: 1.5rem;
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            padding: 2rem;
+        }
+
+        .empty-icon {
+            font-size: 3rem;
+            color: #cbd5e1;
+            margin-bottom: 1rem;
+        }
+
+        /* Weather */
+        .weather-card {
+            grid-column: 2 / 3;
+            background: linear-gradient(135deg, #60a5fa 0%, #3b82f6 100%);
+            color: white;
+        }
+
+        .weather-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            height: 100%;
+            justify-content: center;
+        }
+
+        .weather-icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            opacity: 0.9;
+        }
+
+        .temp {
+            font-size: 2.5rem;
+            font-weight: 600;
+            line-height: 1;
+        }
+
+        .location {
+            margin-top: 8px;
+            font-size: 0.95rem;
+            opacity: 0.9;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            background: rgba(255, 255, 255, 0.15);
+            padding: 4px 12px;
+            border-radius: 20px;
+        }
+
+        .ai-tip {
+            margin-top: 1.5rem;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 12px;
+            border-radius: 12px;
+            font-size: 0.9rem;
+            backdrop-filter: blur(5px);
+            display: flex;
+            align-items: start;
+            gap: 10px;
+            text-align: left;
+        }
+
+        /* Stats & Buttons */
+        .stats-row {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 24px;
+            grid-column: 1 / -1;
+        }
+
+        .donut-container {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .donut-chart {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: conic-gradient(var(--accent-green) 0% 1%, #e2e8f0 1% 100%);
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .donut-chart::after {
+            content: "";
+            position: absolute;
+            width: 60px;
+            height: 60px;
+            background: white;
+            border-radius: 50%;
+        }
+
+        .stat-text h3 {
+            font-size: 1.8rem;
+            color: var(--text-main);
+        }
+
+        .stat-text span {
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+        }
+
+        .stat-link {
+            color: var(--accent-blue);
+            font-size: 0.85rem;
+            text-decoration: none;
+            font-weight: 500;
+            display: block;
+            margin-top: 5px;
+        }
+
+        .laundry-content {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .laundry-icon-box {
+            position: relative;
+            font-size: 2rem;
+            color: var(--text-secondary);
+        }
+
+        .laundry-badge {
+            position: absolute;
+            top: -5px;
+            right: -10px;
+            background: var(--accent-red);
+            color: white;
+            font-size: 0.75rem;
+            padding: 2px 6px;
+            border-radius: 10px;
+            font-weight: bold;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: 0.2s;
+        }
+
+        .btn-primary {
+            background-color: var(--accent-green);
+            color: white;
+            box-shadow: 0 4px 10px rgba(16, 185, 129, 0.3);
+            text-decoration: none;
+        }
+
+        .btn-outline {
+            border: 1px solid var(--text-secondary);
+            background: transparent;
+            padding: 8px 16px;
+            border-radius: 6px;
+            color: var(--text-main);
+            font-size: 0.85rem;
+            cursor: pointer;
+        }
+
+        .btn-icon {
+            background: #f1f5f9;
+            color: var(--text-secondary);
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1rem;
+        }
+
+        .refresh-btn {
+            margin-left: auto;
+        }
+
+        .upload-card {
+            border: 2px dashed #cbd5e1;
+            display: flex;
+            text-decoration: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            background: transparent;
+        }
+
+        .upload-card:hover {
+            border-color: var(--accent-blue);
+            background: rgba(59, 130, 246, 0.05);
+        }
+
+        .plus-icon {
+            font-size: 2rem;
+            color: var(--accent-blue);
+            margin-bottom: 0.5rem;
+        }
+
+        @media (max-width: 900px) {
+            .sidebar {
+                transform: translateX(-100%);
+            }
+
+            .sidebar.active {
+                transform: translateX(0);
+                box-shadow: 10px 0 30px rgba(0, 0, 0, 0.5);
+            }
+
+            .main-content {
+                margin-left: 0;
+                width: 100%;
+                padding: 1.5rem;
+            }
+
+            .mobile-toggle {
+                display: block;
+            }
+
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .weather-card {
+                grid-column: 1 / -1;
+                grid-row: 1;
+            }
+
+            .ootd-card {
+                grid-column: 1 / -1;
+                grid-row: 2;
+            }
+
+            .ootd-container {
+                flex-direction: column;
+                height: auto;
+            }
+
+            .ootd-item {
+                height: 250px;
+            }
+
+            .stats-row {
+                grid-template-columns: 1fr;
+                grid-row: 3;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <aside class="sidebar" id="sidebar">
+        <div class="brand"><i class="fa-solid fa-layer-group"></i> StyleStash</div>
+        <ul class="nav-links">
+            <li class="nav-item"><a href="#" class="nav-link active"><i class="fa-solid fa-table-columns"></i>
+                    Dashboard</a></li>
+            <li class="nav-item"><a href="my-wardrobe.html" class="nav-link"><i class="fa-solid fa-shirt"></i> My
+                    Wardrobe</a></li>
+            <li class="nav-item"><a href="mix-match.html" class="nav-link"><i class="fa-solid fa-shuffle"></i> Mix &
+                    Match</a></li>
+            <li class="nav-item"><a href="laundry-room.html" class="nav-link"><i class="fa-solid fa-jug-detergent"></i>
+                    Laundry Room</a></li>
+            <li class="nav-item"><a href="calendar.html" class="nav-link"><i class="fa-regular fa-calendar"></i>
+                    Calendar</a></li>
+        </ul>
+        <div class="sidebar-footer">
+            <a href="setting.html" class="nav-link"><i class="fa-solid fa-gear"></i>
+                Settings</a>
+            <a href="login.html" class="nav-link logout-btn" onclick="logout(event)">
+                <div><i class="fa-solid fa-arrow-right-from-bracket"></i> Logout</div>
+            </a>
+        </div>
+    </aside>
+
+    <main class="main-content">
+        <header>
+            <div style="display: flex; align-items: center;">
+                <div class="mobile-toggle" onclick="toggleSidebar()"><i class="fa-solid fa-bars"></i></div>
+                <div class="greeting">
+                    <h1 id="greeting-title">Good Morning, User 👋</h1>
+                    <p id="currentDate">Loading date...</p>
+                </div>
+            </div>
+            </header>
+
+        <div class="dashboard-grid">
+
+            <div class="card ootd-card" id="ootd-card-content">
+                <div class="card-header">
+                    <div class="card-title">Your Daily Look</div>
+                </div>
+
+                <div class="ootd-container" id="outfit-display-area" style="display: none;">
+                    <div class="ootd-item">
+                        <img id="ootdTop" src="" alt="Top">
+                    </div>
+                    <div class="ootd-item">
+                        <img id="ootdBottom" src="" alt="Bottom">
+                    </div>
+                </div>
+
+                <div class="ootd-actions" id="outfit-actions" style="display: none;">
+                    <button class="btn btn-primary">Wear this</button>
+                    <button class="btn btn-icon"><i class="fa-regular fa-heart"></i></button>
+                    <button class="btn btn-icon refresh-btn" onclick="animateRefresh(this)"><i
+                            class="fa-solid fa-rotate"></i></button>
+                </div>
+
+                <div class="empty-state" id="outfit-empty-state">
+                    <i class="fa-solid fa-shirt empty-icon"></i>
+                    <h3 style="margin-bottom: 0.5rem; color: var(--text-main);">Loading your closet...</h3>
+                </div>
+
+            </div>
+
+            <div class="card weather-card">
+                <div class="weather-content" id="weather-box">
+                    <i class="fa-solid fa-cloud-sun weather-icon" id="weather-icon"></i>
+                    <div class="temp" id="weather-temp">--°C</div>
+                    <div style="margin-bottom: 5px;" id="weather-desc">Loading...</div>
+                    <div class="location"><i class="fa-solid fa-location-dot"></i> <span
+                            id="user-location">Locating...</span></div>
+                    <div class="ai-tip"><i class="fa-solid fa-robot"></i><span id="ai-weather-tip">Fetching
+                            forecast...</span></div>
+                </div>
+            </div>
+
+            <div class="stats-row">
+                <div class="card">
+                    <div class="card-title" style="margin-bottom: 1rem;">Wardrobe Stats</div>
+                    <div class="donut-container">
+                        <div class="donut-chart" id="stat-chart"></div>
+                        <div class="stat-text">
+                            <h3 id="total-items">0</h3>
+                            <span>Total Items</span>
+                            <a href="my-wardrobe.html" class="stat-link">View Wardrobe &rarr;</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-title">Laundry Room</div>
+                    <div class="laundry-content" style="margin-top: 1rem;">
+                        <div class="laundry-icon-box">
+                            <i class="fa-solid fa-basket-shopping"></i>
+                            <span class="laundry-badge" id="laundry-count">0</span>
+                        </div>
+                        <div style="flex:1; margin-left: 15px;">
+                            <p style="font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 8px;">
+                                <span id="laundry-text">0 items</span> are in the wash.
+                            </p>
+                            <button class="btn-outline">Mark as Clean</button>
+                        </div>
+                    </div>
+                </div>
+
+                <a href="add-item.html" class="card upload-card">
+                    <i class="fa-solid fa-plus plus-icon"></i>
+                    <span style="font-weight: 500; color: var(--text-secondary);">Bought something new?</span>
+                </a>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // --- 1. CONFIGURATION & STATE ---
+        const WEATHER_API_KEY = "6c5cadfae46bf2528c58dc878a31a614";
+        const token = localStorage.getItem('token');
+
+        // Arrays to hold the user's actual clothes
+        let myTops = [];
+        let myBottoms = [];
+
+        // Gatekeeper
+        if (!token) window.location.href = 'login.html';
+
+        // --- 2. INITIALIZATION ---
+        document.addEventListener('DOMContentLoaded', () => {
+            updateDateGreeting();
+            fetchDashboardData();
+            fetchWardrobeForOOTD(); // Added new fetch for clothes
+            fetchLocationAndWeather();
+        });
+
+        // --- 3. DYNAMIC GREETING ---
+        function updateDateGreeting() {
+            const dateEl = document.getElementById('currentDate');
+            const options = { weekday: 'long', month: 'short', day: 'numeric' };
+            dateEl.textContent = new Date().toLocaleDateString('en-US', options);
+        }
+
+        // --- 4. FETCH DASHBOARD DATA (USER NAME & STATS) ---
+        async function fetchDashboardData() {
+            try {
+                const res = await fetch('/api/dashboard/stats', {
+                    headers: { 'x-auth-token': token }
+                });
+
+                if (!res.ok) throw new Error("Failed to load data");
+
+                const data = await res.json();
+
+                // A. Calculate Time Greeting
+                const hour = new Date().getHours();
+                let timeGreeting = "Good Morning";
+                if (hour >= 12 && hour < 17) timeGreeting = "Good Afternoon";
+                else if (hour >= 17) timeGreeting = "Good Evening";
+
+                // B. Capitalize Name and Set Title
+                let displayName = "User";
+                if (data.name && data.name.toLowerCase() !== 'undefined') {
+                    displayName = data.name.split(' ')[0];
+                    displayName = displayName.charAt(0).toUpperCase() + displayName.slice(1);
+                }
+
+                document.getElementById('greeting-title').innerText = `${timeGreeting}, ${displayName} 👋`;
+
+                // C. Update Stats
+                document.getElementById('total-items').innerText = data.totalItems || 0;
+                document.getElementById('laundry-count').innerText = data.dirtyItems || 0;
+                document.getElementById('laundry-text').innerText = `${data.dirtyItems || 0} items`;
+
+            } catch (err) {
+                console.error("Dashboard Data Error:", err);
+            }
+        }
+
+        // --- NEW: FETCH WARDROBE ITEMS FOR DAILY LOOK ---
+        async function fetchWardrobeForOOTD() {
+            try {
+                const res = await fetch('/api/items', {
+                    headers: { 'x-auth-token': token }
+                });
+
+                if (!res.ok) throw new Error("Failed to fetch wardrobe");
+
+                const items = await res.json();
+
+                // Sort items into tops and bottoms
+                myTops = items.filter(item => item.category === 'top');
+                myBottoms = items.filter(item => item.category === 'bottom');
+
+                // Check if user has enough clothes to make an outfit
+                if (myTops.length === 0 || myBottoms.length === 0) {
+                    renderEmptyState();
+                } else {
+                    // Hide empty state, show outfit area
+                    document.getElementById('outfit-empty-state').style.display = 'none';
+                    document.getElementById('outfit-display-area').style.display = 'flex';
+                    document.getElementById('outfit-actions').style.display = 'flex';
+
+                    shuffleOutfit(); // Pick random clothes
+                }
+
+            } catch (err) {
+                console.error("Failed to load OOTD items:", err);
+                renderEmptyState();
+            }
+        }
+
+        // --- NEW: SHUFFLE OUTFIT LOGIC ---
+        function shuffleOutfit() {
+            if (myTops.length === 0 || myBottoms.length === 0) return;
+
+            // Pick a random top and random bottom
+            const randomTop = myTops[Math.floor(Math.random() * myTops.length)];
+            const randomBottom = myBottoms[Math.floor(Math.random() * myBottoms.length)];
+
+            // Set the images to the actual Cloudinary URLs from the database
+            document.getElementById('ootdTop').src = randomTop.imageUrl;
+            document.getElementById('ootdBottom').src = randomBottom.imageUrl;
+        }
+
+        // --- 5. RENDER EMPTY STATE ---
+        function renderEmptyState() {
+            const emptyStateDiv = document.getElementById('outfit-empty-state');
+            document.getElementById('outfit-display-area').style.display = 'none';
+            document.getElementById('outfit-actions').style.display = 'none';
+            emptyStateDiv.style.display = 'flex';
+
+            emptyStateDiv.innerHTML = `
+                <i class="fa-solid fa-shirt empty-icon"></i>
+                <h3 style="margin-bottom: 0.5rem; color: var(--text-main);">Needs more clothes!</h3>
+                <p style="color: var(--text-secondary); margin-bottom: 1.5rem; text-align:center;">
+                    You need at least one Top and one Bottom uploaded to generate a Daily Look.
+                </p>
+                <a href="add-item.html" class="btn btn-primary">
+                    <i class="fa-solid fa-plus"></i> Upload Clothes
+                </a>
+            `;
+        }
+
+        // --- 6. WEATHER & LOCATION ---
+        function fetchLocationAndWeather() {
+            if (!navigator.geolocation) {
+                document.getElementById('user-location').innerText = "Location disabled";
+                return;
+            }
+
+            navigator.geolocation.getCurrentPosition(async (position) => {
+                const lat = position.coords.latitude;
+                const lon = position.coords.longitude;
+
+                try {
+                    const url = `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${WEATHER_API_KEY}&units=metric`;
+                    const res = await fetch(url);
+                    const weather = await res.json();
+
+                    if (weather.cod !== 200) throw new Error(weather.message);
+
+                    // Update UI
+                    document.getElementById('weather-temp').innerText = `${Math.round(weather.main.temp)}°C`;
+                    document.getElementById('weather-desc').innerText = weather.weather[0].main;
+                    document.getElementById('user-location').innerText = weather.name;
+
+                    // Dynamic Icon Logic
+                    const iconEl = document.getElementById('weather-icon');
+                    const condition = weather.weather[0].main.toLowerCase();
+                    const aiTip = document.getElementById('ai-weather-tip');
+
+                    iconEl.className = "weather-icon fa-solid";
+
+                    if (condition.includes('rain') || condition.includes('drizzle')) {
+                        iconEl.classList.add("fa-cloud-rain");
+                        aiTip.innerText = "It's rainy. I suggest your waterproof boots today.";
+                    } else if (condition.includes('cloud')) {
+                        iconEl.classList.add("fa-cloud");
+                        aiTip.innerText = "It's cloudy. A light jacket is a safe bet.";
+                    } else if (condition.includes('clear') || condition.includes('sun')) {
+                        iconEl.classList.add("fa-sun");
+                        aiTip.innerText = "Sunny skies! Great day for that white tee.";
+                    } else if (condition.includes('snow')) {
+                        iconEl.classList.add("fa-snowflake");
+                        aiTip.innerText = "It's freezing! Wear your heaviest coat.";
+                    } else {
+                        iconEl.classList.add("fa-cloud-sun");
+                        aiTip.innerText = "Check the forecast details before heading out.";
+                    }
+
+                } catch (err) {
+                    console.error("Weather Error", err);
+                    document.getElementById('weather-desc').innerText = "Unavailable";
+                }
+            }, (error) => {
+                console.error("Geo Error:", error);
+                document.getElementById('user-location').innerText = "Location Denied";
+                document.getElementById('weather-desc').innerText = "--";
+            });
+        }
+
+        // --- UTILS ---
+        
+        // --- LOGOUT LOGIC (With Warning & Cancel Fix) ---
+        function logout(event) {
+            // 1. Stop the browser from automatically following the link
+            if (event) {
+                event.preventDefault();
+            }
+
+            // 2. Show the warning popup
+            const isConfirmed = confirm("Are you sure you want to log out of StyleStash?");
+
+            // 3. If they click "OK" (Yes)
+            if (isConfirmed) {
+                localStorage.removeItem('token');
+                window.location.replace('login.html');
+            }
+            // If they click "Cancel", nothing else happens and they stay on the page!
+        }
+
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('active');
+        }
+
+        // Updated Refresh Button to Shuffle Outfit
+        function animateRefresh(btn) {
+            const icon = btn.querySelector('i');
+            icon.style.transition = 'transform 0.5s ease';
+            icon.style.transform = 'rotate(360deg)';
+
+            // Call the shuffle function!
+            shuffleOutfit();
+
+            setTimeout(() => { icon.style.transition = 'none'; icon.style.transform = 'rotate(0deg)'; }, 500);
+        }
+
+        function comingSoon(el, event) {
+            event.preventDefault();
+            alert("page is coming soon!");
+        }
+    </script>
+</body>
+
+</html>
