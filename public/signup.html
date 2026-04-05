@@ -409,7 +409,7 @@
             submitBtn.style.cursor = 'not-allowed';
             submitBtn.disabled = true;
 
-            // CHANGED: Structure matches new DB requirement (firstName, lastName)
+            // Structure matches DB requirement
             const userData = {
                 firstName: firstNameInput.value,
                 lastName: lastNameInput.value,
@@ -418,7 +418,7 @@
             };
 
             try {
-                // Send data to server.js
+                // Send data to backend - Relative path automatically adapts!
                 const response = await fetch('/api/auth/register', {
                     method: 'POST',
                     headers: {
@@ -433,7 +433,7 @@
                     // Success: Save token and redirect
                     localStorage.setItem('token', data.token); // Save JWT token
                     alert('Account created successfully!');
-                    window.location.href = "login.html"; // Redirect to dashboard/home
+                    window.location.href = "login.html"; // Redirect
                 } else {
                     // Error from server (e.g., "User already exists")
                     alert(data.msg || 'Registration failed');
