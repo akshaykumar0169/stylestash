@@ -5,9 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mix & Match - StyleStash</title>
-    <link
-        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Poppins:wght@300;400;500;600&display=swap"
-        rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
     <style>
@@ -650,6 +648,10 @@
     </main>
 
     <script>
+        // --- ADDED GATEKEEPER ---
+        const token = localStorage.getItem('token');
+        if (!token) window.location.replace('login.html');
+
         // --- 1. STATE MANAGEMENT ---
         let allTops = [];
         let allBottoms = [];
@@ -745,7 +747,9 @@
             if (!token) return;
 
             try {
-                const itemsRes = await fetch('http://localhost:5000/api/items', {
+                // IMPORTANT: Make sure this relative path is correct for deployment!
+                // Changed from http://localhost:5000/api/items to /api/items to work on Render
+                const itemsRes = await fetch('/api/items', {
                     headers: { 'x-auth-token': token }
                 });
 
@@ -758,7 +762,7 @@
                     applyFilters();
                 }
 
-                const outfitsRes = await fetch('http://localhost:5000/api/outfits', {
+                const outfitsRes = await fetch('/api/outfits', {
                     headers: { 'x-auth-token': token }
                 });
 
@@ -893,7 +897,8 @@
             const pureBottomId = getCleanId(currentBottom);
 
             try {
-                const response = await fetch('http://localhost:5000/api/outfits', {
+                // Changed from http://localhost:5000/api/outfits to /api/outfits
+                const response = await fetch('/api/outfits', {
                     method: 'POST',
                     headers: {
                         'x-auth-token': token,
@@ -937,7 +942,8 @@
         async function deleteLook(outfitId, buttonElement) {
             const token = localStorage.getItem('token');
             try {
-                const response = await fetch(`http://localhost:5000/api/outfits/${outfitId}`, {
+                // Changed to relative path
+                const response = await fetch(`/api/outfits/${outfitId}`, {
                     method: 'DELETE',
                     headers: { 'x-auth-token': token }
                 });
