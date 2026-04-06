@@ -46,8 +46,8 @@ const upload = multer({ storage });
 
 // 1. UPDATED USER SCHEMA (Split names)
 const UserSchema = new mongoose.Schema({
-    firstName: { type: String, required: true }, // Changed from fullName
-    lastName: { type: String, required: true },  // Added lastName
+    firstName: { type: String, required: true }, 
+    lastName: { type: String, required: true },  
     email: { type: String, required: true, unique: true },
     password: { type: String, required: true },
     location: { type: String, default: "New Delhi, India" },
@@ -98,10 +98,8 @@ const auth = (req, res, next) => {
 // 2. UPDATED REGISTER ROUTE
 app.post("/api/auth/register", async (req, res) => {
     try {
-        // Destructure separate names
         const { firstName, lastName, email, password } = req.body;
 
-        // Validation: Ensure all fields are present
         if (!firstName || !lastName || !email || !password) {
             return res.status(400).json({ msg: "Please enter all fields" });
         }
@@ -112,7 +110,6 @@ app.post("/api/auth/register", async (req, res) => {
         const salt = await bcrypt.genSalt(10);
         const hashedPassword = await bcrypt.hash(password, salt);
 
-        // Create user with separate names
         user = new User({
             firstName,
             lastName,
@@ -152,7 +149,6 @@ app.post("/api/auth/login", async (req, res) => {
 // 3. UPDATED DASHBOARD ROUTE (To handle missing fullName)
 app.get("/api/dashboard/stats", auth, async (req, res) => {
     try {
-        // Fetch firstName and lastName instead of fullName
         const user = await User.findById(req.user.id).select("firstName lastName");
 
         const totalItems = await Item.countDocuments({ userId: req.user.id });
@@ -160,7 +156,6 @@ app.get("/api/dashboard/stats", auth, async (req, res) => {
         const isNewUser = totalItems === 0;
 
         res.json({
-            // Combine them so frontend still sees a full name
             name: `${user.firstName} ${user.lastName}`,
             totalItems,
             dirtyItems,
@@ -198,6 +193,63 @@ app.get("/api/items", auth, async (req, res) => {
     const items = await Item.find({ userId: req.user.id });
     res.json(items);
 });
+
+// 👇 THE NEW ROUTES ADDED HERE 👇
+
+// ================== UPDATE ITEM (Send to Laundry / Edit / Mark Clean) ==================
+app.put("/api/items/:id", auth, async (req, res) => {
+    try {
+        const { name, category, warmth, isClean } = req.body;
+
+        // Build the update object based on what was sent from the frontend
+        const itemFields = {};
+        if (name) itemFields.name = name;
+        if (category) itemFields.category = category;
+        if (warmth) itemFields.warmth = Number(warmth);
+        if (isClean !== undefined) itemFields.isClean = isClean; 
+
+        let item = await Item.findById(req.params.id);
+        if (!item) return res.status(404).json({ msg: "Item not found" });
+
+        // Security check: Make sure the logged-in user actually owns this item
+        if (item.userId.toString() !== req.user.id) {
+            return res.status(401).json({ msg: "Not authorized to edit this item" });
+        }
+
+        // Apply the updates
+        item = await Item.findByIdAndUpdate(
+            req.params.id,
+            { $set: itemFields },
+            { new: true } 
+        );
+
+        res.json(item);
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: "Server Error while updating item" });
+    }
+});
+
+// ================== DELETE ITEM ==================
+app.delete("/api/items/:id", auth, async (req, res) => {
+    try {
+        let item = await Item.findById(req.params.id);
+        if (!item) return res.status(404).json({ msg: "Item not found" });
+
+        // Security check: Make sure the logged-in user actually owns this item
+        if (item.userId.toString() !== req.user.id) {
+            return res.status(401).json({ msg: "Not authorized to delete this item" });
+        }
+
+        await Item.findByIdAndDelete(req.params.id);
+        res.json({ msg: "Item deleted successfully" });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: "Server Error while deleting item" });
+    }
+});
+
+// 👆 END OF NEW ROUTES 👆
 
 // ================== FRONTEND FALLBACK ROUTE ==================
 app.get(/.*/, (req, res) => {
