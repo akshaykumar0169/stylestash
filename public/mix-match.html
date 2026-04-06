@@ -672,7 +672,7 @@
         const warmthBar = document.getElementById('warmthBar');
         const warmthText = document.getElementById('warmthText');
 
-        // --- THE FIX: BULLETPROOF ID EXTRACTOR ---
+        // Bulletproof ID Extractor
         function getCleanId(item) {
             if (!item) return null;
             if (typeof item === 'string') return item;
@@ -745,19 +745,20 @@
             if (!token) return;
 
             try {
+                // Fetch Items
                 const itemsRes = await fetch('http://localhost:5000/api/items', {
                     headers: { 'x-auth-token': token }
                 });
 
                 if (itemsRes.ok) {
                     const allItems = await itemsRes.json();
-                    // Ensure we handle objects from DB correctly
                     const itemsArray = Array.isArray(allItems) ? allItems : (allItems.data || []);
                     allTops = itemsArray.filter(item => item.category === 'top');
                     allBottoms = itemsArray.filter(item => item.category === 'bottom');
                     applyFilters();
                 }
 
+                // Fetch Outfits
                 const outfitsRes = await fetch('http://localhost:5000/api/outfits', {
                     headers: { 'x-auth-token': token }
                 });
@@ -864,12 +865,13 @@
             }, 300);
         }
 
-        // --- 7. LOOKBOOK ARCHIVE LOGIC ---
+        // --- 7. LOOKBOOK ARCHIVE LOGIC (UPDATED WITH FIXES) ---
+
         function renderLookbook(outfits) {
             document.querySelectorAll('.lookbook-card').forEach(card => card.remove());
 
-            // Safety check just in case the backend wraps the array in an object
-            const outfitArray = Array.isArray(outfits) ? outfits : (outfits.data || []);
+            // Safely extract the array no matter how the backend wraps it
+            const outfitArray = Array.isArray(outfits) ? outfits : (outfits.data || outfits.outfits || []);
 
             if (outfitArray.length > 0) {
                 emptyLookbookMsg.style.display = 'none';
@@ -899,8 +901,11 @@
                         'x-auth-token': token,
                         'Content-Type': 'application/json'
                     },
+                    // Send both formats to ensure it catches regardless of your Express schema
                     body: JSON.stringify({
                         items: [pureTopId, pureBottomId],
+                        top: pureTopId,
+                        bottom: pureBottomId,
                         date: new Date()
                     })
                 });
@@ -908,6 +913,7 @@
                 if (!response.ok) throw new Error("Failed to save to DB");
                 const savedOutfit = await response.json();
 
+                // Pass the FULL objects to the UI immediately so images don't blink or break
                 const uiOutfit = {
                     _id: getCleanId(savedOutfit) || Date.now(),
                     date: savedOutfit.date || new Date(),
@@ -917,6 +923,7 @@
                 emptyLookbookMsg.style.display = 'none';
                 appendOutfitToDOM(uiOutfit, true);
 
+                // Success Button Animation
                 const btn = document.querySelector('.save-btn');
                 const originalHTML = btn.innerHTML;
                 btn.innerHTML = '<i class="fa-solid fa-check"></i> Added!';
@@ -959,56 +966,56 @@
             const grid = document.getElementById('lookbookGrid');
             if (!grid) return;
 
-            // 1. SAFE DATE EXTRACTION (Fixes the crashing issue!)
+            // 1. Safe Date Extraction
             let rawDate = new Date();
             if (outfit.date) {
-                if (outfit.date.$date) {
-                    rawDate = new Date(outfit.date.$date);
-                } else {
-                    rawDate = new Date(outfit.date);
-                }
+                rawDate = new Date(outfit.date.$date || outfit.date);
             }
             const dateString = isNaN(rawDate)
                 ? "Saved Outfit"
                 : rawDate.toLocaleDateString('en-US', { month: 'short', day: '2-digit', year: 'numeric' });
 
-            // 2. SAFE ID EXTRACTION
             const outfitIdStr = getCleanId(outfit);
 
-            // 3. SAFE ITEM MAPPING (Order Agnostic)
+            // 2. Smart Category Mapping (Fixes the missing image issue on refresh)
             let topUrl = 'https://placehold.co/150x150/f1f5f9/64748b?text=Top';
             let bottomUrl = 'https://placehold.co/150x150/f1f5f9/64748b?text=Bottom';
 
-            if (outfit.items && outfit.items.length > 0) {
-                const id1 = getCleanId(outfit.items[0]);
-                const id2 = outfit.items.length > 1 ? getCleanId(outfit.items[1]) : null;
+            if (outfit.items && Array.isArray(outfit.items)) {
+                outfit.items.forEach(item => {
+                    const id = getCleanId(item);
 
-                // Search both arrays to prevent errors if the DB saved them backward
-                const foundItem1 = allTops.find(i => getCleanId(i) === id1) || allBottoms.find(i => getCleanId(i) === id1) || {};
-                const foundItem2 = id2 ? (allBottoms.find(i => getCleanId(i) === id2) || allTops.find(i => getCleanId(i) === id2) || {}) : {};
+                    // Check if this ID belongs to a Top
+                    const topMatch = allTops.find(t => getCleanId(t) === id);
+                    if (topMatch && topMatch.imageUrl) {
+                        topUrl = topMatch.imageUrl;
+                    } else if (item && item.imageUrl && item.category === 'top') {
+                        topUrl = item.imageUrl; // Fallback
+                    }
 
-                // Assign the URLs if found
-                if (foundItem1.imageUrl || (outfit.items[0] && outfit.items[0].imageUrl)) {
-                    topUrl = foundItem1.imageUrl || outfit.items[0].imageUrl;
-                }
-                if (foundItem2.imageUrl || (outfit.items[1] && outfit.items[1].imageUrl)) {
-                    bottomUrl = foundItem2.imageUrl || outfit.items[1].imageUrl;
-                }
+                    // Check if this ID belongs to a Bottom
+                    const bottomMatch = allBottoms.find(b => getCleanId(b) === id);
+                    if (bottomMatch && bottomMatch.imageUrl) {
+                        bottomUrl = bottomMatch.imageUrl;
+                    } else if (item && item.imageUrl && item.category === 'bottom') {
+                        bottomUrl = item.imageUrl; // Fallback
+                    }
+                });
             }
 
             const newCard = document.createElement('div');
             newCard.className = 'lookbook-card';
             newCard.innerHTML = `
-        <button class="delete-btn" onclick="deleteLook('${outfitIdStr}', this)" title="Delete Look">
-            <i class="fa-solid fa-trash"></i>
-        </button>
-        <div class="lookbook-images">
-            <img src="${topUrl}" alt="Top">
-            <img src="${bottomUrl}" alt="Bottom">
-        </div>
-        <div class="lookbook-title">Saved Outfit</div>
-        <div class="lookbook-date">${dateString}</div>
-    `;
+                <button class="delete-btn" onclick="deleteLook('${outfitIdStr}', this)" title="Delete Look">
+                    <i class="fa-solid fa-trash"></i>
+                </button>
+                <div class="lookbook-images">
+                    <img src="${topUrl}" alt="Top" onerror="this.src='https://placehold.co/150x150/f1f5f9/64748b?text=Error'">
+                    <img src="${bottomUrl}" alt="Bottom" onerror="this.src='https://placehold.co/150x150/f1f5f9/64748b?text=Error'">
+                </div>
+                <div class="lookbook-title">Saved Outfit</div>
+                <div class="lookbook-date">${dateString}</div>
+            `;
 
             if (atTop) {
                 if (grid.firstChild) {
