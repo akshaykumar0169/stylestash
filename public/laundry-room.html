@@ -456,24 +456,23 @@
 
     <script>
         const token = localStorage.getItem('token');
-        if (!token) window.location.href = 'login.html';
+        if (!token) window.location.replace('login.html');
 
         let allDirtyItems = [];
         let totalWardrobeCount = 0;
 
         document.addEventListener('DOMContentLoaded', fetchLaundry);
 
-        // --- 1. Fetch Data from MongoDB ---
+        // --- 1. Fetch Data from MongoDB (DEPLOYMENT READY - Relative Paths) ---
         async function fetchLaundry() {
             try {
-                // Fetch stats to get total wardrobe size for the math
+                // Using relative paths so it maps to Render/Heroku automatically
                 const statsRes = await fetch('/api/dashboard/stats', { headers: { 'x-auth-token': token } });
                 if (statsRes.ok) {
                     const stats = await statsRes.json();
                     totalWardrobeCount = stats.totalItems || 0;
                 }
 
-                // Fetch actual items
                 const itemsRes = await fetch('/api/items', { headers: { 'x-auth-token': token } });
                 if (!itemsRes.ok) throw new Error("Failed to fetch items");
 
@@ -507,7 +506,6 @@
             }
 
             itemsToRender.forEach(item => {
-                // Simple logic for tabs: If it's white, it goes to whites. Else colors.
                 let category = 'colors';
                 if (item.color && item.color.toLowerCase().includes('white')) {
                     category = 'whites';
@@ -531,22 +529,21 @@
             });
         }
 
-        // --- 3. Database Interaction: Mark Clean ---
+        // --- 3. Database Interaction: Mark Clean (DEPLOYMENT READY) ---
         async function markClean(itemId) {
             try {
-                // Update button UI temporarily
                 const card = document.getElementById(`card-${itemId}`);
                 const btn = card.querySelector('.mark-clean-btn');
                 btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Cleaning...';
 
-                // Send request to backend to update isClean to true
+                // Relative path for seamless live deployment
                 const response = await fetch(`/api/items/${itemId}`, {
                     method: 'PUT',
                     headers: {
                         'Content-Type': 'application/json',
                         'x-auth-token': token
                     },
-                    body: JSON.stringify({ isClean: true }) // <--- The magic happens here
+                    body: JSON.stringify({ isClean: true })
                 });
 
                 if (!response.ok) throw new Error("Failed to update");
@@ -559,7 +556,7 @@
                 setTimeout(() => {
                     card.remove();
                     updateStatsUI();
-                    if (allDirtyItems.length === 0) renderGrid([]); // Show empty state
+                    if (allDirtyItems.length === 0) renderGrid([]); 
                 }, 300);
 
             } catch (error) {
@@ -576,7 +573,7 @@
             allDirtyItems.forEach((item, index) => {
                 setTimeout(() => {
                     markClean(item._id);
-                }, index * 400); // Stagger them slightly so we don't crash the server
+                }, index * 400); // Stagger them slightly to avoid rate-limiting the server
             });
         }
 
@@ -630,25 +627,17 @@
         }
 
         function toggleSidebar() { document.getElementById('sidebar').classList.toggle('active'); }
-        function logout() { localStorage.removeItem('token'); window.location.href = 'login.html'; }
 
-
-        // --- LOGOUT LOGIC (With Warning & Cancel Fix) ---
+        // --- LOGOUT LOGIC ---
         function logout(event) {
-            // 1. Stop the browser from automatically following the link
             if (event) {
                 event.preventDefault();
             }
-
-            // 2. Show the warning popup
             const isConfirmed = confirm("Are you sure you want to log out of StyleStash?");
-
-            // 3. If they click "OK" (Yes)
             if (isConfirmed) {
                 localStorage.removeItem('token');
                 window.location.replace('login.html');
             }
-            // If they click "Cancel", nothing else happens and they stay on the page!
         }
     </script>
 </body>
