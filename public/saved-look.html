@@ -383,8 +383,16 @@
     </main>
 
     <script>
-        // Define your backend URL here so it's easy to change later if you deploy
-        const BACKEND_URL = 'http://localhost:5000';
+        // 🚨 UPDATE THIS LINE WITH YOUR LIVE RENDER BACKEND URL 🚨
+        const BACKEND_URL = 'https://stylestash.onrender.com';
+
+        let allItems = [];
+
+        function getCleanId(item) {
+            if (!item) return null;
+            if (typeof item === 'string') return item;
+            return item.$oid || item._id || item;
+        }
 
         async function fetchData() {
             const token = localStorage.getItem('token');
@@ -392,14 +400,23 @@
             const loading = document.getElementById('loadingState');
             const emptyMsg = document.getElementById('emptyLookbookMsg');
 
-            // Redirect to login if no token is found
             if (!token) {
                 window.location.replace('login.html');
                 return;
             }
 
             try {
-                // FIXED: Using absolute URL to match the delete function
+                // 1. Fetch individual items to map image URLs
+                const itemsRes = await fetch(`${BACKEND_URL}/api/items`, {
+                    headers: { 'x-auth-token': token }
+                });
+                
+                if (itemsRes.ok) {
+                    const data = await itemsRes.json();
+                    allItems = Array.isArray(data) ? data : (data.data || []);
+                }
+
+                // 2. Fetch saved outfits
                 const response = await fetch(`${BACKEND_URL}/api/outfits`, {
                     method: 'GET',
                     headers: {
@@ -411,18 +428,15 @@
                 if (!response.ok) throw new Error("Failed to fetch outfits");
 
                 const outfits = await response.json();
-                console.log("Fetched Outfits:", outfits); // <-- Use this to check your data structure
+                console.log("Fetched Outfits:", outfits);
 
-                // Hide loading spinner
                 loading.style.display = 'none';
 
-                // Check if the user has any outfits
                 if (outfits.length === 0) {
                     emptyMsg.style.display = 'block';
                 } else {
                     emptyMsg.style.display = 'none';
-                    // Loop through and display each outfit
-                    outfits.forEach(outfit => {
+                    outfits.reverse().forEach(outfit => {
                         appendOutfitToDOM(outfit);
                     });
                 }
@@ -434,37 +448,46 @@
             }
         }
 
-        // FIXED: Added helper function to process image URLs
         function getFullImageUrl(url) {
             if (!url) return null;
-            if (url.startsWith('http')) return url; // Already a full URL
-            // Prepend backend URL for relative paths
+            if (url.startsWith('http')) return url; 
             return url.startsWith('/') ? `${BACKEND_URL}${url}` : `${BACKEND_URL}/${url}`;
         }
 
         function appendOutfitToDOM(outfit) {
             const grid = document.getElementById('lookbookGrid');
 
-            // Because of .populate('items') in server.js, outfit.items should be an array of OBJECTS
-            const top = outfit.items[0] || {};
-            const bottom = outfit.items[1] || {};
+            // Find items from our master list using the IDs in the outfit
+            const id1 = getCleanId(outfit.items[0]);
+            const id2 = getCleanId(outfit.items[1]);
 
-            // Format the date
-            const dateObj = new Date(outfit.date);
-            const dateStr = dateObj.toLocaleDateString('en-US', {
-                month: 'short',
-                day: 'numeric',
-                year: 'numeric'
-            });
+            // Default to empty objects if not found
+            let topItem = allItems.find(i => getCleanId(i) === id1) || {};
+            let bottomItem = allItems.find(i => getCleanId(i) === id2) || {};
 
-            // FIXED: Process the image paths through our helper function
-            const topImageSrc = getFullImageUrl(top.imageUrl) || 'https://via.placeholder.com/150?text=Top';
-            const bottomImageSrc = getFullImageUrl(bottom.imageUrl) || 'https://via.placeholder.com/150?text=Bottom';
+            // Fallback: If backend populated them directly but we didn't find them in allItems
+            if (!topItem.imageUrl && outfit.items[0] && outfit.items[0].imageUrl) topItem = outfit.items[0];
+            if (!bottomItem.imageUrl && outfit.items[1] && outfit.items[1].imageUrl) bottomItem = outfit.items[1];
+
+            let rawDate = new Date();
+            if (outfit.date) {
+                if (outfit.date.$date) {
+                    rawDate = new Date(outfit.date.$date);
+                } else {
+                    rawDate = new Date(outfit.date);
+                }
+            }
+            const dateStr = isNaN(rawDate)
+                ? "Saved Outfit"
+                : rawDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+
+            const topImageSrc = getFullImageUrl(topItem.imageUrl) || 'https://placehold.co/150x150/f1f5f9/64748b?text=Top';
+            const bottomImageSrc = getFullImageUrl(bottomItem.imageUrl) || 'https://placehold.co/150x150/f1f5f9/64748b?text=Bottom';
 
             const card = document.createElement('div');
             card.className = 'lookbook-card';
             card.innerHTML = `
-            <button class="delete-btn" onclick="deleteLook('${outfit._id}', this)" title="Delete Look">
+            <button class="delete-btn" onclick="deleteLook('${getCleanId(outfit)}', this)" title="Delete Look">
                 <i class="fa-solid fa-trash"></i>
             </button>
             <div class="lookbook-images">
@@ -488,10 +511,7 @@
                 });
 
                 if (res.ok) {
-                    // Remove the card from the UI instantly
                     btn.closest('.lookbook-card').remove();
-
-                    // Show empty message if it was the last one
                     const grid = document.getElementById('lookbookGrid');
                     if (grid.querySelectorAll('.lookbook-card').length === 0) {
                         document.getElementById('emptyLookbookMsg').style.display = 'block';
@@ -505,12 +525,10 @@
             }
         }
 
-        // Sidebar Toggle for Mobile
         function toggleSidebar() {
             document.getElementById('sidebar').classList.toggle('active');
         }
 
-        // Logout Functionality
         function logout(e) {
             if (e) e.preventDefault();
             if (confirm("Logout from StyleStash?")) {
@@ -519,7 +537,6 @@
             }
         }
 
-        // Initialize page
         document.addEventListener('DOMContentLoaded', fetchData);
     </script>
 </body>
