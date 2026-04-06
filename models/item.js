@@ -9,6 +9,13 @@ const ItemSchema = new mongoose.Schema({
     color: { type: String },
     warmth: { type: Number, required: true, min: 1, max: 10 },
     image: { type: String, required: true }, // URL or Base64 string
+    
+    // 👇 ADDED: This tracks if the item is in the wardrobe (true) or laundry (false)
+    isClean: { 
+        type: Boolean, 
+        default: true 
+    },
+
     createdAt: { type: Date, default: Date.now }
 });
 
