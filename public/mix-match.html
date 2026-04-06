@@ -650,6 +650,9 @@
     </main>
 
     <script>
+        // 🚨 UPDATE THIS LINE WITH YOUR LIVE RENDER BACKEND URL 🚨
+        const BACKEND_URL = 'https://stylestash.onrender.com'; 
+
         // --- 1. STATE MANAGEMENT ---
         let allTops = [];
         let allBottoms = [];
@@ -745,20 +748,21 @@
             if (!token) return;
 
             try {
-                const itemsRes = await fetch('http://localhost:5000/api/items', {
+                // Pointing to the live backend URL
+                const itemsRes = await fetch(`${BACKEND_URL}/api/items`, {
                     headers: { 'x-auth-token': token }
                 });
 
                 if (itemsRes.ok) {
                     const allItems = await itemsRes.json();
-                    // Ensure we handle objects from DB correctly
                     const itemsArray = Array.isArray(allItems) ? allItems : (allItems.data || []);
                     allTops = itemsArray.filter(item => item.category === 'top');
                     allBottoms = itemsArray.filter(item => item.category === 'bottom');
                     applyFilters();
                 }
 
-                const outfitsRes = await fetch('http://localhost:5000/api/outfits', {
+                // Pointing to the live backend URL
+                const outfitsRes = await fetch(`${BACKEND_URL}/api/outfits`, {
                     headers: { 'x-auth-token': token }
                 });
 
@@ -868,7 +872,6 @@
         function renderLookbook(outfits) {
             document.querySelectorAll('.lookbook-card').forEach(card => card.remove());
 
-            // Safety check just in case the backend wraps the array in an object
             const outfitArray = Array.isArray(outfits) ? outfits : (outfits.data || []);
 
             if (outfitArray.length > 0) {
@@ -893,7 +896,8 @@
             const pureBottomId = getCleanId(currentBottom);
 
             try {
-                const response = await fetch('http://localhost:5000/api/outfits', {
+                // Pointing to the live backend URL
+                const response = await fetch(`${BACKEND_URL}/api/outfits`, {
                     method: 'POST',
                     headers: {
                         'x-auth-token': token,
@@ -930,14 +934,15 @@
 
             } catch (e) {
                 console.error(e);
-                alert("Server error: Could not save the look.");
+                alert("Server error: Could not save the look. Is your backend running?");
             }
         }
 
         async function deleteLook(outfitId, buttonElement) {
             const token = localStorage.getItem('token');
             try {
-                const response = await fetch(`http://localhost:5000/api/outfits/${outfitId}`, {
+                // Pointing to the live backend URL
+                const response = await fetch(`${BACKEND_URL}/api/outfits/${outfitId}`, {
                     method: 'DELETE',
                     headers: { 'x-auth-token': token }
                 });
@@ -959,7 +964,6 @@
             const grid = document.getElementById('lookbookGrid');
             if (!grid) return;
 
-            // 1. SAFE DATE EXTRACTION (Fixes the crashing issue!)
             let rawDate = new Date();
             if (outfit.date) {
                 if (outfit.date.$date) {
@@ -972,10 +976,8 @@
                 ? "Saved Outfit"
                 : rawDate.toLocaleDateString('en-US', { month: 'short', day: '2-digit', year: 'numeric' });
 
-            // 2. SAFE ID EXTRACTION
             const outfitIdStr = getCleanId(outfit);
 
-            // 3. SAFE ITEM MAPPING (Order Agnostic)
             let topUrl = 'https://placehold.co/150x150/f1f5f9/64748b?text=Top';
             let bottomUrl = 'https://placehold.co/150x150/f1f5f9/64748b?text=Bottom';
 
@@ -983,11 +985,9 @@
                 const id1 = getCleanId(outfit.items[0]);
                 const id2 = outfit.items.length > 1 ? getCleanId(outfit.items[1]) : null;
 
-                // Search both arrays to prevent errors if the DB saved them backward
                 const foundItem1 = allTops.find(i => getCleanId(i) === id1) || allBottoms.find(i => getCleanId(i) === id1) || {};
                 const foundItem2 = id2 ? (allBottoms.find(i => getCleanId(i) === id2) || allTops.find(i => getCleanId(i) === id2) || {}) : {};
 
-                // Assign the URLs if found
                 if (foundItem1.imageUrl || (outfit.items[0] && outfit.items[0].imageUrl)) {
                     topUrl = foundItem1.imageUrl || outfit.items[0].imageUrl;
                 }
