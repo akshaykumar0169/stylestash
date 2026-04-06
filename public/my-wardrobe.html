@@ -462,7 +462,7 @@
         </ul>
 
         <div class="sidebar-footer">
-            <a href="setting.html" class="nav-link">
+            <a href="settings.html" class="nav-link">
                 <i class="fa-solid fa-gear"></i> Settings
             </a>
             <a href="login.html" class="nav-link logout-btn" onclick="logout(event)">
@@ -539,6 +539,14 @@
     </div>
 
     <script>
+        // ================= DEPLOYMENT CONFIG =================
+        // If your frontend and backend are hosted on separate platforms 
+        // (e.g. Vercel for this HTML, Render for your Node.js server),
+        // put your backend URL here. Example: 'https://my-api.onrender.com'
+        // If they are hosted together, leave it as an empty string: ''
+        const BACKEND_URL = ''; 
+        // =====================================================
+
         // --- Global State for Filtering/Searching ---
         let allWardrobeItems = []; // Stores the raw DB data
         let activeFilter = 'All';
@@ -598,7 +606,7 @@
             }
 
             try {
-                const response = await fetch('/api/items', {
+                const response = await fetch(`${BACKEND_URL}/api/items`, {
                     headers: { 'x-auth-token': token }
                 });
 
@@ -710,7 +718,7 @@
 
             try {
                 // Send PUT request to backend
-                const response = await fetch(`/api/items/${id}`, {
+                const response = await fetch(`${BACKEND_URL}/api/items/${id}`, {
                     method: 'PUT',
                     headers: {
                         'Content-Type': 'application/json',
@@ -735,7 +743,8 @@
                     closeEditModal();
                     applyFiltersAndRender(); // Re-render the screen
                 } else {
-                    alert("Failed to update item.");
+                    const errorData = await response.json();
+                    alert("Failed to update item: " + (errorData.msg || errorData.error));
                 }
             } catch (err) {
                 console.error(err);
@@ -750,7 +759,7 @@
                 const token = localStorage.getItem('token');
 
                 try {
-                    const response = await fetch(`/api/items/${id}`, {
+                    const response = await fetch(`${BACKEND_URL}/api/items/${id}`, {
                         method: 'DELETE',
                         headers: { 'x-auth-token': token }
                     });
@@ -770,11 +779,11 @@
             }
         }
 
-        // --- Send Item to Laundry Room ---
+        // --- UPDATED: Send Item to Laundry Room ---
         async function sendToLaundry(id) {
             const token = localStorage.getItem('token');
             try {
-                const response = await fetch(`/api/items/${id}`, {
+                const response = await fetch(`${BACKEND_URL}/api/items/${id}`, {
                     method: 'PUT',
                     headers: {
                         'Content-Type': 'application/json',
@@ -790,10 +799,14 @@
                     
                     applyFiltersAndRender();
                     alert("Sent to Laundry Room!");
+                } else {
+                    // THIS CATCHES DEPLOYMENT/SERVER ERRORS
+                    const errorData = await response.json();
+                    alert("Server Error: " + (errorData.msg || errorData.error || "Could not update item."));
                 }
             } catch (err) {
-                console.error(err);
-                alert("Failed to send to laundry.");
+                console.error("Network or CORS error:", err);
+                alert("Failed to send to laundry. Check your browser console (F12) for CORS or Network errors. If deployed separately, you may need to add your full backend URL in the script.");
             }
         }
 
