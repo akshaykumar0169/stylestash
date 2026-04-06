@@ -543,18 +543,12 @@
     <aside class="sidebar" id="sidebar">
         <div class="brand"><i class="fa-solid fa-layer-group"></i> StyleStash</div>
         <ul class="nav-links">
-            <li class="nav-item"><a href="dashboard.html" class="nav-link"><i class="fa-solid fa-table-columns"></i>
-                    Dashboard</a></li>
-            <li class="nav-item"><a href="my-wardrobe.html" class="nav-link"><i class="fa-solid fa-shirt"></i> My
-                    Wardrobe</a></li>
-            <li class="nav-item"><a href="mix-match.html" class="nav-link active"><i class="fa-solid fa-shuffle"></i>
-                    Mix & Match</a></li>
-            <li class="nav-item"><a href="laundry-room.html" class="nav-link"><i class="fa-solid fa-jug-detergent"></i>
-                    Laundry Room</a></li>
-            <li class="nav-item"><a href="calendar.html" class="nav-link"><i class="fa-regular fa-calendar"></i>
-                    Calendar</a></li>
-            <li class="nav-item"><a href="saved-look.html" class="nav-link"><i class="fa-solid fa-heart"></i>
-                    Saved Looks</a></li>
+            <li class="nav-item"><a href="dashboard.html" class="nav-link"><i class="fa-solid fa-table-columns"></i> Dashboard</a></li>
+            <li class="nav-item"><a href="my-wardrobe.html" class="nav-link"><i class="fa-solid fa-shirt"></i> My Wardrobe</a></li>
+            <li class="nav-item"><a href="mix-match.html" class="nav-link active"><i class="fa-solid fa-shuffle"></i> Mix & Match</a></li>
+            <li class="nav-item"><a href="laundry-room.html" class="nav-link"><i class="fa-solid fa-jug-detergent"></i> Laundry Room</a></li>
+            <li class="nav-item"><a href="calendar.html" class="nav-link"><i class="fa-regular fa-calendar"></i> Calendar</a></li>
+            <li class="nav-item"><a href="saved-look.html" class="nav-link"><i class="fa-solid fa-heart"></i> Saved Looks</a></li>
         </ul>
         <div class="sidebar-footer">
             <a href="setting.html" class="nav-link"><i class="fa-solid fa-gear"></i> Settings</a>
@@ -570,27 +564,19 @@
         <div class="workspace-area">
             <div class="mannequin-container">
                 <div class="carousel-row" id="topRow">
-                    <button class="nav-arrow arrow-left" onclick="prevItem('top')"><i
-                            class="fa-solid fa-chevron-left"></i></button>
-                    <div class="empty-state" id="emptyTopMsg" style="position: absolute;">No Tops Found For This
-                        Filter.<br><a href="add-item.html">Add one!</a></div>
-                    <img src="" class="carousel-img" id="imgTop">
-                    <button class="nav-arrow arrow-right" onclick="nextItem('top')"><i
-                            class="fa-solid fa-chevron-right"></i></button>
-                    <button class="lock-toggle" id="lockTop" onclick="toggleLock('top')"><i
-                            class="fa-solid fa-lock-open"></i></button>
+                    <button class="nav-arrow arrow-left" onclick="prevItem('top')"><i class="fa-solid fa-chevron-left"></i></button>
+                    <div class="empty-state" id="emptyTopMsg" style="position: absolute;">No Tops Found For This Filter.<br><a href="add-item.html">Add one!</a></div>
+                    <img src="" class="carousel-img" id="imgTop" onerror="this.src='https://placehold.co/300x400/f1f5f9/64748b?text=Image+Error'">
+                    <button class="nav-arrow arrow-right" onclick="nextItem('top')"><i class="fa-solid fa-chevron-right"></i></button>
+                    <button class="lock-toggle" id="lockTop" onclick="toggleLock('top')"><i class="fa-solid fa-lock-open"></i></button>
                 </div>
 
                 <div class="carousel-row" id="bottomRow">
-                    <button class="nav-arrow arrow-left" onclick="prevItem('bottom')"><i
-                            class="fa-solid fa-chevron-left"></i></button>
-                    <div class="empty-state" id="emptyBottomMsg" style="position: absolute;">No Bottoms Found For This
-                        Filter.<br><a href="add-item.html">Add one!</a></div>
-                    <img src="" class="carousel-img" id="imgBottom">
-                    <button class="nav-arrow arrow-right" onclick="nextItem('bottom')"><i
-                            class="fa-solid fa-chevron-right"></i></button>
-                    <button class="lock-toggle" id="lockBottom" onclick="toggleLock('bottom')"><i
-                            class="fa-solid fa-lock-open"></i></button>
+                    <button class="nav-arrow arrow-left" onclick="prevItem('bottom')"><i class="fa-solid fa-chevron-left"></i></button>
+                    <div class="empty-state" id="emptyBottomMsg" style="position: absolute;">No Bottoms Found For This Filter.<br><a href="add-item.html">Add one!</a></div>
+                    <img src="" class="carousel-img" id="imgBottom" onerror="this.src='https://placehold.co/300x400/f1f5f9/64748b?text=Image+Error'">
+                    <button class="nav-arrow arrow-right" onclick="nextItem('bottom')"><i class="fa-solid fa-chevron-right"></i></button>
+                    <button class="lock-toggle" id="lockBottom" onclick="toggleLock('bottom')"><i class="fa-solid fa-lock-open"></i></button>
                 </div>
             </div>
 
@@ -672,7 +658,6 @@
         const warmthBar = document.getElementById('warmthBar');
         const warmthText = document.getElementById('warmthText');
 
-        // Bulletproof ID Extractor
         function getCleanId(item) {
             if (!item) return null;
             if (typeof item === 'string') return item;
@@ -730,7 +715,6 @@
             init();
         }
 
-        // --- LOGOUT LOGIC ---
         function logout(event) {
             if (event) event.preventDefault();
             if (confirm("Are you sure you want to log out of StyleStash?")) {
@@ -745,7 +729,7 @@
             if (!token) return;
 
             try {
-                // Fetch Items
+                // Fetch Items First
                 const itemsRes = await fetch('http://localhost:5000/api/items', {
                     headers: { 'x-auth-token': token }
                 });
@@ -758,7 +742,7 @@
                     applyFilters();
                 }
 
-                // Fetch Outfits
+                // Fetch Outfits Second
                 const outfitsRes = await fetch('http://localhost:5000/api/outfits', {
                     headers: { 'x-auth-token': token }
                 });
@@ -801,14 +785,16 @@
 
         function updateView() {
             let tWarmth = 0, bWarmth = 0;
+            const fallbackImg = 'https://placehold.co/300x400/f1f5f9/64748b?text=No+Image';
+
             if (tops.length > 0 && tops[topIndex]) {
                 const currentTop = tops[topIndex];
-                imgTop.src = currentTop.imageUrl;
+                imgTop.src = currentTop.imageUrl || fallbackImg;
                 tWarmth = parseInt(currentTop.warmth) || 0;
             }
             if (bottoms.length > 0 && bottoms[bottomIndex]) {
                 const currentBottom = bottoms[bottomIndex];
-                imgBottom.src = currentBottom.imageUrl;
+                imgBottom.src = currentBottom.imageUrl || fallbackImg;
                 bWarmth = parseInt(currentBottom.warmth) || 0;
             }
             updateStats(tWarmth, bWarmth);
@@ -865,12 +851,10 @@
             }, 300);
         }
 
-        // --- 7. LOOKBOOK ARCHIVE LOGIC (UPDATED WITH FIXES) ---
-
+        // --- 7. LOOKBOOK ARCHIVE LOGIC ---
         function renderLookbook(outfits) {
             document.querySelectorAll('.lookbook-card').forEach(card => card.remove());
 
-            // Safely extract the array no matter how the backend wraps it
             const outfitArray = Array.isArray(outfits) ? outfits : (outfits.data || outfits.outfits || []);
 
             if (outfitArray.length > 0) {
@@ -901,11 +885,8 @@
                         'x-auth-token': token,
                         'Content-Type': 'application/json'
                     },
-                    // Send both formats to ensure it catches regardless of your Express schema
                     body: JSON.stringify({
                         items: [pureTopId, pureBottomId],
-                        top: pureTopId,
-                        bottom: pureBottomId,
                         date: new Date()
                     })
                 });
@@ -913,17 +894,9 @@
                 if (!response.ok) throw new Error("Failed to save to DB");
                 const savedOutfit = await response.json();
 
-                // Pass the FULL objects to the UI immediately so images don't blink or break
-                const uiOutfit = {
-                    _id: getCleanId(savedOutfit) || Date.now(),
-                    date: savedOutfit.date || new Date(),
-                    items: [currentTop, currentBottom]
-                };
-
                 emptyLookbookMsg.style.display = 'none';
-                appendOutfitToDOM(uiOutfit, true);
+                appendOutfitToDOM(savedOutfit, true);
 
-                // Success Button Animation
                 const btn = document.querySelector('.save-btn');
                 const originalHTML = btn.innerHTML;
                 btn.innerHTML = '<i class="fa-solid fa-check"></i> Added!';
@@ -966,7 +939,6 @@
             const grid = document.getElementById('lookbookGrid');
             if (!grid) return;
 
-            // 1. Safe Date Extraction
             let rawDate = new Date();
             if (outfit.date) {
                 rawDate = new Date(outfit.date.$date || outfit.date);
@@ -977,7 +949,6 @@
 
             const outfitIdStr = getCleanId(outfit);
 
-            // 2. Smart Category Mapping (Fixes the missing image issue on refresh)
             let topUrl = 'https://placehold.co/150x150/f1f5f9/64748b?text=Top';
             let bottomUrl = 'https://placehold.co/150x150/f1f5f9/64748b?text=Bottom';
 
@@ -985,20 +956,18 @@
                 outfit.items.forEach(item => {
                     const id = getCleanId(item);
 
-                    // Check if this ID belongs to a Top
                     const topMatch = allTops.find(t => getCleanId(t) === id);
                     if (topMatch && topMatch.imageUrl) {
                         topUrl = topMatch.imageUrl;
                     } else if (item && item.imageUrl && item.category === 'top') {
-                        topUrl = item.imageUrl; // Fallback
+                        topUrl = item.imageUrl; 
                     }
 
-                    // Check if this ID belongs to a Bottom
                     const bottomMatch = allBottoms.find(b => getCleanId(b) === id);
                     if (bottomMatch && bottomMatch.imageUrl) {
                         bottomUrl = bottomMatch.imageUrl;
                     } else if (item && item.imageUrl && item.category === 'bottom') {
-                        bottomUrl = item.imageUrl; // Fallback
+                        bottomUrl = item.imageUrl; 
                     }
                 });
             }
