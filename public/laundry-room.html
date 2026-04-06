@@ -455,6 +455,14 @@
     </main>
 
     <script>
+        // ================= DEPLOYMENT CONFIG =================
+        // If your frontend and backend are hosted on separate platforms 
+        // (e.g. Vercel for this HTML, Render for your Node.js server),
+        // put your backend URL here. Example: 'https://my-api.onrender.com'
+        // If they are hosted together, leave it as an empty string: ''
+        const BACKEND_URL = ''; 
+        // =====================================================
+
         const token = localStorage.getItem('token');
         if (!token) window.location.replace('login.html');
 
@@ -463,17 +471,18 @@
 
         document.addEventListener('DOMContentLoaded', fetchLaundry);
 
-        // --- 1. Fetch Data from MongoDB (DEPLOYMENT READY - Relative Paths) ---
+        // --- 1. Fetch Data from MongoDB (DEPLOYMENT READY) ---
         async function fetchLaundry() {
             try {
-                // Using relative paths so it maps to Render/Heroku automatically
-                const statsRes = await fetch('/api/dashboard/stats', { headers: { 'x-auth-token': token } });
+                // Fetch stats using BACKEND_URL
+                const statsRes = await fetch(`${BACKEND_URL}/api/dashboard/stats`, { headers: { 'x-auth-token': token } });
                 if (statsRes.ok) {
                     const stats = await statsRes.json();
                     totalWardrobeCount = stats.totalItems || 0;
                 }
 
-                const itemsRes = await fetch('/api/items', { headers: { 'x-auth-token': token } });
+                // Fetch items using BACKEND_URL
+                const itemsRes = await fetch(`${BACKEND_URL}/api/items`, { headers: { 'x-auth-token': token } });
                 if (!itemsRes.ok) throw new Error("Failed to fetch items");
 
                 const items = await itemsRes.json();
@@ -536,8 +545,8 @@
                 const btn = card.querySelector('.mark-clean-btn');
                 btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Cleaning...';
 
-                // Relative path for seamless live deployment
-                const response = await fetch(`/api/items/${itemId}`, {
+                // Use BACKEND_URL for seamless live deployment
+                const response = await fetch(`${BACKEND_URL}/api/items/${itemId}`, {
                     method: 'PUT',
                     headers: {
                         'Content-Type': 'application/json',
