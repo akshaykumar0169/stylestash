@@ -20,11 +20,8 @@
             --text-sub: #64748b;
             --border: #e2e8f0;
             --danger: #ef4444;
-
-            /* Sidebar Variables */
             --sidebar-bg: #0f172a;
             --sidebar-text: #94a3b8;
-            --sidebar-active: #ffffff;
             --accent-blue: #3b82f6;
             --accent-red: #ef4444;
         }
@@ -43,7 +40,7 @@
             overflow: hidden;
         }
 
-        /* ================= SIDEBAR ================= */
+        /* Sidebar */
         .sidebar {
             width: 260px;
             background-color: var(--sidebar-bg);
@@ -119,7 +116,7 @@
             color: var(--accent-red);
         }
 
-        /* ================= MAIN CONTENT ================= */
+        /* Main Content */
         .main-content {
             flex-grow: 1;
             display: flex;
@@ -221,7 +218,7 @@
             color: white;
         }
 
-        /* Lookbook Gallery */
+        /* Lookbook */
         .lookbook-container {
             flex: 1;
             max-width: 450px;
@@ -294,7 +291,6 @@
             font-size: 0.7rem;
             opacity: 0;
             transition: opacity 0.2s;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
             z-index: 20;
         }
 
@@ -342,7 +338,7 @@
             margin-top: 50px;
         }
 
-        /* --- Zone B: Control Panel (Right) --- */
+        /* Control Panel */
         .control-panel {
             flex: 1;
             background: white;
@@ -490,7 +486,6 @@
             z-index: 100;
         }
 
-        /* ================= RESPONSIVE ================= */
         @media (max-width: 1100px) {
             .workspace-area {
                 flex-direction: column;
@@ -539,7 +534,6 @@
 </head>
 
 <body>
-
     <aside class="sidebar" id="sidebar">
         <div class="brand"><i class="fa-solid fa-layer-group"></i> StyleStash</div>
         <ul class="nav-links">
@@ -553,11 +547,11 @@
                     Laundry Room</a></li>
             <li class="nav-item"><a href="calendar.html" class="nav-link"><i class="fa-regular fa-calendar"></i>
                     Calendar</a></li>
-            <li class="nav-item"><a href="saved-look.html" class="nav-link"><i class="fa-solid fa-heart"></i>
-                    Saved Looks</a></li>
+            <li class="nav-item"><a href="saved-look.html" class="nav-link"><i class="fa-solid fa-heart"></i> Saved
+                    Looks</a></li>
         </ul>
         <div class="sidebar-footer">
-            <a href="setting.html" class="nav-link"><i class="fa-solid fa-gear"></i> Settings</a>
+            <a href="settings.html" class="nav-link"><i class="fa-solid fa-gear"></i> Settings</a>
             <a href="login.html" class="nav-link logout-btn" onclick="logout(event)">
                 <div><i class="fa-solid fa-arrow-right-from-bracket"></i> Logout</div>
             </a>
@@ -572,20 +566,17 @@
                 <div class="carousel-row" id="topRow">
                     <button class="nav-arrow arrow-left" onclick="prevItem('top')"><i
                             class="fa-solid fa-chevron-left"></i></button>
-                    <div class="empty-state" id="emptyTopMsg" style="position: absolute;">No Tops Found For This
-                        Filter.<br><a href="add-item.html">Add one!</a></div>
+                    <div class="empty-state" id="emptyTopMsg" style="position: absolute;">Loading...</div>
                     <img src="" class="carousel-img" id="imgTop">
                     <button class="nav-arrow arrow-right" onclick="nextItem('top')"><i
                             class="fa-solid fa-chevron-right"></i></button>
                     <button class="lock-toggle" id="lockTop" onclick="toggleLock('top')"><i
                             class="fa-solid fa-lock-open"></i></button>
                 </div>
-
                 <div class="carousel-row" id="bottomRow">
                     <button class="nav-arrow arrow-left" onclick="prevItem('bottom')"><i
                             class="fa-solid fa-chevron-left"></i></button>
-                    <div class="empty-state" id="emptyBottomMsg" style="position: absolute;">No Bottoms Found For This
-                        Filter.<br><a href="add-item.html">Add one!</a></div>
+                    <div class="empty-state" id="emptyBottomMsg" style="position: absolute;">Loading...</div>
                     <img src="" class="carousel-img" id="imgBottom">
                     <button class="nav-arrow arrow-right" onclick="nextItem('bottom')"><i
                             class="fa-solid fa-chevron-right"></i></button>
@@ -599,7 +590,7 @@
                 <div class="lookbook-grid" id="lookbookGrid">
                     <div class="empty-state" id="emptyLookbookMsg" style="display: block;">
                         <i class="fa-regular fa-folder-open" style="font-size: 2rem; margin-bottom: 10px;"></i><br>
-                        No outfits saved yet.<br>Shuffle and save your first look!
+                        Fetching your looks... (Render may take 50s to wake up)
                     </div>
                 </div>
             </div>
@@ -634,10 +625,7 @@
             <div class="panel-section" style="margin-top: auto;">
                 <h3>Outfit Stats</h3>
                 <div class="stat-box">
-                    <div class="warmth-label">
-                        <span>Warmth Level</span>
-                        <span id="warmthText">0/10</span>
-                    </div>
+                    <div class="warmth-label"><span>Warmth Level</span><span id="warmthText">0/10</span></div>
                     <div class="warmth-bar">
                         <div class="warmth-fill" id="warmthBar" style="width: 0%;"></div>
                     </div>
@@ -650,22 +638,18 @@
     </main>
 
     <script>
-        // 🚨 UPDATE THIS LINE WITH YOUR LIVE RENDER BACKEND URL 🚨
-        const BACKEND_URL = 'https://stylestash.onrender.com'; 
+        // ===================================================================
+        // 🚨 CRITICAL: REPLACE THIS WITH YOUR ACTUAL RENDER BACKEND URL 🚨
+        // Example: 'https://stylestash-api.onrender.com'
+        // Make sure there is NO slash at the end of the URL!
+        // ===================================================================
+        const RAW_BACKEND_URL = 'https://stylestash.onrender.com';
+        const BACKEND_URL = RAW_BACKEND_URL.replace(/\/$/, "");
 
-        // --- 1. STATE MANAGEMENT ---
-        let allTops = [];
-        let allBottoms = [];
-        let tops = [];
-        let bottoms = [];
-
-        let activeSeason = 'Summer';
-        let activeOccasion = 'All Occasions';
-
-        let topIndex = 0;
-        let bottomIndex = 0;
-        let lockTop = false;
-        let lockBottom = false;
+        let allTops = [], allBottoms = [], tops = [], bottoms = [];
+        let activeSeason = 'Summer', activeOccasion = 'All Occasions';
+        let topIndex = 0, bottomIndex = 0;
+        let lockTop = false, lockBottom = false;
 
         const imgTop = document.getElementById('imgTop');
         const imgBottom = document.getElementById('imgBottom');
@@ -675,19 +659,22 @@
         const warmthBar = document.getElementById('warmthBar');
         const warmthText = document.getElementById('warmthText');
 
-        // --- THE FIX: BULLETPROOF ID EXTRACTOR ---
+        // Bulletproof ID Extractor
         function getCleanId(item) {
             if (!item) return null;
             if (typeof item === 'string') return item;
             if (item.$oid) return item.$oid;
-            if (item._id) {
-                if (typeof item._id === 'string') return item._id;
-                if (item._id.$oid) return item._id.$oid;
-            }
+            if (item._id) return typeof item._id === 'string' ? item._id : item._id.$oid;
             return null;
         }
 
-        // --- 2. EVENT LISTENERS FOR FILTERS ---
+        // Image URL format helper
+        function getFullImageUrl(url) {
+            if (!url) return null;
+            if (url.startsWith('http')) return url;
+            return url.startsWith('/') ? `${BACKEND_URL}${url}` : `${BACKEND_URL}/${url}`;
+        }
+
         document.querySelectorAll('.season-btn').forEach(btn => {
             btn.addEventListener('click', (e) => {
                 document.querySelectorAll('.season-btn').forEach(b => b.classList.remove('active'));
@@ -702,16 +689,14 @@
             applyFilters();
         });
 
-        // --- 3. CORE FILTERING LOGIC ---
         function applyFilters() {
             const formalTypes = ['chinos', 'shirt', 'blazer', 'trousers', 'formal pant'];
             const casualTypes = ['jeans', 't-shirt', 'shorts', 'hoodie', 'sweatpants'];
             const partyTypes = ['party-shirt', 'dress', 'leather-jacket'];
 
-            function matchesOccasionCheck(item) {
+            function matchesOccasion(item) {
                 if (activeOccasion === 'All Occasions') return true;
                 if (!item.subCategory) return false;
-
                 const sub = item.subCategory.toLowerCase();
                 if (activeOccasion === 'Formal / Work') return formalTypes.includes(sub);
                 if (activeOccasion === 'Casual') return casualTypes.includes(sub);
@@ -719,40 +704,25 @@
                 return false;
             }
 
-            function matchesSeasonCheck(item) {
+            function matchesSeason(item) {
                 if (!item.seasons || item.seasons.length === 0) return true;
                 const dbSeasons = item.seasons.map(s => s.toLowerCase());
                 return dbSeasons.includes(activeSeason.toLowerCase()) || dbSeasons.includes('all year');
             }
 
-            tops = allTops.filter(item => matchesSeasonCheck(item) && matchesOccasionCheck(item));
-            bottoms = allBottoms.filter(item => matchesSeasonCheck(item) && matchesOccasionCheck(item));
+            tops = allTops.filter(item => matchesSeason(item) && matchesOccasion(item));
+            bottoms = allBottoms.filter(item => matchesSeason(item) && matchesOccasion(item));
 
-            topIndex = 0;
-            bottomIndex = 0;
-            init();
+            topIndex = 0; bottomIndex = 0;
+            initView();
         }
 
-        // --- LOGOUT LOGIC ---
-        function logout(event) {
-            if (event) event.preventDefault();
-            if (confirm("Are you sure you want to log out of StyleStash?")) {
-                localStorage.removeItem('token');
-                window.location.replace('login.html');
-            }
-        }
-
-        // --- 4. DATABASE FETCHING ---
         async function fetchWardrobeFromDB() {
             const token = localStorage.getItem('token');
-            if (!token) return;
+            if (!token) return window.location.replace('login.html');
 
             try {
-                // Pointing to the live backend URL
-                const itemsRes = await fetch(`${BACKEND_URL}/api/items`, {
-                    headers: { 'x-auth-token': token }
-                });
-
+                const itemsRes = await fetch(`${BACKEND_URL}/api/items`, { headers: { 'x-auth-token': token } });
                 if (itemsRes.ok) {
                     const allItems = await itemsRes.json();
                     const itemsArray = Array.isArray(allItems) ? allItems : (allItems.data || []);
@@ -761,73 +731,50 @@
                     applyFilters();
                 }
 
-                // Pointing to the live backend URL
-                const outfitsRes = await fetch(`${BACKEND_URL}/api/outfits`, {
-                    headers: { 'x-auth-token': token }
-                });
-
+                const outfitsRes = await fetch(`${BACKEND_URL}/api/outfits`, { headers: { 'x-auth-token': token } });
                 if (outfitsRes.ok) {
                     const outfits = await outfitsRes.json();
                     renderLookbook(outfits);
+                } else {
+                    throw new Error("Looks fetch failed");
                 }
-
             } catch (error) {
-                console.error("Database fetch error:", error);
+                console.error("Fetch error:", error);
+                emptyLookbookMsg.innerHTML = `<span style="color:var(--danger)">Error connecting to Render Backend. Make sure your server is running at ${BACKEND_URL}</span>`;
             }
         }
 
-        // --- 5. RENDER LOGIC ---
-        function init() {
-            if (tops.length === 0) {
-                imgTop.style.display = 'none';
-                emptyTopMsg.style.display = 'block';
-            } else {
-                imgTop.style.display = 'block';
-                emptyTopMsg.style.display = 'none';
-            }
+        function initView() {
+            imgTop.style.display = tops.length === 0 ? 'none' : 'block';
+            emptyTopMsg.style.display = tops.length === 0 ? 'block' : 'none';
+            emptyTopMsg.innerHTML = tops.length === 0 ? "No Tops Found.<br><a href='add-item.html'>Add one!</a>" : "";
 
-            if (bottoms.length === 0) {
-                imgBottom.style.display = 'none';
-                emptyBottomMsg.style.display = 'block';
-            } else {
-                imgBottom.style.display = 'block';
-                emptyBottomMsg.style.display = 'none';
-            }
+            imgBottom.style.display = bottoms.length === 0 ? 'none' : 'block';
+            emptyBottomMsg.style.display = bottoms.length === 0 ? 'block' : 'none';
+            emptyBottomMsg.innerHTML = bottoms.length === 0 ? "No Bottoms Found.<br><a href='add-item.html'>Add one!</a>" : "";
 
-            if (tops.length > 0 || bottoms.length > 0) {
-                updateView();
-            } else {
-                warmthText.innerText = `0/10`;
-                warmthBar.style.width = `0%`;
-            }
+            if (tops.length > 0 || bottoms.length > 0) updateView();
+            else { warmthText.innerText = `0/10`; warmthBar.style.width = `0%`; }
         }
 
         function updateView() {
             let tWarmth = 0, bWarmth = 0;
             if (tops.length > 0 && tops[topIndex]) {
-                const currentTop = tops[topIndex];
-                imgTop.src = currentTop.imageUrl;
-                tWarmth = parseInt(currentTop.warmth) || 0;
+                imgTop.src = getFullImageUrl(tops[topIndex].imageUrl);
+                tWarmth = parseInt(tops[topIndex].warmth) || 0;
             }
             if (bottoms.length > 0 && bottoms[bottomIndex]) {
-                const currentBottom = bottoms[bottomIndex];
-                imgBottom.src = currentBottom.imageUrl;
-                bWarmth = parseInt(currentBottom.warmth) || 0;
+                imgBottom.src = getFullImageUrl(bottoms[bottomIndex].imageUrl);
+                bWarmth = parseInt(bottoms[bottomIndex].warmth) || 0;
             }
-            updateStats(tWarmth, bWarmth);
-        }
-
-        function updateStats(tWarmth, bWarmth) {
             let divisor = (tops.length > 0 ? 1 : 0) + (bottoms.length > 0 ? 1 : 0);
             if (divisor === 0) return;
-            const avgWarmth = Math.round((tWarmth + bWarmth) / divisor * 10) / 10;
-            const percentage = (avgWarmth / 10) * 100;
-            warmthText.innerText = `${avgWarmth}/10`;
-            warmthBar.style.width = `${percentage}%`;
-            warmthBar.style.backgroundColor = percentage <= 30 ? '#60a5fa' : (percentage >= 70 ? '#ef4444' : '#f59e0b');
+            const avg = Math.round((tWarmth + bWarmth) / divisor * 10) / 10;
+            warmthText.innerText = `${avg}/10`;
+            warmthBar.style.width = `${(avg / 10) * 100}%`;
+            warmthBar.style.backgroundColor = (avg / 10) * 100 <= 30 ? '#60a5fa' : ((avg / 10) * 100 >= 70 ? '#ef4444' : '#f59e0b');
         }
 
-        // --- 6. SHUFFLING & NAVIGATION ---
         function nextItem(type) {
             if (type === 'top' && !lockTop && tops.length > 0) topIndex = (topIndex + 1) % tops.length;
             if (type === 'bottom' && !lockBottom && bottoms.length > 0) bottomIndex = (bottomIndex + 1) % bottoms.length;
@@ -842,189 +789,90 @@
 
         function toggleLock(type) {
             const btn = document.getElementById(type === 'top' ? 'lockTop' : 'lockBottom');
-            const icon = btn.querySelector('i');
-            if (type === 'top') {
-                lockTop = !lockTop;
-                btn.classList.toggle('locked');
-                icon.className = lockTop ? 'fa-solid fa-lock' : 'fa-solid fa-lock-open';
-            } else {
-                lockBottom = !lockBottom;
-                btn.classList.toggle('locked');
-                icon.className = lockBottom ? 'fa-solid fa-lock' : 'fa-solid fa-lock-open';
-            }
+            if (type === 'top') lockTop = !lockTop; else lockBottom = !lockBottom;
+            btn.classList.toggle('locked');
+            btn.querySelector('i').className = (type === 'top' ? lockTop : lockBottom) ? 'fa-solid fa-lock' : 'fa-solid fa-lock-open';
         }
 
         function shuffleOutfit() {
-            const elementsToAnimate = [];
-            if (!lockTop && tops.length > 0) elementsToAnimate.push(imgTop);
-            if (!lockBottom && bottoms.length > 0) elementsToAnimate.push(imgBottom);
-
-            elementsToAnimate.forEach(el => el.style.opacity = 0);
+            [imgTop, imgBottom].forEach(el => el.style.opacity = 0);
             setTimeout(() => {
                 if (!lockTop && tops.length > 0) topIndex = Math.floor(Math.random() * tops.length);
                 if (!lockBottom && bottoms.length > 0) bottomIndex = Math.floor(Math.random() * bottoms.length);
                 updateView();
-                elementsToAnimate.forEach(el => el.style.opacity = 1);
+                [imgTop, imgBottom].forEach(el => el.style.opacity = 1);
             }, 300);
         }
 
-        // --- 7. LOOKBOOK ARCHIVE LOGIC ---
         function renderLookbook(outfits) {
-            document.querySelectorAll('.lookbook-card').forEach(card => card.remove());
-
-            const outfitArray = Array.isArray(outfits) ? outfits : (outfits.data || []);
-
-            if (outfitArray.length > 0) {
+            document.querySelectorAll('.lookbook-card').forEach(c => c.remove());
+            const arr = Array.isArray(outfits) ? outfits : (outfits.data || []);
+            if (arr.length > 0) {
                 emptyLookbookMsg.style.display = 'none';
-                outfitArray.forEach(outfit => appendOutfitToDOM(outfit));
+                arr.forEach(o => appendOutfitToDOM(o));
             } else {
+                emptyLookbookMsg.innerHTML = "No outfits saved yet.<br>Shuffle and save your first look!";
                 emptyLookbookMsg.style.display = 'block';
             }
         }
 
         async function saveLook() {
-            if (tops.length === 0 || bottoms.length === 0) {
-                alert("Please add both a top and a bottom to save an outfit!");
-                return;
-            }
-
-            const currentTop = tops[topIndex];
-            const currentBottom = bottoms[bottomIndex];
-            const token = localStorage.getItem('token');
-
-            const pureTopId = getCleanId(currentTop);
-            const pureBottomId = getCleanId(currentBottom);
+            if (tops.length === 0 || bottoms.length === 0) return alert("Please add a top and bottom!");
+            const btn = document.querySelector('.save-btn');
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Saving...';
 
             try {
-                // Pointing to the live backend URL
                 const response = await fetch(`${BACKEND_URL}/api/outfits`, {
                     method: 'POST',
-                    headers: {
-                        'x-auth-token': token,
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        items: [pureTopId, pureBottomId],
-                        date: new Date()
-                    })
+                    headers: { 'x-auth-token': localStorage.getItem('token'), 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ items: [getCleanId(tops[topIndex]), getCleanId(bottoms[bottomIndex])], date: new Date() })
                 });
-
-                if (!response.ok) throw new Error("Failed to save to DB");
-                const savedOutfit = await response.json();
-
-                const uiOutfit = {
-                    _id: getCleanId(savedOutfit) || Date.now(),
-                    date: savedOutfit.date || new Date(),
-                    items: [currentTop, currentBottom]
-                };
+                if (!response.ok) throw new Error("Save failed");
+                const saved = await response.json();
 
                 emptyLookbookMsg.style.display = 'none';
-                appendOutfitToDOM(uiOutfit, true);
+                appendOutfitToDOM({ _id: getCleanId(saved) || Date.now(), date: new Date(), items: [tops[topIndex], bottoms[bottomIndex]] }, true);
 
-                const btn = document.querySelector('.save-btn');
-                const originalHTML = btn.innerHTML;
                 btn.innerHTML = '<i class="fa-solid fa-check"></i> Added!';
-                btn.style.backgroundColor = 'var(--accent-pink)';
-                btn.style.color = 'white';
-                setTimeout(() => {
-                    btn.innerHTML = originalHTML;
-                    btn.style.backgroundColor = 'white';
-                    btn.style.color = 'var(--accent-pink)';
-                }, 2000);
-
+                btn.style.background = 'var(--accent-pink)'; btn.style.color = 'white';
+                setTimeout(() => { btn.innerHTML = '<i class="fa-regular fa-heart"></i> Save Look'; btn.style.background = 'white'; btn.style.color = 'var(--accent-pink)'; }, 2000);
             } catch (e) {
-                console.error(e);
-                alert("Server error: Could not save the look. Is your backend running?");
+                alert("Could not save. Is Render backend awake?");
+                btn.innerHTML = '<i class="fa-regular fa-heart"></i> Save Look';
             }
         }
 
-        async function deleteLook(outfitId, buttonElement) {
-            const token = localStorage.getItem('token');
+        async function deleteLook(id, btn) {
             try {
-                // Pointing to the live backend URL
-                const response = await fetch(`${BACKEND_URL}/api/outfits/${outfitId}`, {
-                    method: 'DELETE',
-                    headers: { 'x-auth-token': token }
-                });
-
-                if (!response.ok) throw new Error("Failed to delete from DB");
-
-                buttonElement.closest('.lookbook-card').remove();
-
-                if (document.querySelectorAll('.lookbook-card').length === 0) {
-                    emptyLookbookMsg.style.display = 'block';
-                }
-            } catch (e) {
-                console.error("Delete Error:", e);
-                alert("Failed to delete outfit.");
-            }
+                await fetch(`${BACKEND_URL}/api/outfits/${id}`, { method: 'DELETE', headers: { 'x-auth-token': localStorage.getItem('token') } });
+                btn.closest('.lookbook-card').remove();
+                if (document.querySelectorAll('.lookbook-card').length === 0) emptyLookbookMsg.style.display = 'block';
+            } catch (e) { alert("Delete failed."); }
         }
 
         function appendOutfitToDOM(outfit, atTop = false) {
             const grid = document.getElementById('lookbookGrid');
-            if (!grid) return;
+            let d = new Date(outfit.date?.$date || outfit.date);
+            const dateStr = isNaN(d) ? "Saved Outfit" : d.toLocaleDateString('en-US', { month: 'short', day: '2-digit', year: 'numeric' });
 
-            let rawDate = new Date();
-            if (outfit.date) {
-                if (outfit.date.$date) {
-                    rawDate = new Date(outfit.date.$date);
-                } else {
-                    rawDate = new Date(outfit.date);
-                }
-            }
-            const dateString = isNaN(rawDate)
-                ? "Saved Outfit"
-                : rawDate.toLocaleDateString('en-US', { month: 'short', day: '2-digit', year: 'numeric' });
+            const id1 = getCleanId(outfit.items?.[0]), id2 = getCleanId(outfit.items?.[1]);
+            const item1 = allTops.find(i => getCleanId(i) === id1) || allBottoms.find(i => getCleanId(i) === id1) || outfit.items?.[0] || {};
+            const item2 = allBottoms.find(i => getCleanId(i) === id2) || allTops.find(i => getCleanId(i) === id2) || outfit.items?.[1] || {};
 
-            const outfitIdStr = getCleanId(outfit);
+            const tUrl = getFullImageUrl(item1.imageUrl) || 'https://placehold.co/150?text=Top';
+            const bUrl = getFullImageUrl(item2.imageUrl) || 'https://placehold.co/150?text=Bottom';
 
-            let topUrl = 'https://placehold.co/150x150/f1f5f9/64748b?text=Top';
-            let bottomUrl = 'https://placehold.co/150x150/f1f5f9/64748b?text=Bottom';
+            const card = document.createElement('div');
+            card.className = 'lookbook-card';
+            card.innerHTML = `<button class="delete-btn" onclick="deleteLook('${getCleanId(outfit)}', this)"><i class="fa-solid fa-trash"></i></button>
+                <div class="lookbook-images"><img src="${tUrl}"><img src="${bUrl}"></div>
+                <div class="lookbook-title">Saved Outfit</div><div class="lookbook-date">${dateStr}</div>`;
 
-            if (outfit.items && outfit.items.length > 0) {
-                const id1 = getCleanId(outfit.items[0]);
-                const id2 = outfit.items.length > 1 ? getCleanId(outfit.items[1]) : null;
-
-                const foundItem1 = allTops.find(i => getCleanId(i) === id1) || allBottoms.find(i => getCleanId(i) === id1) || {};
-                const foundItem2 = id2 ? (allBottoms.find(i => getCleanId(i) === id2) || allTops.find(i => getCleanId(i) === id2) || {}) : {};
-
-                if (foundItem1.imageUrl || (outfit.items[0] && outfit.items[0].imageUrl)) {
-                    topUrl = foundItem1.imageUrl || outfit.items[0].imageUrl;
-                }
-                if (foundItem2.imageUrl || (outfit.items[1] && outfit.items[1].imageUrl)) {
-                    bottomUrl = foundItem2.imageUrl || outfit.items[1].imageUrl;
-                }
-            }
-
-            const newCard = document.createElement('div');
-            newCard.className = 'lookbook-card';
-            newCard.innerHTML = `
-        <button class="delete-btn" onclick="deleteLook('${outfitIdStr}', this)" title="Delete Look">
-            <i class="fa-solid fa-trash"></i>
-        </button>
-        <div class="lookbook-images">
-            <img src="${topUrl}" alt="Top">
-            <img src="${bottomUrl}" alt="Bottom">
-        </div>
-        <div class="lookbook-title">Saved Outfit</div>
-        <div class="lookbook-date">${dateString}</div>
-    `;
-
-            if (atTop) {
-                if (grid.firstChild) {
-                    grid.insertBefore(newCard, emptyLookbookMsg.nextSibling);
-                } else {
-                    grid.appendChild(newCard);
-                }
-            } else {
-                grid.appendChild(newCard);
-            }
+            if (atTop && grid.firstChild) grid.insertBefore(card, emptyLookbookMsg.nextSibling); else grid.appendChild(card);
         }
 
-        function toggleSidebar() {
-            document.getElementById('sidebar').classList.toggle('active');
-        }
-
+        function toggleSidebar() { document.getElementById('sidebar').classList.toggle('active'); }
+        function logout(e) { e.preventDefault(); localStorage.removeItem('token'); window.location.replace('login.html'); }
         document.addEventListener('DOMContentLoaded', fetchWardrobeFromDB);
     </script>
 </body>
