@@ -44,7 +44,7 @@ const upload = multer({ storage });
 
 // ================== MODELS ==================
 
-// 1. UPDATED USER SCHEMA (Split names)
+// User Schema
 const UserSchema = new mongoose.Schema({
     firstName: { type: String, required: true }, 
     lastName: { type: String, required: true },  
@@ -54,7 +54,7 @@ const UserSchema = new mongoose.Schema({
 });
 const User = mongoose.model("User", UserSchema);
 
-// Item
+// Item Schema
 const ItemSchema = new mongoose.Schema({
     userId: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
     name: { type: String, required: true },
@@ -70,7 +70,7 @@ const ItemSchema = new mongoose.Schema({
 });
 const Item = mongoose.model("Item", ItemSchema);
 
-// Outfit
+// Outfit Schema
 const OutfitSchema = new mongoose.Schema({
     userId: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
     date: { type: Date, required: true },
@@ -94,8 +94,6 @@ const auth = (req, res, next) => {
 };
 
 // ================== AUTH ROUTES ==================
-
-// 2. UPDATED REGISTER ROUTE
 app.post("/api/auth/register", async (req, res) => {
     try {
         const { firstName, lastName, email, password } = req.body;
@@ -145,8 +143,6 @@ app.post("/api/auth/login", async (req, res) => {
 });
 
 // ================== DASHBOARD ROUTE ==================
-
-// 3. UPDATED DASHBOARD ROUTE (To handle missing fullName)
 app.get("/api/dashboard/stats", auth, async (req, res) => {
     try {
         const user = await User.findById(req.user.id).select("firstName lastName");
@@ -194,14 +190,10 @@ app.get("/api/items", auth, async (req, res) => {
     res.json(items);
 });
 
-// 👇 THE NEW ROUTES ADDED HERE 👇
-
-// ================== UPDATE ITEM (Send to Laundry / Edit / Mark Clean) ==================
 app.put("/api/items/:id", auth, async (req, res) => {
     try {
         const { name, category, warmth, isClean } = req.body;
 
-        // Build the update object based on what was sent from the frontend
         const itemFields = {};
         if (name) itemFields.name = name;
         if (category) itemFields.category = category;
@@ -211,12 +203,10 @@ app.put("/api/items/:id", auth, async (req, res) => {
         let item = await Item.findById(req.params.id);
         if (!item) return res.status(404).json({ msg: "Item not found" });
 
-        // Security check: Make sure the logged-in user actually owns this item
         if (item.userId.toString() !== req.user.id) {
             return res.status(401).json({ msg: "Not authorized to edit this item" });
         }
 
-        // Apply the updates
         item = await Item.findByIdAndUpdate(
             req.params.id,
             { $set: itemFields },
@@ -230,13 +220,11 @@ app.put("/api/items/:id", auth, async (req, res) => {
     }
 });
 
-// ================== DELETE ITEM ==================
 app.delete("/api/items/:id", auth, async (req, res) => {
     try {
         let item = await Item.findById(req.params.id);
         if (!item) return res.status(404).json({ msg: "Item not found" });
 
-        // Security check: Make sure the logged-in user actually owns this item
         if (item.userId.toString() !== req.user.id) {
             return res.status(401).json({ msg: "Not authorized to delete this item" });
         }
@@ -249,7 +237,61 @@ app.delete("/api/items/:id", auth, async (req, res) => {
     }
 });
 
-// 👆 END OF NEW ROUTES 👆
+// ================== OUTFIT ROUTES ==================
+app.post("/api/outfits", auth, async (req, res) => {
+    try {
+        const { items, date, note } = req.body;
+        
+        if (!items || !Array.isArray(items) || items.length === 0) {
+            return res.status(400).json({ msg: "Please provide items to save the look" });
+        }
+
+        const outfit = new Outfit({
+            userId: req.user.id,
+            items: items,
+            date: date || new Date(),
+            note: note || ""
+        });
+
+        await outfit.save();
+
+        const populatedOutfit = await Outfit.findById(outfit._id).populate('items');
+        res.json(populatedOutfit);
+    } catch (err) {
+        console.error("Save Outfit Error:", err);
+        res.status(500).json({ error: "Server Error while saving outfit" });
+    }
+});
+
+app.get("/api/outfits", auth, async (req, res) => {
+    try {
+        const outfits = await Outfit.find({ userId: req.user.id })
+            .populate('items')
+            .sort({ date: -1 });
+            
+        res.json(outfits);
+    } catch (err) {
+        console.error("Get Outfits Error:", err);
+        res.status(500).json({ error: "Server Error while fetching outfits" });
+    }
+});
+
+app.delete("/api/outfits/:id", auth, async (req, res) => {
+    try {
+        const outfit = await Outfit.findById(req.params.id);
+        if (!outfit) return res.status(404).json({ msg: "Outfit not found" });
+
+        if (outfit.userId.toString() !== req.user.id) {
+            return res.status(401).json({ msg: "Not authorized to delete this outfit" });
+        }
+
+        await Outfit.findByIdAndDelete(req.params.id);
+        res.json({ msg: "Outfit deleted successfully" });
+    } catch (err) {
+        console.error("Delete Outfit Error:", err);
+        res.status(500).json({ error: "Server Error while deleting outfit" });
+    }
+});
 
 // ================== FRONTEND FALLBACK ROUTE ==================
 app.get(/.*/, (req, res) => {
