@@ -5,9 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mix & Match - StyleStash</title>
-    <link
-        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Poppins:wght@300;400;500;600&display=swap"
-        rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
     <style>
@@ -29,11 +27,7 @@
             --accent-red: #ef4444;
         }
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
 
         body {
             font-family: 'Inter', sans-serif;
@@ -67,15 +61,8 @@
             gap: 12px;
         }
 
-        .nav-links {
-            list-style: none;
-            flex-grow: 1;
-        }
-
-        .nav-item {
-            margin-bottom: 0.5rem;
-        }
-
+        .nav-links { list-style: none; flex-grow: 1; }
+        .nav-item { margin-bottom: 0.5rem; }
         .nav-link {
             display: flex;
             align-items: center;
@@ -88,23 +75,14 @@
             font-size: 0.95rem;
         }
 
-        .nav-link:hover {
-            background-color: rgba(255, 255, 255, 0.1);
-            color: #fff;
-        }
-
+        .nav-link:hover { background-color: rgba(255, 255, 255, 0.1); color: #fff; }
         .nav-link.active {
             background-color: var(--accent-blue);
             color: #ffffff;
             font-weight: 500;
             box-shadow: 0 4px 6px -1px rgba(59, 130, 246, 0.5);
         }
-
-        .nav-link i {
-            margin-right: 12px;
-            width: 20px;
-            text-align: center;
-        }
+        .nav-link i { margin-right: 12px; width: 20px; text-align: center; }
 
         .sidebar-footer {
             margin-top: auto;
@@ -115,9 +93,7 @@
             gap: 5px;
         }
 
-        .logout-btn {
-            color: var(--accent-red);
-        }
+        .logout-btn { color: var(--accent-red); cursor: pointer; }
 
         /* ================= MAIN CONTENT ================= */
         .main-content {
@@ -185,18 +161,9 @@
             transition: background 0.2s;
         }
 
-        .nav-arrow:hover {
-            background: white;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        }
-
-        .arrow-left {
-            left: 10px;
-        }
-
-        .arrow-right {
-            right: 10px;
-        }
+        .nav-arrow:hover { background: white; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); }
+        .arrow-left { left: 10px; }
+        .arrow-right { right: 10px; }
 
         .lock-toggle {
             position: absolute;
@@ -216,10 +183,7 @@
             transition: all 0.2s;
         }
 
-        .lock-toggle.locked {
-            background: var(--accent-red);
-            color: white;
-        }
+        .lock-toggle.locked { background: var(--accent-red); color: white; }
 
         /* Lookbook Gallery */
         .lookbook-container {
@@ -298,9 +262,7 @@
             z-index: 20;
         }
 
-        .lookbook-card:hover .delete-btn {
-            opacity: 1;
-        }
+        .lookbook-card:hover .delete-btn { opacity: 1; }
 
         .lookbook-images {
             display: flex;
@@ -328,10 +290,7 @@
             margin-bottom: 3px;
         }
 
-        .lookbook-date {
-            font-size: 0.75rem;
-            color: var(--text-sub);
-        }
+        .lookbook-date { font-size: 0.75rem; color: var(--text-sub); }
 
         .empty-state {
             text-align: center;
@@ -363,10 +322,7 @@
             margin-bottom: 1rem;
         }
 
-        .form-group {
-            margin-bottom: 1rem;
-        }
-
+        .form-group { margin-bottom: 1rem; }
         .form-group label {
             display: block;
             font-size: 0.9rem;
@@ -401,10 +357,7 @@
             border-radius: 6px;
         }
 
-        .season-btn.active {
-            background: white;
-            font-weight: 600;
-        }
+        .season-btn.active { background: white; font-weight: 600; }
 
         .shuffle-btn {
             width: 100%;
@@ -423,14 +376,8 @@
             gap: 10px;
         }
 
-        .shuffle-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 20px rgba(99, 102, 241, 0.4);
-        }
-
-        .shuffle-btn:active {
-            transform: scale(0.98);
-        }
+        .shuffle-btn:hover { transform: translateY(-2px); box-shadow: 0 10px 20px rgba(99, 102, 241, 0.4); }
+        .shuffle-btn:active { transform: scale(0.98); }
 
         .stat-box {
             background: var(--bg-body);
@@ -446,19 +393,8 @@
             margin-bottom: 8px;
         }
 
-        .warmth-bar {
-            height: 8px;
-            background: #cbd5e1;
-            border-radius: 4px;
-            overflow: hidden;
-        }
-
-        .warmth-fill {
-            height: 100%;
-            background: #f59e0b;
-            width: 0%;
-            transition: width 0.5s ease;
-        }
+        .warmth-bar { height: 8px; background: #cbd5e1; border-radius: 4px; overflow: hidden; }
+        .warmth-fill { height: 100%; background: #f59e0b; width: 0%; transition: width 0.5s ease; }
 
         .save-btn {
             width: 100%;
@@ -472,10 +408,7 @@
             transition: 0.2s;
         }
 
-        .save-btn:hover {
-            background: var(--accent-pink);
-            color: white;
-        }
+        .save-btn:hover { background: var(--accent-pink); color: white; }
 
         .mobile-toggle-btn {
             position: absolute;
@@ -492,48 +425,17 @@
 
         /* ================= RESPONSIVE ================= */
         @media (max-width: 1100px) {
-            .workspace-area {
-                flex-direction: column;
-                height: auto;
-                padding-top: 5rem;
-            }
-
-            .mannequin-container,
-            .lookbook-container {
-                width: 100%;
-                max-width: 500px;
-                height: 60vh;
-            }
-
-            .control-panel {
-                min-width: auto;
-            }
+            .workspace-area { flex-direction: column; height: auto; padding-top: 5rem; }
+            .mannequin-container, .lookbook-container { width: 100%; max-width: 500px; height: 60vh; }
+            .control-panel { min-width: auto; }
         }
 
         @media (max-width: 900px) {
-            .sidebar {
-                position: fixed;
-                height: 100%;
-                transform: translateX(-100%);
-            }
-
-            .sidebar.active {
-                transform: translateX(0);
-            }
-
-            .mobile-toggle-btn {
-                display: block;
-            }
-
-            .main-content {
-                flex-direction: column;
-                overflow-y: auto;
-            }
-
-            .control-panel {
-                border-left: none;
-                border-top: 1px solid var(--border);
-            }
+            .sidebar { position: fixed; height: 100%; transform: translateX(-100%); }
+            .sidebar.active { transform: translateX(0); }
+            .mobile-toggle-btn { display: block; }
+            .main-content { flex-direction: column; overflow-y: auto; }
+            .control-panel { border-left: none; border-top: 1px solid var(--border); }
         }
     </style>
 </head>
@@ -552,9 +454,9 @@
         </ul>
         <div class="sidebar-footer">
             <a href="setting.html" class="nav-link"><i class="fa-solid fa-gear"></i> Settings</a>
-            <a href="login.html" class="nav-link logout-btn" onclick="logout(event)">
-                <div><i class="fa-solid fa-arrow-right-from-bracket"></i> Logout</div>
-            </a>
+            <div class="nav-link logout-btn" onclick="logout()">
+                <i class="fa-solid fa-arrow-right-from-bracket"></i> Logout
+            </div>
         </div>
     </aside>
 
@@ -565,16 +467,20 @@
             <div class="mannequin-container">
                 <div class="carousel-row" id="topRow">
                     <button class="nav-arrow arrow-left" onclick="prevItem('top')"><i class="fa-solid fa-chevron-left"></i></button>
-                    <div class="empty-state" id="emptyTopMsg" style="position: absolute;">No Tops Found For This Filter.<br><a href="add-item.html">Add one!</a></div>
-                    <img src="" class="carousel-img" id="imgTop" onerror="this.src='https://placehold.co/300x400/f1f5f9/64748b?text=Image+Error'">
+                    <div class="empty-state" id="emptyTopMsg" style="position: absolute;">No Tops Found.<br><a href="add-item.html">Add one!</a></div>
+                    
+                    <img src="https://placehold.co/300x400/f1f5f9/64748b?text=Loading..." class="carousel-img" id="imgTop" onerror="this.src='https://placehold.co/300x400/f1f5f9/ef4444?text=Missing+Image'">
+                    
                     <button class="nav-arrow arrow-right" onclick="nextItem('top')"><i class="fa-solid fa-chevron-right"></i></button>
                     <button class="lock-toggle" id="lockTop" onclick="toggleLock('top')"><i class="fa-solid fa-lock-open"></i></button>
                 </div>
 
                 <div class="carousel-row" id="bottomRow">
                     <button class="nav-arrow arrow-left" onclick="prevItem('bottom')"><i class="fa-solid fa-chevron-left"></i></button>
-                    <div class="empty-state" id="emptyBottomMsg" style="position: absolute;">No Bottoms Found For This Filter.<br><a href="add-item.html">Add one!</a></div>
-                    <img src="" class="carousel-img" id="imgBottom" onerror="this.src='https://placehold.co/300x400/f1f5f9/64748b?text=Image+Error'">
+                    <div class="empty-state" id="emptyBottomMsg" style="position: absolute;">No Bottoms Found.<br><a href="add-item.html">Add one!</a></div>
+                    
+                    <img src="https://placehold.co/300x400/f1f5f9/64748b?text=Loading..." class="carousel-img" id="imgBottom" onerror="this.src='https://placehold.co/300x400/f1f5f9/ef4444?text=Missing+Image'">
+                    
                     <button class="nav-arrow arrow-right" onclick="nextItem('bottom')"><i class="fa-solid fa-chevron-right"></i></button>
                     <button class="lock-toggle" id="lockBottom" onclick="toggleLock('bottom')"><i class="fa-solid fa-lock-open"></i></button>
                 </div>
@@ -636,11 +542,11 @@
     </main>
 
     <script>
-        // --- 1. STATE MANAGEMENT ---
+        // --- STATE MANAGEMENT ---
         let allTops = [];
         let allBottoms = [];
-        let tops = [];
-        let bottoms = [];
+        let filteredTops = [];
+        let filteredBottoms = [];
 
         let activeSeason = 'Summer';
         let activeOccasion = 'All Occasions';
@@ -650,26 +556,76 @@
         let lockTop = false;
         let lockBottom = false;
 
-        const imgTop = document.getElementById('imgTop');
-        const imgBottom = document.getElementById('imgBottom');
+        const imgTopEl = document.getElementById('imgTop');
+        const imgBottomEl = document.getElementById('imgBottom');
         const emptyTopMsg = document.getElementById('emptyTopMsg');
         const emptyBottomMsg = document.getElementById('emptyBottomMsg');
         const emptyLookbookMsg = document.getElementById('emptyLookbookMsg');
         const warmthBar = document.getElementById('warmthBar');
         const warmthText = document.getElementById('warmthText');
 
+        // Safe ID extractor for MongoDB objects
         function getCleanId(item) {
             if (!item) return null;
             if (typeof item === 'string') return item;
+            if (item._id) return typeof item._id === 'string' ? item._id : item._id.$oid;
             if (item.$oid) return item.$oid;
-            if (item._id) {
-                if (typeof item._id === 'string') return item._id;
-                if (item._id.$oid) return item._id.$oid;
-            }
             return null;
         }
 
-        // --- 2. EVENT LISTENERS FOR FILTERS ---
+        // --- AUTH ---
+        function logout() {
+            if (confirm("Are you sure you want to log out?")) {
+                localStorage.removeItem('token');
+                window.location.href = 'login.html';
+            }
+        }
+
+        // --- FETCH DATA (USING RELATIVE PATHS FOR RENDER) ---
+        async function fetchWardrobeData() {
+            const token = localStorage.getItem('token');
+            if (!token) {
+                window.location.href = 'login.html';
+                return;
+            }
+
+            try {
+                // 1. Fetch Items
+                console.log("Fetching items...");
+                const itemsRes = await fetch('/api/items', { 
+                    headers: { 'x-auth-token': token } 
+                });
+                
+                if (itemsRes.ok) {
+                    const rawItems = await itemsRes.json();
+                    const itemsArray = Array.isArray(rawItems) ? rawItems : (rawItems.data || []);
+                    console.log(`Successfully fetched ${itemsArray.length} total items.`);
+                    
+                    allTops = itemsArray.filter(item => item.category === 'top');
+                    allBottoms = itemsArray.filter(item => item.category === 'bottom');
+                    
+                    applyFilters(); // This will trigger updateView()
+                } else {
+                    console.error("Failed to fetch items. Status:", itemsRes.status);
+                }
+
+                // 2. Fetch Outfits for Lookbook
+                const outfitsRes = await fetch('/api/outfits', { 
+                    headers: { 'x-auth-token': token } 
+                });
+
+                if (outfitsRes.ok) {
+                    const rawOutfits = await outfitsRes.json();
+                    const outfitsArray = Array.isArray(rawOutfits) ? rawOutfits : (rawOutfits.data || []);
+                    renderLookbook(outfitsArray);
+                }
+
+            } catch (error) {
+                console.error("Network or API Error:", error);
+            }
+        }
+
+        // --- FILTERING LOGIC ---
         document.querySelectorAll('.season-btn').forEach(btn => {
             btn.addEventListener('click', (e) => {
                 document.querySelectorAll('.season-btn').forEach(b => b.classList.remove('active'));
@@ -684,142 +640,105 @@
             applyFilters();
         });
 
-        // --- 3. CORE FILTERING LOGIC ---
         function applyFilters() {
             const formalTypes = ['chinos', 'shirt', 'blazer', 'trousers', 'formal pant'];
             const casualTypes = ['jeans', 't-shirt', 'shorts', 'hoodie', 'sweatpants'];
             const partyTypes = ['party-shirt', 'dress', 'leather-jacket'];
 
-            function matchesOccasionCheck(item) {
-                if (activeOccasion === 'All Occasions') return true;
-                if (!item.subCategory) return false;
-
-                const sub = item.subCategory.toLowerCase();
-                if (activeOccasion === 'Formal / Work') return formalTypes.includes(sub);
-                if (activeOccasion === 'Casual') return casualTypes.includes(sub);
-                if (activeOccasion === 'Party') return partyTypes.includes(sub);
-                return false;
-            }
-
-            function matchesSeasonCheck(item) {
+            filteredTops = allTops.filter(item => {
                 if (!item.seasons || item.seasons.length === 0) return true;
-                const dbSeasons = item.seasons.map(s => s.toLowerCase());
-                return dbSeasons.includes(activeSeason.toLowerCase()) || dbSeasons.includes('all year');
-            }
+                const matchesSeason = item.seasons.some(s => s.toLowerCase() === activeSeason.toLowerCase() || s.toLowerCase() === 'all year');
+                
+                let matchesOccasion = true;
+                if (activeOccasion !== 'All Occasions' && item.subCategory) {
+                    const sub = item.subCategory.toLowerCase();
+                    if (activeOccasion === 'Formal / Work') matchesOccasion = formalTypes.includes(sub);
+                    else if (activeOccasion === 'Casual') matchesOccasion = casualTypes.includes(sub);
+                    else if (activeOccasion === 'Party') matchesOccasion = partyTypes.includes(sub);
+                }
+                return matchesSeason && matchesOccasion;
+            });
 
-            tops = allTops.filter(item => matchesSeasonCheck(item) && matchesOccasionCheck(item));
-            bottoms = allBottoms.filter(item => matchesSeasonCheck(item) && matchesOccasionCheck(item));
+            filteredBottoms = allBottoms.filter(item => {
+                if (!item.seasons || item.seasons.length === 0) return true;
+                const matchesSeason = item.seasons.some(s => s.toLowerCase() === activeSeason.toLowerCase() || s.toLowerCase() === 'all year');
+                
+                let matchesOccasion = true;
+                if (activeOccasion !== 'All Occasions' && item.subCategory) {
+                    const sub = item.subCategory.toLowerCase();
+                    if (activeOccasion === 'Formal / Work') matchesOccasion = formalTypes.includes(sub);
+                    else if (activeOccasion === 'Casual') matchesOccasion = casualTypes.includes(sub);
+                    else if (activeOccasion === 'Party') matchesOccasion = partyTypes.includes(sub);
+                }
+                return matchesSeason && matchesOccasion;
+            });
 
+            // Reset indices when filters change
             topIndex = 0;
             bottomIndex = 0;
-            init();
+            updateView();
         }
 
-        function logout(event) {
-            if (event) event.preventDefault();
-            if (confirm("Are you sure you want to log out of StyleStash?")) {
-                localStorage.removeItem('token');
-                window.location.replace('login.html');
-            }
-        }
+        // --- CAROUSEL & UI UPDATES ---
+        function updateView() {
+            let tWarmth = 0, bWarmth = 0;
 
-        // --- 4. DATABASE FETCHING ---
-        async function fetchWardrobeFromDB() {
-            const token = localStorage.getItem('token');
-            if (!token) return;
-
-            try {
-                // Fetch Items First
-                const itemsRes = await fetch('http://localhost:5000/api/items', {
-                    headers: { 'x-auth-token': token }
-                });
-
-                if (itemsRes.ok) {
-                    const allItems = await itemsRes.json();
-                    const itemsArray = Array.isArray(allItems) ? allItems : (allItems.data || []);
-                    allTops = itemsArray.filter(item => item.category === 'top');
-                    allBottoms = itemsArray.filter(item => item.category === 'bottom');
-                    applyFilters();
-                }
-
-                // Fetch Outfits Second
-                const outfitsRes = await fetch('http://localhost:5000/api/outfits', {
-                    headers: { 'x-auth-token': token }
-                });
-
-                if (outfitsRes.ok) {
-                    const outfits = await outfitsRes.json();
-                    renderLookbook(outfits);
-                }
-
-            } catch (error) {
-                console.error("Database fetch error:", error);
-            }
-        }
-
-        // --- 5. RENDER LOGIC ---
-        function init() {
-            if (tops.length === 0) {
-                imgTop.style.display = 'none';
+            // Update Top
+            if (filteredTops.length === 0) {
+                imgTopEl.style.display = 'none';
                 emptyTopMsg.style.display = 'block';
             } else {
-                imgTop.style.display = 'block';
+                imgTopEl.style.display = 'block';
                 emptyTopMsg.style.display = 'none';
+                const currentTop = filteredTops[topIndex];
+                imgTopEl.src = currentTop.imageUrl || 'https://placehold.co/300x400/f1f5f9/ef4444?text=Missing+Image';
+                tWarmth = Number(currentTop.warmth) || 0;
             }
 
-            if (bottoms.length === 0) {
-                imgBottom.style.display = 'none';
+            // Update Bottom
+            if (filteredBottoms.length === 0) {
+                imgBottomEl.style.display = 'none';
                 emptyBottomMsg.style.display = 'block';
             } else {
-                imgBottom.style.display = 'block';
+                imgBottomEl.style.display = 'block';
                 emptyBottomMsg.style.display = 'none';
+                const currentBottom = filteredBottoms[bottomIndex];
+                imgBottomEl.src = currentBottom.imageUrl || 'https://placehold.co/300x400/f1f5f9/ef4444?text=Missing+Image';
+                bWarmth = Number(currentBottom.warmth) || 0;
             }
 
-            if (tops.length > 0 || bottoms.length > 0) {
-                updateView();
+            // Update Stats
+            let divisor = (filteredTops.length > 0 ? 1 : 0) + (filteredBottoms.length > 0 ? 1 : 0);
+            if (divisor > 0) {
+                const avgWarmth = Math.round((tWarmth + bWarmth) / divisor * 10) / 10;
+                const percentage = (avgWarmth / 10) * 100;
+                warmthText.innerText = `${avgWarmth}/10`;
+                warmthBar.style.width = `${percentage}%`;
+                warmthBar.style.backgroundColor = percentage <= 30 ? '#60a5fa' : (percentage >= 70 ? '#ef4444' : '#f59e0b');
             } else {
                 warmthText.innerText = `0/10`;
                 warmthBar.style.width = `0%`;
             }
         }
 
-        function updateView() {
-            let tWarmth = 0, bWarmth = 0;
-            const fallbackImg = 'https://placehold.co/300x400/f1f5f9/64748b?text=No+Image';
-
-            if (tops.length > 0 && tops[topIndex]) {
-                const currentTop = tops[topIndex];
-                imgTop.src = currentTop.imageUrl || fallbackImg;
-                tWarmth = parseInt(currentTop.warmth) || 0;
-            }
-            if (bottoms.length > 0 && bottoms[bottomIndex]) {
-                const currentBottom = bottoms[bottomIndex];
-                imgBottom.src = currentBottom.imageUrl || fallbackImg;
-                bWarmth = parseInt(currentBottom.warmth) || 0;
-            }
-            updateStats(tWarmth, bWarmth);
-        }
-
-        function updateStats(tWarmth, bWarmth) {
-            let divisor = (tops.length > 0 ? 1 : 0) + (bottoms.length > 0 ? 1 : 0);
-            if (divisor === 0) return;
-            const avgWarmth = Math.round((tWarmth + bWarmth) / divisor * 10) / 10;
-            const percentage = (avgWarmth / 10) * 100;
-            warmthText.innerText = `${avgWarmth}/10`;
-            warmthBar.style.width = `${percentage}%`;
-            warmthBar.style.backgroundColor = percentage <= 30 ? '#60a5fa' : (percentage >= 70 ? '#ef4444' : '#f59e0b');
-        }
-
-        // --- 6. SHUFFLING & NAVIGATION ---
+        // --- NAVIGATION & SHUFFLING ---
         function nextItem(type) {
-            if (type === 'top' && !lockTop && tops.length > 0) topIndex = (topIndex + 1) % tops.length;
-            if (type === 'bottom' && !lockBottom && bottoms.length > 0) bottomIndex = (bottomIndex + 1) % bottoms.length;
+            if (type === 'top' && !lockTop && filteredTops.length > 0) {
+                topIndex = (topIndex + 1) % filteredTops.length;
+            }
+            if (type === 'bottom' && !lockBottom && filteredBottoms.length > 0) {
+                bottomIndex = (bottomIndex + 1) % filteredBottoms.length;
+            }
             updateView();
         }
 
         function prevItem(type) {
-            if (type === 'top' && !lockTop && tops.length > 0) topIndex = (topIndex - 1 + tops.length) % tops.length;
-            if (type === 'bottom' && !lockBottom && bottoms.length > 0) bottomIndex = (bottomIndex - 1 + bottoms.length) % bottoms.length;
+            if (type === 'top' && !lockTop && filteredTops.length > 0) {
+                topIndex = (topIndex - 1 + filteredTops.length) % filteredTops.length;
+            }
+            if (type === 'bottom' && !lockBottom && filteredBottoms.length > 0) {
+                bottomIndex = (bottomIndex - 1 + filteredBottoms.length) % filteredBottoms.length;
+            }
             updateView();
         }
 
@@ -838,100 +757,92 @@
         }
 
         function shuffleOutfit() {
-            const elementsToAnimate = [];
-            if (!lockTop && tops.length > 0) elementsToAnimate.push(imgTop);
-            if (!lockBottom && bottoms.length > 0) elementsToAnimate.push(imgBottom);
-
-            elementsToAnimate.forEach(el => el.style.opacity = 0);
-            setTimeout(() => {
-                if (!lockTop && tops.length > 0) topIndex = Math.floor(Math.random() * tops.length);
-                if (!lockBottom && bottoms.length > 0) bottomIndex = Math.floor(Math.random() * bottoms.length);
-                updateView();
-                elementsToAnimate.forEach(el => el.style.opacity = 1);
-            }, 300);
+            if (!lockTop && filteredTops.length > 0) {
+                imgTopEl.style.opacity = 0;
+                setTimeout(() => {
+                    topIndex = Math.floor(Math.random() * filteredTops.length);
+                    updateView();
+                    imgTopEl.style.opacity = 1;
+                }, 200);
+            }
+            
+            if (!lockBottom && filteredBottoms.length > 0) {
+                imgBottomEl.style.opacity = 0;
+                setTimeout(() => {
+                    bottomIndex = Math.floor(Math.random() * filteredBottoms.length);
+                    updateView();
+                    imgBottomEl.style.opacity = 1;
+                }, 200);
+            }
         }
 
-        // --- 7. LOOKBOOK ARCHIVE LOGIC ---
+        // --- STYLE ARCHIVE (SAVE & RENDER) ---
         function renderLookbook(outfits) {
             document.querySelectorAll('.lookbook-card').forEach(card => card.remove());
-
-            const outfitArray = Array.isArray(outfits) ? outfits : (outfits.data || outfits.outfits || []);
-
-            if (outfitArray.length > 0) {
+            
+            if (outfits.length > 0) {
                 emptyLookbookMsg.style.display = 'none';
-                outfitArray.forEach(outfit => appendOutfitToDOM(outfit));
+                outfits.forEach(outfit => appendOutfitToDOM(outfit));
             } else {
                 emptyLookbookMsg.style.display = 'block';
             }
         }
 
         async function saveLook() {
-            if (tops.length === 0 || bottoms.length === 0) {
-                alert("Please add both a top and a bottom to save an outfit!");
+            if (filteredTops.length === 0 || filteredBottoms.length === 0) {
+                alert("You need both a top and a bottom to save an outfit!");
                 return;
             }
 
-            const currentTop = tops[topIndex];
-            const currentBottom = bottoms[bottomIndex];
+            const currentTop = filteredTops[topIndex];
+            const currentBottom = filteredBottoms[bottomIndex];
             const token = localStorage.getItem('token');
 
-            const pureTopId = getCleanId(currentTop);
-            const pureBottomId = getCleanId(currentBottom);
+            const payload = {
+                items: [getCleanId(currentTop), getCleanId(currentBottom)],
+                date: new Date()
+            };
 
             try {
-                const response = await fetch('http://localhost:5000/api/outfits', {
+                const response = await fetch('/api/outfits', {
                     method: 'POST',
                     headers: {
                         'x-auth-token': token,
                         'Content-Type': 'application/json'
                     },
-                    body: JSON.stringify({
-                        items: [pureTopId, pureBottomId],
-                        date: new Date()
-                    })
+                    body: JSON.stringify(payload)
                 });
 
-                if (!response.ok) throw new Error("Failed to save to DB");
-                const savedOutfit = await response.json();
+                if (response.ok) {
+                    const savedOutfit = await response.json();
+                    
+                    // Manually populate for instant UI update without full refresh
+                    const uiOutfit = {
+                        _id: savedOutfit._id,
+                        date: savedOutfit.date,
+                        items: [currentTop, currentBottom]
+                    };
 
-                emptyLookbookMsg.style.display = 'none';
-                appendOutfitToDOM(savedOutfit, true);
+                    emptyLookbookMsg.style.display = 'none';
+                    appendOutfitToDOM(uiOutfit, true);
 
-                const btn = document.querySelector('.save-btn');
-                const originalHTML = btn.innerHTML;
-                btn.innerHTML = '<i class="fa-solid fa-check"></i> Added!';
-                btn.style.backgroundColor = 'var(--accent-pink)';
-                btn.style.color = 'white';
-                setTimeout(() => {
-                    btn.innerHTML = originalHTML;
-                    btn.style.backgroundColor = 'white';
-                    btn.style.color = 'var(--accent-pink)';
-                }, 2000);
-
-            } catch (e) {
-                console.error(e);
-                alert("Server error: Could not save the look.");
-            }
-        }
-
-        async function deleteLook(outfitId, buttonElement) {
-            const token = localStorage.getItem('token');
-            try {
-                const response = await fetch(`http://localhost:5000/api/outfits/${outfitId}`, {
-                    method: 'DELETE',
-                    headers: { 'x-auth-token': token }
-                });
-
-                if (!response.ok) throw new Error("Failed to delete from DB");
-
-                buttonElement.closest('.lookbook-card').remove();
-
-                if (document.querySelectorAll('.lookbook-card').length === 0) {
-                    emptyLookbookMsg.style.display = 'block';
+                    // Button Feedback
+                    const btn = document.querySelector('.save-btn');
+                    const originalHTML = btn.innerHTML;
+                    btn.innerHTML = '<i class="fa-solid fa-check"></i> Added!';
+                    btn.style.backgroundColor = 'var(--accent-pink)';
+                    btn.style.color = 'white';
+                    setTimeout(() => {
+                        btn.innerHTML = originalHTML;
+                        btn.style.backgroundColor = 'white';
+                        btn.style.color = 'var(--accent-pink)';
+                    }, 2000);
+                } else {
+                    const err = await response.json();
+                    alert("Failed to save: " + (err.msg || "Server Error"));
                 }
-            } catch (e) {
-                console.error("Delete Error:", e);
-                alert("Failed to delete outfit.");
+            } catch (error) {
+                console.error("Save error:", error);
             }
         }
 
@@ -939,35 +850,20 @@
             const grid = document.getElementById('lookbookGrid');
             if (!grid) return;
 
-            let rawDate = new Date();
-            if (outfit.date) {
-                rawDate = new Date(outfit.date.$date || outfit.date);
-            }
-            const dateString = isNaN(rawDate)
-                ? "Saved Outfit"
-                : rawDate.toLocaleDateString('en-US', { month: 'short', day: '2-digit', year: 'numeric' });
-
+            const dateObj = new Date(outfit.date || Date.now());
+            const dateString = isNaN(dateObj) ? "Saved Look" : dateObj.toLocaleDateString('en-US', { month: 'short', day: '2-digit', year: 'numeric' });
+            
             const outfitIdStr = getCleanId(outfit);
 
+            // Extract images directly from populated array
             let topUrl = 'https://placehold.co/150x150/f1f5f9/64748b?text=Top';
             let bottomUrl = 'https://placehold.co/150x150/f1f5f9/64748b?text=Bottom';
 
             if (outfit.items && Array.isArray(outfit.items)) {
                 outfit.items.forEach(item => {
-                    const id = getCleanId(item);
-
-                    const topMatch = allTops.find(t => getCleanId(t) === id);
-                    if (topMatch && topMatch.imageUrl) {
-                        topUrl = topMatch.imageUrl;
-                    } else if (item && item.imageUrl && item.category === 'top') {
-                        topUrl = item.imageUrl; 
-                    }
-
-                    const bottomMatch = allBottoms.find(b => getCleanId(b) === id);
-                    if (bottomMatch && bottomMatch.imageUrl) {
-                        bottomUrl = bottomMatch.imageUrl;
-                    } else if (item && item.imageUrl && item.category === 'bottom') {
-                        bottomUrl = item.imageUrl; 
+                    if (item) {
+                        if (item.category === 'top' && item.imageUrl) topUrl = item.imageUrl;
+                        if (item.category === 'bottom' && item.imageUrl) bottomUrl = item.imageUrl;
                     }
                 });
             }
@@ -979,21 +875,36 @@
                     <i class="fa-solid fa-trash"></i>
                 </button>
                 <div class="lookbook-images">
-                    <img src="${topUrl}" alt="Top" onerror="this.src='https://placehold.co/150x150/f1f5f9/64748b?text=Error'">
-                    <img src="${bottomUrl}" alt="Bottom" onerror="this.src='https://placehold.co/150x150/f1f5f9/64748b?text=Error'">
+                    <img src="${topUrl}" alt="Top" onerror="this.src='https://placehold.co/150x150/f1f5f9/ef4444?text=X'">
+                    <img src="${bottomUrl}" alt="Bottom" onerror="this.src='https://placehold.co/150x150/f1f5f9/ef4444?text=X'">
                 </div>
                 <div class="lookbook-title">Saved Outfit</div>
                 <div class="lookbook-date">${dateString}</div>
             `;
 
-            if (atTop) {
-                if (grid.firstChild) {
-                    grid.insertBefore(newCard, emptyLookbookMsg.nextSibling);
-                } else {
-                    grid.appendChild(newCard);
-                }
+            if (atTop && grid.firstChild) {
+                grid.insertBefore(newCard, emptyLookbookMsg.nextSibling);
             } else {
                 grid.appendChild(newCard);
+            }
+        }
+
+        async function deleteLook(outfitId, buttonElement) {
+            const token = localStorage.getItem('token');
+            try {
+                const response = await fetch(`/api/outfits/${outfitId}`, {
+                    method: 'DELETE',
+                    headers: { 'x-auth-token': token }
+                });
+
+                if (response.ok) {
+                    buttonElement.closest('.lookbook-card').remove();
+                    if (document.querySelectorAll('.lookbook-card').length === 0) {
+                        emptyLookbookMsg.style.display = 'block';
+                    }
+                }
+            } catch (error) {
+                console.error("Delete error:", error);
             }
         }
 
@@ -1001,7 +912,8 @@
             document.getElementById('sidebar').classList.toggle('active');
         }
 
-        document.addEventListener('DOMContentLoaded', fetchWardrobeFromDB);
+        // --- INIT ---
+        document.addEventListener('DOMContentLoaded', fetchWardrobeData);
     </script>
 </body>
 
